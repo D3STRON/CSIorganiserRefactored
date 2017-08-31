@@ -77,7 +77,7 @@ public class JcActivity extends AppCompatActivity {
       tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
           @Override
           public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
+              showEditTaskDialog();
               return false;
           }
       });
@@ -132,6 +132,32 @@ public class JcActivity extends AppCompatActivity {
             }
         });
     }
+/////////////////
+
+    public void showEditTaskDialog()
+    {
+        final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater= getLayoutInflater();
+        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
+        dialogbuilder2.setView(createtaskview2);
+        dialogbuilder2.setTitle("EDIT TASK");
+        final ListView memlist;
+        final Button destroytask,addmembers,cancel;
+        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
+        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
+       cancel=(Button)createtaskview2.findViewById(R.id.cancel);
+        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
+        final AlertDialog createtaskdialog2=dialogbuilder2.create();
+        createtaskdialog2.show();
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createtaskdialog2.dismiss();
+            }
+        });
+
+    }
+
 
     @Override
     protected void onStart() {
