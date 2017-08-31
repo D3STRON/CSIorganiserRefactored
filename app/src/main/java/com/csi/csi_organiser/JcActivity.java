@@ -98,7 +98,7 @@ public class JcActivity extends AppCompatActivity {
             }
         });
 
-        ///////////////////////////// Important : Here Tasks has the list of Tasks and Members Has the list of members//////////////////////////////////////
+        ///////////////////////////// Important : Here tasks has the list of Tasks and members Has the list of members//////////////////////////////////////
     }
     public void showCreateTaskDialog()
     {
@@ -158,6 +158,13 @@ public class JcActivity extends AppCompatActivity {
         memlist.setAdapter(arrayAdaptermembers);
         final AlertDialog createtaskdialog2=dialogbuilder2.create();
         createtaskdialog2.show();
+        addmembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ///////start code here Important : Here also tasks has the list of Tasks and members Has the list of members///////////////////////////////////
+            }
+        });
+
         destroytask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
