@@ -207,7 +207,6 @@ public class JcActivity extends AppCompatActivity {
             case R.id.editprofile:
                 Model model = new Model();
                 model.setValue(users.get("name"),users.get("email"),users.get("phone"),users.get("station"),users.get("rollno"),users.get("pref1"),users.get("pref2"),users.get("pref3"),users.get("cuttenttask"),Integer.parseInt(users.get("nooftasks")));
-                Toast.makeText(JcActivity.this,model.getName(),Toast.LENGTH_SHORT).show();
                 return false;
             default:
                  return super.onOptionsItemSelected(item);
