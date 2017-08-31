@@ -156,13 +156,18 @@ public class JcActivity extends AppCompatActivity {
         memlist.setAdapter(arrayAdaptermembers);
         final AlertDialog createtaskdialog2=dialogbuilder2.create();
         createtaskdialog2.show();
+        destroytask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createtaskdialog2.dismiss();
             }
-        });
-
+        });;
     }
 
 
