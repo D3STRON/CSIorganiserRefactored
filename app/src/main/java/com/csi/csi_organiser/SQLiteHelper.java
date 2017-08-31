@@ -23,7 +23,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USER_TABLE =
-                "CREATE TABLE IF NOT EXISTS user ( currentTask TEXT, name TEXT, email TEXT UNIQUE, phone TEXT, station TEXT, nooftask INTEGER, pref1 TEXT, pref2 TEXT, pref3 TEXT, priority TEXT, rollno TEXT, uuid TEXT);";
+                "CREATE TABLE IF NOT EXISTS user ( currentTask TEXT, name TEXT, " +
+                        "email TEXT UNIQUE, phone TEXT, station TEXT, nooftask INTEGER, " +
+                        "pref1 TEXT, pref2 TEXT, pref3 TEXT, priority TEXT, rollno TEXT, UuId TEXT UNIQUE);";
         db.execSQL(CREATE_USER_TABLE);
         Log.d(TAG, "Database tables created");
     }
@@ -34,10 +36,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addInfo(String currentTask, String name,String email, String phone, String station, int nooftasks, String pref1, String pref2, String pref3, String priority, String rollno){
+    public void addInfo(String currentTask, String name,String email, String phone, String station, int nooftasks, String pref1, String pref2, String pref3, String priority, String rollno, String uuid){
         SQLiteDatabase db = this.getWritableDatabase();
         String INSERT = "INSERT INTO user VALUES('"+currentTask+"','"+name+"','"+email+"','"+phone+
-                "','"+station+"',"+nooftasks+",'"+pref1+"','"+pref2+"','"+pref3+"','"+priority+"','"+rollno+"');";
+                "','"+station+"',"+nooftasks+",'"+pref1+"','"+pref2+"','"+pref3+"','"+priority+"','"+rollno+"','"+uuid+"');";
         db.execSQL(INSERT);
         db.close();
         Log.d(TAG, "New user inserted into sqlite");
@@ -68,6 +70,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             values.put("pref3",cursor.getString(8));
             values.put("priority",cursor.getString(9));
             values.put("rollno",cursor.getString(10));
+            values.put("UUID",cursor.getString(11));
         }
         cursor.close();
         db.close();

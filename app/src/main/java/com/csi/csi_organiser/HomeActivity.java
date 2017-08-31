@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
         team3.setAdapter(teams);
         HashMap<String,String> users=db.getAllValues();
 
-       ////heree put it
+        ////heree put it
         team1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -128,7 +128,7 @@ public class HomeActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              int length=email.getText().toString().length();
+                int length=email.getText().toString().length();
 
                 if(firstname.getText().toString().isEmpty() || lastname.getText().toString().isEmpty() || email.getText().toString().isEmpty() || number.getText().toString().isEmpty() || neareststation.getText().toString().isEmpty() || rollno.getText().toString().isEmpty())
                 {
@@ -184,7 +184,9 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Model model=new Model();
-                model.setValue(firstname.getText().toString()+" "+lastname.getText().toString(),email.getText().toString(),number.getText().toString(),neareststation.getText().toString(),rollno.getText().toString().toUpperCase(),preference1,preference2,preference3);
+                model.setValue(firstname.getText().toString()+" "+lastname.getText().toString(),
+                        email.getText().toString(),number.getText().toString(),neareststation.getText().toString(),
+                        rollno.getText().toString().toUpperCase(),preference1,preference2,preference3);
 
                 boolean result=isConnected(HomeActivity.this);
 
@@ -218,12 +220,14 @@ public class HomeActivity extends AppCompatActivity {
                             Toast.makeText(HomeActivity.this, "You are a committee member.", Toast.LENGTH_SHORT).show();
                         }
                     }
+
                     String Id= firebase.push().getKey();
+                    firebase.child(Id).setValue(model);
+
                     db.addInfo(model.getCurrenttask(), model.getName(),model.getEmail(),
                             model.getNumber(),model.getNeareststation(),model.getNumberoftasks(),
                             model.getPreference1(),model.getPreference2(),model.getPreference3(),
-                            model.getPriority(),model.getRollno());
-                    firebase.child(Id).setValue(model);
+                            model.getPriority(),model.getRollno(),Id);
 
                     if(model.getPriority().matches("1"))
                     {
@@ -246,7 +250,7 @@ public class HomeActivity extends AppCompatActivity {
                         finish();
                     }
                     memlist.clear();
-                   rolelist.clear();
+                    rolelist.clear();
                     alertDialog.dismiss();
 
                 }
@@ -269,7 +273,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
 
@@ -293,27 +297,27 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-   public boolean isConnected(Context context)
-   {
+    public boolean isConnected(Context context)
+    {
 
-    ConnectivityManager cm= (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
-       NetworkInfo netinfo= cm.getActiveNetworkInfo();
-       if(netinfo!=null && netinfo.isConnectedOrConnecting())
-       {
-           android.net.NetworkInfo wifi= cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-           android.net.NetworkInfo mobile=cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        ConnectivityManager cm= (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+        NetworkInfo netinfo= cm.getActiveNetworkInfo();
+        if(netinfo!=null && netinfo.isConnectedOrConnecting())
+        {
+            android.net.NetworkInfo wifi= cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            android.net.NetworkInfo mobile=cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-           if((mobile!=null && mobile.isConnectedOrConnecting())|| (wifi!=null && wifi.isConnectedOrConnecting()))
-           {
-               return true;
-           }
-           else
-               return false;
-       }
-       else
-           return false;
-   }
-   //////////////////
+            if((mobile!=null && mobile.isConnectedOrConnecting())|| (wifi!=null && wifi.isConnectedOrConnecting()))
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+    //////////////////
 
     @Override
     public void onBackPressed() {
