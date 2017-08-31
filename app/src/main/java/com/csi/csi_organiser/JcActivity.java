@@ -97,6 +97,8 @@ public class JcActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ///////////////////////////// Important : Here Tasks has the list of Tasks and Members Has the list of members//////////////////////////////////////
     }
     public void showCreateTaskDialog()
     {
@@ -207,7 +209,8 @@ public class JcActivity extends AppCompatActivity {
                     Model model= fire.getValue(Model.class);
                     if(model.getPreference1().matches("Technical")){
                     arrayAdaptermembers.add("\nRoll NO: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nCurrent task:"+model.getCurrenttask());
-                    members.add(model);}
+                    members.add(model);
+                    }
                 }
                 arrayAdaptermembers.notifyDataSetChanged();
             }
