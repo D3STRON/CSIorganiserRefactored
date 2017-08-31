@@ -218,12 +218,11 @@ public class HomeActivity extends AppCompatActivity {
                             Toast.makeText(HomeActivity.this, "You are a committee member.", Toast.LENGTH_SHORT).show();
                         }
                     }
-
+                    String Id= firebase.push().getKey();
                     db.addInfo(model.getCurrenttask(), model.getName(),model.getEmail(),
                             model.getNumber(),model.getNeareststation(),model.getNumberoftasks(),
                             model.getPreference1(),model.getPreference2(),model.getPreference3(),
                             model.getPriority(),model.getRollno());
-                    String Id= firebase.push().getKey();
                     firebase.child(Id).setValue(model);
 
                     if(model.getPriority().matches("1"))
