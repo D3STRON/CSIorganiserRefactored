@@ -74,12 +74,14 @@ public class JcActivity extends AppCompatActivity {
             }
         });
 
-        tasklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+      tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+          @Override
+          public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        });
+              return false;
+          }
+      });
+
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,14 +118,13 @@ public class JcActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TaskModel taskModel= new TaskModel();
-                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString());
                /* tasks.add(taskModel);
                 arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
                  arrayAdapter.notifyDataSetChanged();
                 */
                 String Id=firebase.push().getKey();
+                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),Id);
                 firebase.child(Id).setValue(taskModel);
-
                 if(!arrayAdapter.isEmpty())
                     Toast.makeText(JcActivity.this,"New Task Created!",Toast.LENGTH_SHORT).show();
 
