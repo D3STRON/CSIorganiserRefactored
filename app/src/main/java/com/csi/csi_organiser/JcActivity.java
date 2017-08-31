@@ -83,7 +83,7 @@ public class JcActivity extends AppCompatActivity {
       tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
           @Override
           public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-              showEditTaskDialog();
+              showEditTaskDialog(position);
               return false;
           }
       });
@@ -140,7 +140,7 @@ public class JcActivity extends AppCompatActivity {
     }
 /////////////////
 
-    public void showEditTaskDialog()
+    public void showEditTaskDialog(final int position)
     {
         final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
         LayoutInflater layoutInflater= getLayoutInflater();
@@ -159,6 +159,9 @@ public class JcActivity extends AppCompatActivity {
         destroytask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               String taskId= tasks.get(position).Id;
+                firebase.child(taskId).removeValue();
+                createtaskdialog2.dismiss();
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
