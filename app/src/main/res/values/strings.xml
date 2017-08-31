@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CSI-Organiser</string>
+    <string-array name="teams">
+        <item></item>
+        <item>Creative</item>
+        <item>Publicty</item>
+        <item>Technical</item>
+        <item>General Organizing Team</item>
+    </string-array>
+    <string name="title_activity_main">MainActivity</string>
+</resources>

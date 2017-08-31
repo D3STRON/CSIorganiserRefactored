@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/colorshade"
+    tools:context="com.csi.csi_organiser.HomeActivity"
+   >
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/actionbar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:padding="16dp"
+        android:orientation="vertical"
+        >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/welcome"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="CURRENT TASK LIST"
+        android:textSize="20dp"
+        android:padding="15dp"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="328dp"
+        android:background="@drawable/myedittextstyle2"
+        android:id="@+id/tasklist"
+        android:layout_weight="1.01">
+    </ListView>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       >
+       <Button
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:id="@+id/createtask"
+           android:text="CREATE TASK"
+           android:layout_weight="0.5"
+           />
+       <Button
+           android:layout_weight="0.5"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="EXIT"
+           android:id="@+id/exit"
+           />
+   </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
