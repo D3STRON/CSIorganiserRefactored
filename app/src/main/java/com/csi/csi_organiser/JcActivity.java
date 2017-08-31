@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.Process;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -34,13 +36,14 @@ public class JcActivity extends AppCompatActivity {
     Button createtask,exit;
     ListView tasklist;
     ArrayList<TaskModel> tasks;
+    ArrayList<Model> members;
     TextView welcome;
     Toolbar toolbar;
-    ArrayList<String> tasksstring;
+    ArrayList<String> tasksstring,memberstring;
     HashMap<String ,String> users;
-    DatabaseReference firebase;
+    DatabaseReference firebase,firebasemembers;
     SQLiteHelper db;
-    ArrayAdapter<String> arrayAdapter;
+    ArrayAdapter<String> arrayAdapter,arrayAdaptermembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,8 @@ public class JcActivity extends AppCompatActivity {
         setContentView(R.layout.activity_jc);
         tasks= new ArrayList<>();
         tasksstring= new ArrayList<>();
-
+        members= new ArrayList<>();
+        memberstring=new ArrayList<>();
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("TASK MANAGER");
@@ -61,7 +65,9 @@ public class JcActivity extends AppCompatActivity {
         welcome=(TextView)findViewById(R.id.welcome);
         welcome.setText("WELCOME "+db.getAllValues().get("name").toUpperCase());
         firebase= FirebaseDatabase.getInstance().getReference("Tasks");
+        firebasemembers=FirebaseDatabase.getInstance().getReference("CSI Members");
         arrayAdapter= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,tasksstring);
+        arrayAdaptermembers= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,memberstring);
         tasklist.setAdapter(arrayAdapter);
         createtask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +151,9 @@ public class JcActivity extends AppCompatActivity {
         final Button destroytask,addmembers,cancel;
         destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
         addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
-       cancel=(Button)createtaskview2.findViewById(R.id.cancel);
+        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
         memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
+        memlist.setAdapter(arrayAdaptermembers);
         final AlertDialog createtaskdialog2=dialogbuilder2.create();
         createtaskdialog2.show();
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -181,8 +188,31 @@ public class JcActivity extends AppCompatActivity {
 
             }
         });
-    }
 
+        ////////////////////////
+
+        firebasemembers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayAdaptermembers.clear();
+                for(DataSnapshot fire: dataSnapshot.getChildren())
+                {
+                    Model model= fire.getValue(Model.class);
+                    if(model.getPreference1().matches("Technical")){
+                    arrayAdaptermembers.add("\nRoll NO: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nCurrent task:"+model.getCurrenttask());
+                    members.add(model);}
+                }
+                arrayAdaptermembers.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        ///////////////////////////
+
+    }
     @Override
     public void onBackPressed() {
 
@@ -206,7 +236,8 @@ public class JcActivity extends AppCompatActivity {
                 return true;
             case R.id.editprofile:
                 Model model = new Model();
-                model.setValue(users.get("name"),users.get("email"),users.get("phone"),users.get("station"),users.get("rollno"),users.get("pref1"),users.get("pref2"),users.get("pref3"),users.get("cuttenttask"),Integer.parseInt(users.get("nooftasks")));
+                Intent intenteditprofile= new Intent(JcActivity.this,EditProfile.class);
+                startActivity(intenteditprofile);
                 return false;
             default:
                  return super.onOptionsItemSelected(item);

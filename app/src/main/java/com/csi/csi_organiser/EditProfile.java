@@ -14,21 +14,27 @@ import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
 public class EditProfile extends AppCompatActivity {
     EditText firstname, lastname,email, number,rollno, neareststation;
     Spinner team1, team2, team3;
     String preference1, preference2, preference3;
     Button update;
     SQLiteHelper db;
+    HashMap<String,String> users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        firstname= (EditText)findViewById(R.id.firstname);
         lastname= (EditText)findViewById(R.id.lastname);
         email= (EditText)findViewById(R.id.email);
         rollno=(EditText)findViewById(R.id.rollno);
         number= (EditText)findViewById(R.id.number);
         neareststation=(EditText)findViewById(R.id.neareststation);
+        db= new SQLiteHelper(this);
+        users= db.getAllValues();
         team1=(Spinner)findViewById(R.id.team1);
         team2=(Spinner)findViewById(R.id.team2);
         team3=(Spinner)findViewById(R.id.team3);
@@ -38,7 +44,12 @@ public class EditProfile extends AppCompatActivity {
         team1.setAdapter(teams);
         team2.setAdapter(teams);
         team3.setAdapter(teams);
-
+        email.setText(users.get("email"));
+        firstname.setText(users.get("name"));
+        lastname.setText(users.get("name"));
+        rollno.setText(users.get("rollno"));
+        number.setText(users.get("phone"));
+        neareststation.setText(users.get("station"));
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
