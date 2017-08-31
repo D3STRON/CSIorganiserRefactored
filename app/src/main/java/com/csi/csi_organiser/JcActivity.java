@@ -159,7 +159,6 @@ public class JcActivity extends AppCompatActivity {
         destroytask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
