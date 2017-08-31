@@ -23,7 +23,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USER_TABLE =
-                "CREATE TABLE IF NOT EXISTS user ( currentTask TEXT, name TEXT, email TEXT UNIQUE, phone TEXT, station TEXT, nooftask INTEGER, pref1 TEXT, pref2 TEXT, pref3 TEXT, priority TEXT, rollno TEXT);";
+                "CREATE TABLE IF NOT EXISTS user ( currentTask TEXT, name TEXT, email TEXT UNIQUE, phone TEXT, station TEXT, nooftask INTEGER, pref1 TEXT, pref2 TEXT, pref3 TEXT, priority TEXT, rollno TEXT, uuid TEXT);";
         db.execSQL(CREATE_USER_TABLE);
         Log.d(TAG, "Database tables created");
     }
