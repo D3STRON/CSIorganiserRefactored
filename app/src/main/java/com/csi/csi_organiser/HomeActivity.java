@@ -186,7 +186,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Model model=new Model();
-                model.setValue(firstname.getText().toString().replaceAll(" ","").toLowerCase()+" "+lastname.getText().toString().trim().replaceAll(" ","").toLowerCase(),
+                model.setValue(firstname.getText().toString().replaceAll(" ","").toLowerCase()+" "+lastname.getText().toString().replaceAll(" ","").toLowerCase(),
                         email.getText().toString(),number.getText().toString(),neareststation.getText().toString(),
                         rollno.getText().toString().toUpperCase(),preference1,preference2,preference3);
 
