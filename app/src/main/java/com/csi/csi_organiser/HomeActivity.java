@@ -43,18 +43,19 @@ public class HomeActivity extends AppCompatActivity {
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
         ///
         memlist= new ArrayList<>();
         rolelist=new ArrayList<>();
+        memlist.clear();
+        rolelist.clear();
         ///
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
         if(getIntent().getBooleanExtra("EXIT",false))
         {
             finish();
         }
         firstname= (EditText)findViewById(R.id.firstname);
-
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("SIGN UP");
@@ -185,7 +186,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Model model=new Model();
-                model.setValue(firstname.getText().toString()+" "+lastname.getText().toString(),
+                model.setValue(firstname.getText().toString().trim()+" "+lastname.getText().toString().trim(),
                         email.getText().toString(),number.getText().toString(),neareststation.getText().toString(),
                         rollno.getText().toString().toUpperCase(),preference1,preference2,preference3);
 
@@ -206,7 +207,7 @@ public class HomeActivity extends AppCompatActivity {
                     Toast.makeText(HomeActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
                 }
-                else if(rolelist.isEmpty())
+               else if(rolelist.isEmpty())
                 {
                     Toast.makeText(HomeActivity.this, "Connecting To Cloud! Please Wait...", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();

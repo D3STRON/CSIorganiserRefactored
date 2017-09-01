@@ -16,5 +16,6 @@ public class NotifyActivity extends AppCompatActivity {
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(taskmodel.getTasktitle());
+        getSupportActionBar().setSubtitle(taskmodel.getTasksubtitle());
     }
 }
