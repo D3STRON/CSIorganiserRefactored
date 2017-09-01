@@ -22,6 +22,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 public class GSignin extends AppCompatActivity {
     private SignInButton mGoogleBtn;
@@ -93,21 +95,20 @@ public class GSignin extends AppCompatActivity {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount acct = result.getSignInAccount();
             String personEmail = acct.getEmail();
-            Toast.makeText(GSignin.this,personEmail,Toast.LENGTH_SHORT).show();
             personEmail2 = personEmail;
-            if (result.isSuccess()) {
+            Toast.makeText(GSignin.this, personEmail,Toast.LENGTH_SHORT).show();
+          /*  if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
-
-                //firebaseAuthWithGoogle(account);
+                firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
-            }
+            }*/
         }
     }
 
-  /*  private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
 
 
@@ -133,8 +134,7 @@ public class GSignin extends AppCompatActivity {
                     }
                 });
 
-    }*/
-
+    }
 
 
 }

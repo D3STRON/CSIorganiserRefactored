@@ -55,7 +55,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/myedittextstyle"
             android:hint="GOOGLE EMAIL"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            />
 
         <View
             android:layout_width="match_parent"

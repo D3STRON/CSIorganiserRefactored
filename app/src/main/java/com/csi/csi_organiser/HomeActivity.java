@@ -76,7 +76,8 @@ public class HomeActivity extends AppCompatActivity {
         team2.setAdapter(teams);
         team3.setAdapter(teams);
         HashMap<String,String> users=db.getAllValues();
-
+        email.setText("ghoshanurag99@gmail.com");
+        email.setEnabled(false);
         ////heree put it
         team1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -115,15 +116,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        email.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(email.getText().toString().isEmpty())
-                    email.setText("@gmail.com");
 
-                return false;
-            }
-        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
