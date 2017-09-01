@@ -30,9 +30,9 @@ public class GSignin extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     FirebaseAuth.AuthStateListener mAuthListener;
     public static final String  TAG = "Main Activity";
+    String personEmail2;
     @Override
     protected void onStart() {
-        
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
@@ -47,7 +47,11 @@ public class GSignin extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() != null){
-                    startActivity(new Intent(GSignin.this,Members.class));
+                    Intent intent = new Intent(GSignin.this, HomeActivity.class);
+                    intent.putExtra("message",personEmail2);
+                    startActivity(intent);
+
+
                 }
             }
         };
@@ -83,14 +87,19 @@ public class GSignin extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            //Toast.makeText(GSignin.this,s,Toast.LENGTH_SHORT).show();
+            GoogleSignInAccount acct = result.getSignInAccount();
+            String personEmail = acct.getEmail();
+            Toast.makeText(GSignin.this,personEmail,Toast.LENGTH_SHORT).show();
+            personEmail2 = personEmail;
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
-                firebaseAuthWithGoogle(account);
+
+                //firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
@@ -98,7 +107,7 @@ public class GSignin extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+  /*  private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
 
 
@@ -124,7 +133,7 @@ public class GSignin extends AppCompatActivity {
                     }
                 });
 
-    }
+    }*/
 
 
 

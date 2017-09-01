@@ -218,6 +218,7 @@ public class JcActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrayAdaptermembers.clear();
+                memberstring.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     Model model= fire.getValue(Model.class);
