@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 public class TaskModel {
      public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id;
-     public ArrayList<String> volunteers;
+     public ArrayList<String> volunteers, rollnos;
+
     public void setValues(String tasktitle, String tasksubtitle, String taskdetails, String jcrollno,String Id)
     {
         this.taskdetails=taskdetails;
