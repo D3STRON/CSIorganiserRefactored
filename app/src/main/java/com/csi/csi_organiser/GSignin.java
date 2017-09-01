@@ -36,6 +36,10 @@ public class GSignin extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        if(getIntent().getBooleanExtra("EXIT",false))
+        {
+            finish();
+        }
         mAuth.addAuthStateListener(mAuthListener);
     }
 

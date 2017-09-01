@@ -93,6 +93,17 @@ public class JcActivity extends AppCompatActivity {
           }
       });
 
+   tasklist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       @Override
+       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                         
+       }
+
+       @Override
+       public void onNothingSelected(AdapterView<?> parent) {
+
+       }
+   });
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
