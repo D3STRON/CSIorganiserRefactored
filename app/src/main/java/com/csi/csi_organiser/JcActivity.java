@@ -144,7 +144,7 @@ public class JcActivity extends AppCompatActivity {
                  arrayAdapter.notifyDataSetChanged();
                 */
                 String Id=firebasetask.push().getKey();
-                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),Id);
+                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),users.get("phone"),Id);
                 firebasetask.child(Id).setValue(taskModel);
                 if(!arrayAdapter.isEmpty())
                     Toast.makeText(JcActivity.this,"New Task Created!",Toast.LENGTH_SHORT).show();
@@ -159,18 +159,18 @@ public class JcActivity extends AppCompatActivity {
     {
         final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
         LayoutInflater layoutInflater= getLayoutInflater();
-        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
-        dialogbuilder2.setView(createtaskview2);
+        final View edittaskview = layoutInflater.inflate(R.layout.task_editor,null);
+        dialogbuilder2.setView(edittaskview);
         dialogbuilder2.setTitle("EDIT TASK");
         final ListView memlist;
         final Button destroytask,addmembers,cancel;
-        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
-        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
-        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
-        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
+        destroytask=(Button)edittaskview.findViewById(R.id.destroytask);
+        addmembers=(Button)edittaskview.findViewById(R.id.addmembers);
+        cancel=(Button)edittaskview.findViewById(R.id.cancel);
+        memlist=(ListView)edittaskview.findViewById(R.id.memlist);
         memlist.setAdapter(arrayAdaptermembers);
-        final AlertDialog createtaskdialog2=dialogbuilder2.create();
-        createtaskdialog2.show();
+        final AlertDialog edittaskdialog=dialogbuilder2.create();
+        edittaskdialog.show();
 
 
 
@@ -185,13 +185,13 @@ public class JcActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 firebasetask.child(taskid).removeValue();
-                createtaskdialog2.dismiss();
+                edittaskdialog.dismiss();
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createtaskdialog2.dismiss();
+                edittaskdialog.dismiss();
             }
         });;
     }

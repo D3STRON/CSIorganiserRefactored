@@ -20,6 +20,8 @@
         <ListView
             android:id="@+id/notifications"
             android:layout_width="match_parent"
+            android:stackFromBottom="true"
+            android:transcriptMode="normal"
             android:layout_height="454dp"
             />
      <LinearLayout

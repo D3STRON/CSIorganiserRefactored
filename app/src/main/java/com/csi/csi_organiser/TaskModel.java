@@ -11,22 +11,26 @@ import java.util.ArrayList;
  */
 
 public class TaskModel implements Serializable {
-     public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id;
+     public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id, jcnumber;
      public ArrayList<String> Notification, rollnos;
 
-    public void setValues(String tasktitle, String tasksubtitle, String taskdetails, String jcrollno,String Id)
+    public void setValues(String tasktitle, String tasksubtitle, String taskdetails, String jcrollno, String jcnumber,String Id)
     {
         this.taskdetails=taskdetails;
         this.tasktitle=tasktitle;
         this.tasksubtitle=tasksubtitle;
         this.jcrollno=jcrollno;
         this.Id=Id;
+        this.jcnumber=jcnumber;
     }
 
     public String getJcrollno() {
         return jcrollno;
     }
 
+    public String getJcnumber() {
+        return jcnumber;
+    }
 
     public String getTasktitle() {
         return tasktitle;
