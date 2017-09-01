@@ -22,6 +22,7 @@ public class TaskModel {
         return jcrollno;
     }
 
+
     public String getTasktitle() {
         return tasktitle;
     }

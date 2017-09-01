@@ -35,14 +35,18 @@ import java.util.HashMap;
 public class JcActivity extends AppCompatActivity {
     Button createtask,exit;
     ListView tasklist;
+//    ArrayList<TaskModel> tasks;
+  //  ArrayList<Model> members;
     ArrayList<TaskModel> tasks;
     ArrayList<Model> members;
+
     TextView welcome;
     Toolbar toolbar;
     ArrayList<String> tasksstring,memberstring;
     HashMap<String ,String> users;
-    DatabaseReference firebase,firebasemembers;
+    DatabaseReference firebasetask,firebasemembers;
     SQLiteHelper db;
+    String taskid;
     ArrayAdapter<String> arrayAdapter,arrayAdaptermembers;
 
     @Override
@@ -64,7 +68,7 @@ public class JcActivity extends AppCompatActivity {
         exit=(Button)findViewById(R.id.exit);
         welcome=(TextView)findViewById(R.id.welcome);
         welcome.setText("WELCOME "+db.getAllValues().get("name").toUpperCase());
-        firebase= FirebaseDatabase.getInstance().getReference("Tasks");
+        firebasetask= FirebaseDatabase.getInstance().getReference("Tasks");
         firebasemembers=FirebaseDatabase.getInstance().getReference("CSI Members");
         arrayAdapter= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,tasksstring);
         arrayAdaptermembers= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,memberstring);
@@ -83,7 +87,8 @@ public class JcActivity extends AppCompatActivity {
       tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
           @Override
           public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-              showEditTaskDialog(position);
+              taskid=tasks.get(position).Id;
+              showEditTaskDialog();
               return false;
           }
       });
@@ -130,9 +135,9 @@ public class JcActivity extends AppCompatActivity {
                 arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
                  arrayAdapter.notifyDataSetChanged();
                 */
-                String Id=firebase.push().getKey();
+                String Id=firebasetask.push().getKey();
                 taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),Id);
-                firebase.child(Id).setValue(taskModel);
+                firebasetask.child(Id).setValue(taskModel);
                 if(!arrayAdapter.isEmpty())
                     Toast.makeText(JcActivity.this,"New Task Created!",Toast.LENGTH_SHORT).show();
 
@@ -142,7 +147,7 @@ public class JcActivity extends AppCompatActivity {
     }
 /////////////////
 
-    public void showEditTaskDialog(final int position)
+    public void showEditTaskDialog()
     {
         final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
         LayoutInflater layoutInflater= getLayoutInflater();
@@ -158,6 +163,9 @@ public class JcActivity extends AppCompatActivity {
         memlist.setAdapter(arrayAdaptermembers);
         final AlertDialog createtaskdialog2=dialogbuilder2.create();
         createtaskdialog2.show();
+
+
+
         addmembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,8 +176,7 @@ public class JcActivity extends AppCompatActivity {
         destroytask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String taskId= tasks.get(position).Id;
-                firebase.child(taskId).removeValue();
+                firebasetask.child(taskid).removeValue();
                 createtaskdialog2.dismiss();
             }
         });
@@ -185,10 +192,11 @@ public class JcActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        firebase.addValueEventListener(new ValueEventListener() {
+        firebasetask.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrayAdapter.clear();
+                tasks.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     TaskModel taskModel= fire.getValue(TaskModel.class);
@@ -196,7 +204,6 @@ public class JcActivity extends AppCompatActivity {
                     tasks.add(taskModel);
                 }
                 arrayAdapter.notifyDataSetChanged();
-
             }
 
             @Override
