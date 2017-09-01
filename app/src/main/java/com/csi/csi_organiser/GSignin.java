@@ -56,7 +56,7 @@ SQLiteHelper db= new SQLiteHelper(this);
         {
             finish();
         }
-        else if(!users.isEmpty())
+         else if(!users.isEmpty())
         {
             Toast.makeText(GSignin.this,"There is a current User!",Toast.LENGTH_LONG).show();
             if(users.get("priority").matches("1"))
@@ -79,6 +79,7 @@ SQLiteHelper db= new SQLiteHelper(this);
 
         }
         else {
+
             mGoogleBtn = (SignInButton) findViewById(R.id.sign_in_button);
             mAuth = FirebaseAuth.getInstance();
             memList = new ArrayList<>();
@@ -140,7 +141,7 @@ SQLiteHelper db= new SQLiteHelper(this);
                     signIn();
                 }
             });
-        }
+        }  Toast.makeText(GSignin.this, "Authentication failed.",  Toast.LENGTH_SHORT).show();
     }
 
     private void signIn() {

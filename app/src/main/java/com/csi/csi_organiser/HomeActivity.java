@@ -63,6 +63,8 @@ public class HomeActivity extends AppCompatActivity {
         db = new SQLiteHelper(this);
         lastname= (EditText)findViewById(R.id.lastname);
         email= (EditText)findViewById(R.id.email);
+        email.setText(getIntent().getStringExtra("message"));
+        email.setEnabled(false);
         rollno=(EditText)findViewById(R.id.rollno);
         number= (EditText)findViewById(R.id.number);
         firebase=FirebaseDatabase.getInstance().getReference("CSI Members");
