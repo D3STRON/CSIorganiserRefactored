@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -77,9 +78,7 @@ public class HomeActivity extends AppCompatActivity {
         team2.setAdapter(teams);
         team3.setAdapter(teams);
         HashMap<String,String> users=db.getAllValues();
-       email.setText("anurag99@gmail.com");
-        email.setEnabled(false);///erase this
-        ////heree put it
+
         team1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -186,7 +185,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Model model=new Model();
-                model.setValue(firstname.getText().toString().replaceAll(" ","").toLowerCase()+" "+lastname.getText().toString().trim().replaceAll(" ","").toLowerCase(),
+                model.setValue(firstname.getText().toString().replaceAll(" ","").toLowerCase()+" "+lastname.getText().toString().replaceAll(" ","").toLowerCase(),
                         email.getText().toString(),number.getText().toString(),neareststation.getText().toString(),
                         rollno.getText().toString().toUpperCase(),preference1,preference2,preference3);
 
@@ -207,7 +206,7 @@ public class HomeActivity extends AppCompatActivity {
                     Toast.makeText(HomeActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
                 }
-               else if(rolelist.isEmpty())
+                else if(rolelist.isEmpty())
                 {
                     Toast.makeText(HomeActivity.this, "Connecting To Cloud! Please Wait...", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
@@ -223,34 +222,10 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
 
-                    String Id= firebase.push().getKey();
-                    firebase.child(Id).setValue(model);
+                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    //String Id= firebase.push().getKey();
+                    firebase.child(id).setValue(model);
 
-                    db.addInfo(model.getCurrenttask(), model.getName(),model.getEmail(),
-                            model.getNumber(),model.getNeareststation(),model.getNumberoftasks(),
-                            model.getPreference1(),model.getPreference2(),model.getPreference3(),
-                            model.getPriority(),model.getRollno(),Id);
-
-                    if(model.getPriority().matches("1"))
-                    {
-                        ////put intent to core member activity
-                        //Intent intent= new Intent(HomeActivity.this,CoreActivity.class);
-                        //startActivity(intent);
-
-                    }
-                    else if(model.getPriority().matches("2"))
-                    {
-                        ///put intent to jc activity
-                        Intent intent= new Intent(HomeActivity.this,JcActivity.class);
-                        startActivity(intent);
-                    }
-                    else
-                    {
-                        //put intent to intent to normal member activity
-                        Intent intent =new Intent(HomeActivity.this,Members.class);
-                        startActivity(intent);
-                        finish();
-                    }
                     memlist.clear();
                     rolelist.clear();
                     alertDialog.dismiss();

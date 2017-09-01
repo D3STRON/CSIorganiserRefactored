@@ -25,7 +25,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         String CREATE_USER_TABLE =
                 "CREATE TABLE IF NOT EXISTS user ( currentTask TEXT, name TEXT, " +
                         "email TEXT UNIQUE, phone TEXT, station TEXT, nooftask INTEGER, " +
-                        "pref1 TEXT, pref2 TEXT, pref3 TEXT, priority TEXT, rollno TEXT, UuId TEXT UNIQUE);";
+                        "pref1 TEXT, pref2 TEXT, pref3 TEXT, priority TEXT, rollno TEXT, UuId TEXT);";
         db.execSQL(CREATE_USER_TABLE);
         Log.d(TAG, "Database tables created");
     }

@@ -14,15 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+        </activity>
+        <activity android:name=".Members" />
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".GSignin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Members" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".GSignin" />
         <activity android:name=".JcActivity" />
         <activity android:name=".EditProfile" />
         <activity android:name=".NotifyActivity"></activity>

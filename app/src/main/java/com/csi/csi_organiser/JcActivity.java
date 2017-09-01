@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,8 +36,8 @@ import java.util.HashMap;
 public class JcActivity extends AppCompatActivity {
     Button createtask,exit;
     ListView tasklist;
-//    ArrayList<TaskModel> tasks;
-  //  ArrayList<Model> members;
+    //    ArrayList<TaskModel> tasks;
+    //  ArrayList<Model> members;
     ArrayList<TaskModel> tasks;
     ArrayList<Model> members;
 
@@ -67,7 +68,8 @@ public class JcActivity extends AppCompatActivity {
         tasklist=(ListView)findViewById(R.id.tasklist);
         exit=(Button)findViewById(R.id.exit);
         welcome=(TextView)findViewById(R.id.welcome);
-        welcome.setText("WELCOME "+db.getAllValues().get("name").toUpperCase());
+        welcome.setText("WELCOME "+users.get("name"));
+
         firebasetask= FirebaseDatabase.getInstance().getReference("Tasks");
         firebasemembers=FirebaseDatabase.getInstance().getReference("CSI Members");
         arrayAdapter= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,tasksstring);
@@ -84,27 +86,27 @@ public class JcActivity extends AppCompatActivity {
             }
         });
 
-      tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-          @Override
-          public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-              taskid=tasks.get(position).Id;
-              showEditTaskDialog();
-              return false;
-          }
-      });
+        tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                taskid=tasks.get(position).Id;
+                showEditTaskDialog();
+                return false;
+            }
+        });
 
-   tasklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-       @Override
-       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-           Intent intent= new Intent(JcActivity.this,NotifyActivity.class);
-           intent.putExtra("taskmodel",tasks.get(position));
-           startActivity(intent);
-       }
-   });
+        tasklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent= new Intent(JcActivity.this,NotifyActivity.class);
+                intent.putExtra("taskmodel",tasks.get(position));
+                startActivity(intent);
+            }
+        });
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(JcActivity.this,MainActivity.class);
+                Intent intent = new Intent(JcActivity.this,GSignin.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXIT", true);
                 startActivity(intent);
@@ -144,8 +146,7 @@ public class JcActivity extends AppCompatActivity {
                  arrayAdapter.notifyDataSetChanged();
                 */
                 String Id=firebasetask.push().getKey();
-                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),users.get("phone"),Id);
-                firebasetask.child(Id).setValue(taskModel);
+                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),users.get("phone"),Id);firebasetask.child(Id).setValue(taskModel);
                 if(!arrayAdapter.isEmpty())
                     Toast.makeText(JcActivity.this,"New Task Created!",Toast.LENGTH_SHORT).show();
 
@@ -159,18 +160,18 @@ public class JcActivity extends AppCompatActivity {
     {
         final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
         LayoutInflater layoutInflater= getLayoutInflater();
-        final View edittaskview = layoutInflater.inflate(R.layout.task_editor,null);
-        dialogbuilder2.setView(edittaskview);
+        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
+        dialogbuilder2.setView(createtaskview2);
         dialogbuilder2.setTitle("EDIT TASK");
         final ListView memlist;
         final Button destroytask,addmembers,cancel;
-        destroytask=(Button)edittaskview.findViewById(R.id.destroytask);
-        addmembers=(Button)edittaskview.findViewById(R.id.addmembers);
-        cancel=(Button)edittaskview.findViewById(R.id.cancel);
-        memlist=(ListView)edittaskview.findViewById(R.id.memlist);
+        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
+        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
+        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
+        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
         memlist.setAdapter(arrayAdaptermembers);
-        final AlertDialog edittaskdialog=dialogbuilder2.create();
-        edittaskdialog.show();
+        final AlertDialog createtaskdialog2=dialogbuilder2.create();
+        createtaskdialog2.show();
 
 
 
@@ -185,13 +186,13 @@ public class JcActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 firebasetask.child(taskid).removeValue();
-                edittaskdialog.dismiss();
+                createtaskdialog2.dismiss();
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                edittaskdialog.dismiss();
+                createtaskdialog2.dismiss();
             }
         });;
     }
@@ -230,9 +231,9 @@ public class JcActivity extends AppCompatActivity {
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     Model model= fire.getValue(Model.class);
-                    if(model.getPreference1().matches("Technical") && !model.getRollno().matches(users.get("rollno")) && model.getCurrenttask().matches("null")){
-                    arrayAdaptermembers.add("\nRoll NO: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nCurrent task:"+model.getCurrenttask());
-                    members.add(model);
+                    if(model.getPreference1().equals("Technical") && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
+                        arrayAdaptermembers.add("\nRoll NO: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nCurrent task:"+model.getCurrenttask());
+                        members.add(model);
                     }
                 }
                 arrayAdaptermembers.notifyDataSetChanged();
@@ -262,6 +263,7 @@ public class JcActivity extends AppCompatActivity {
             case R.id.logout:
                 db.deleteUsers();
                 finish();
+                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(JcActivity.this,HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXIT", true);
@@ -271,11 +273,14 @@ public class JcActivity extends AppCompatActivity {
                 Model model = new Model();
                 Intent intenteditprofile= new Intent(JcActivity.this,EditProfile.class);
                 startActivity(intenteditprofile);
-                return false;
+                return true;
             default:
-                 return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
-    } public boolean isConnected(Context context)
+    }
+
+    ////////////////////////////
+    public boolean isConnected(Context context)
     {
 
         ConnectivityManager cm= (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
@@ -295,8 +300,6 @@ public class JcActivity extends AppCompatActivity {
         else
             return false;
     }
-
-    ////////////////////////////
-
+    //////////////////
 }
 

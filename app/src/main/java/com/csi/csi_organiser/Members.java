@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -89,7 +90,7 @@ public class Members extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-      getMenuInflater().inflate(R.menu.main_menu,menu);
+        getMenuInflater().inflate(R.menu.main_menu,menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -102,13 +103,14 @@ public class Members extends AppCompatActivity {
                 Intent intent = new Intent(Members.this,HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXIT", true);
+                FirebaseAuth.getInstance().signOut();
                 startActivity(intent);
                 return true;
             case R.id.editprofile:
                 Model model = new Model();
                 model.setValue(users.get("name"),users.get("email"),users.get("phone"),users.get("station"),users.get("rollno"),users.get("pref1"),users.get("pref2"),users.get("pref3"),users.get("cuttenttask"),Integer.parseInt(users.get("nooftasks")));
                 Toast.makeText(Members.this,model.getName(),Toast.LENGTH_SHORT).show();
-                return false;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

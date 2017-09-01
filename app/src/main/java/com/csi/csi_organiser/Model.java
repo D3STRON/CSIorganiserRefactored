@@ -1,10 +1,12 @@
 package com.csi.csi_organiser;
 
+import java.io.Serializable;
+
 /**
  * Created by montur on 8/27/2017.
  */
 
-public class Model {
+public class Model implements Serializable {
     public String Id;
     public String name;
     public String email;
