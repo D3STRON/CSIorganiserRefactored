@@ -100,7 +100,7 @@ public class GSignin extends AppCompatActivity {
                Toast.makeText(GSignin.this, personEmail,Toast.LENGTH_SHORT).show();
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
-                firebaseAuthWithGoogle(account);
+               // firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
@@ -125,7 +125,7 @@ public class GSignin extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(GSignin.this, "Authenticated.",
+                            Toast.makeText(GSignin.this, "Authentication failed!.",
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
