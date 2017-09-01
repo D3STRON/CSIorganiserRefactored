@@ -94,17 +94,17 @@ public class GSignin extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount acct = result.getSignInAccount();
-            String personEmail = acct.getEmail();
-            personEmail2 = personEmail;
-            Toast.makeText(GSignin.this, personEmail,Toast.LENGTH_SHORT).show();
-          /*  if (result.isSuccess()) {
+           if (result.isSuccess()) {
+               String personEmail = acct.getEmail();
+               personEmail2 = personEmail;
+               Toast.makeText(GSignin.this, personEmail,Toast.LENGTH_SHORT).show();
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
-            }*/
+            }
         }
     }
 
@@ -125,7 +125,7 @@ public class GSignin extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(GSignin.this, "Authentication failed.",
+                            Toast.makeText(GSignin.this, "Authenticated.",
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
