@@ -230,7 +230,7 @@ public class JcActivity extends AppCompatActivity {
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     Model model= fire.getValue(Model.class);
-                    if(model.getPreference1().matches("Technical")){
+                    if(model.getPreference1().matches("Technical") && !model.getRollno().matches(users.get("rollno")) && model.getCurrenttask().matches("null")){
                     arrayAdaptermembers.add("\nRoll NO: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nCurrent task:"+model.getCurrenttask());
                     members.add(model);
                     }
