@@ -1,12 +1,16 @@
 package com.csi.csi_organiser;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Anurag on 25-08-2017.
  */
 
-public class TaskModel {
+public class TaskModel implements Serializable {
      public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id;
      public ArrayList<String> volunteers, rollnos;
 
@@ -35,4 +39,5 @@ public class TaskModel {
     public String getTaskdetails() {
         return taskdetails;
     }
+
 }

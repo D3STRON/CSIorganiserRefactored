@@ -93,15 +93,12 @@ public class JcActivity extends AppCompatActivity {
           }
       });
 
-   tasklist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+   tasklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
        @Override
-       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-       }
-
-       @Override
-       public void onNothingSelected(AdapterView<?> parent) {
-
+       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+           Intent intent= new Intent(JcActivity.this,NotifyActivity.class);
+           intent.putExtra("taskmodel",tasks.get(position));
+           startActivity(intent);
        }
    });
         exit.setOnClickListener(new View.OnClickListener() {

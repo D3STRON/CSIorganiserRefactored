@@ -1,9 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.csi.csi_organiser.NotifyActivity">
+    android:orientation="vertical"
+    tools:context="com.csi.csi_organiser.NotifyActivity"
+    android:weightSum="1">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/actionbar"/>
 
-</android.support.constraint.ConstraintLayout>
+        <ListView
+            android:id="@+id/notifications"
+            android:layout_width="match_parent"
+            android:layout_height="454dp"
+            />
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:orientation="horizontal"
+         android:layout_height="50dp"
+         android:layout_below="@+id/notifications">
+         <EditText
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_weight="0.75"
+             android:id="@+id/notify"
+             android:background="@drawable/myedittextstyle2"
+             android:hint="Enter new Notification!"
+
+             />
+         <Button
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:text="NOTIFY"
+             />
+     </LinearLayout>
+    </LinearLayout>
+</ScrollView>
