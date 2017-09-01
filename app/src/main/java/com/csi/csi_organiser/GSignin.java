@@ -112,7 +112,7 @@ SQLiteHelper db= new SQLiteHelper(this);
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.e(TAG, databaseError.getMessage());
+                                  Log.e(TAG, databaseError.getMessage());
                             }
                         });
                     }
