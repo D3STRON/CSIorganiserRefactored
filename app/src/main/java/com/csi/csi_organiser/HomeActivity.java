@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
         team2.setAdapter(teams);
         team3.setAdapter(teams);
         HashMap<String,String> users=db.getAllValues();
-       email.setText("ghoshanurag99@gmail.com");
+       email.setText("anurag99@gmail.com");
         email.setEnabled(false);///erase this
         ////heree put it
         team1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -186,7 +186,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Model model=new Model();
-                model.setValue(firstname.getText().toString().trim()+" "+lastname.getText().toString().trim(),
+                model.setValue(firstname.getText().toString().replaceAll(" ","")+" "+lastname.getText().toString().trim().replaceAll(" ",""),
                         email.getText().toString(),number.getText().toString(),neareststation.getText().toString(),
                         rollno.getText().toString().toUpperCase(),preference1,preference2,preference3);
 

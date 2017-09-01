@@ -44,10 +44,11 @@ public class EditProfile extends AppCompatActivity {
         team1.setAdapter(teams);
         team2.setAdapter(teams);
         team3.setAdapter(teams);
+        int a=users.get("name").indexOf(" ");
+        firstname.setText(users.get("name").substring(0,a));
+        lastname.setText(users.get("name").substring(a+1));
         email.setText(users.get("email"));
-        firstname.setText(users.get("name"));
-        lastname.setText(users.get("name"));
-        rollno.setText(users.get("rollno"));
+         rollno.setText(users.get("rollno"));
         number.setText(users.get("phone"));
         neareststation.setText(users.get("station"));
         update.setOnClickListener(new View.OnClickListener() {
