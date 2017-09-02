@@ -83,7 +83,7 @@ public class JcActivity extends AppCompatActivity {
         tasklist=(ListView)findViewById(R.id.tasklist);
         exit=(Button)findViewById(R.id.exit);
         welcome=(TextView)findViewById(R.id.welcome);
-        welcome.setText("WELCOME "+users.get("name"));
+        welcome.setText("WELCOME "+users.get("name").toUpperCase());
 
         firebasetask= FirebaseDatabase.getInstance().getReference("Tasks");
         firebasemembers=FirebaseDatabase.getInstance().getReference("CSI Members");
