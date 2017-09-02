@@ -43,6 +43,15 @@ public class Members extends AppCompatActivity {
         mYesBtn = (Button) findViewById(R.id.yesBtn);
         db = new SQLiteHelper(this);
         users =db.getAllValues();
+        if(users.isEmpty())
+        {
+            Model model=(Model)getIntent().getSerializableExtra("model");
+            db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
+                    model.getNumber(), model.getNeareststation(), model.getNumberoftasks(),
+                    model.getPreference1(), model.getPreference2(), model.getPreference3(),
+                    model.getPriority(), model.getRollno(), model.Id);
+            users=db.getAllValues();
+        }
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("TASK MANAGER");

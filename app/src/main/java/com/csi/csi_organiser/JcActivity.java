@@ -69,6 +69,16 @@ public class JcActivity extends AppCompatActivity {
 
         db = new SQLiteHelper(this);
         users =db.getAllValues();
+
+        if(users.isEmpty())
+        {
+            Model model=(Model)getIntent().getSerializableExtra("model");
+            db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
+                    model.getNumber(), model.getNeareststation(), model.getNumberoftasks(),
+                    model.getPreference1(), model.getPreference2(), model.getPreference3(),
+                    model.getPriority(), model.getRollno(), model.Id);
+            users=db.getAllValues();
+        }
         createtask= (Button)findViewById(R.id.createtask);
         tasklist=(ListView)findViewById(R.id.tasklist);
         exit=(Button)findViewById(R.id.exit);
@@ -279,7 +289,7 @@ public class JcActivity extends AppCompatActivity {
                 db.deleteUsers();
                 finish();
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(JcActivity.this,HomeActivity.class);
+                Intent intent = new Intent(JcActivity.this,GSignin.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXIT", true);
                 startActivity(intent);

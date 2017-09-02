@@ -79,7 +79,6 @@ SQLiteHelper db= new SQLiteHelper(this);
 
         }
         else {
-
             mGoogleBtn = (SignInButton) findViewById(R.id.sign_in_button);
             mAuth = FirebaseAuth.getInstance();
             memList = new ArrayList<>();
@@ -100,15 +99,11 @@ SQLiteHelper db= new SQLiteHelper(this);
                                     Intent intent = new Intent(GSignin.this, HomeActivity.class);
                                     intent.putExtra("message", user.getEmail());
                                     startActivity(intent);
-                                } else if (model != null && model.getPriority().equals("0")){
-                                    startActivity(new Intent(GSignin.this, Members.class));}
-
-                                else {
-                                    db.addInfo(model.getCurrenttask(), model.getName(),model.getEmail(),
-                                            model.getNumber(),model.getNeareststation(),model.getNumberoftasks(),
-                                            model.getPreference1(),model.getPreference2(),model.getPreference3(),
-                                            model.getPriority(),model.getRollno(),model.Id);
-                                    startActivity(new Intent(GSignin.this, JcActivity.class).putExtra("model",model));}
+                                } else if (model != null && model.getPriority().equals("0")) {
+                                    startActivity(new Intent(GSignin.this, Members.class));
+                                } else {
+                                        startActivity(new Intent(GSignin.this, JcActivity.class).putExtra("model", model));
+                                }
                             }
 
                             @Override
