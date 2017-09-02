@@ -136,12 +136,27 @@
                 android:id="@+id/team3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/update"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="UPDATE" />
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    android:layout_weight="0.5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="UPDATE"
+                    android:id="@+id/update"
+                    />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/deleteaccount"
+                    android:text="DELETE ACCOUNT"
+                    android:layout_weight="0.5"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

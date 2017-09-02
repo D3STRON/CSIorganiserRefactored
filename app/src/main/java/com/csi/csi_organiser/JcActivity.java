@@ -69,65 +69,60 @@ public class JcActivity extends AppCompatActivity {
 
         db = new SQLiteHelper(this);
         users =db.getAllValues();
-
-        if(users.isEmpty())
+        if(getIntent().getBooleanExtra("EXIT",false))
         {
-            Model model=(Model)getIntent().getSerializableExtra("model");
-            db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
-                    model.getNumber(), model.getNeareststation(), model.getNumberoftasks(),
-                    model.getPreference1(), model.getPreference2(), model.getPreference3(),
-                    model.getPriority(), model.getRollno(), model.Id);
-            users=db.getAllValues();
+            finish();
         }
-        createtask= (Button)findViewById(R.id.createtask);
-        tasklist=(ListView)findViewById(R.id.tasklist);
-        exit=(Button)findViewById(R.id.exit);
-        welcome=(TextView)findViewById(R.id.welcome);
-        welcome.setText("WELCOME "+users.get("name").toUpperCase());
+        else {
+            createtask = (Button) findViewById(R.id.createtask);
+            tasklist = (ListView) findViewById(R.id.tasklist);
+            exit = (Button) findViewById(R.id.exit);
+            welcome = (TextView) findViewById(R.id.welcome);
+            welcome.setText("WELCOME " + users.get("name").toUpperCase());
 
-        firebasetask= FirebaseDatabase.getInstance().getReference("Tasks");
-        firebasemembers=FirebaseDatabase.getInstance().getReference("CSI Members");
-        arrayAdapter= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,tasksstring);
-        arrayAdaptermembers= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,memberstring);
-        tasklist.setAdapter(arrayAdapter);
-        createtask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isConnected(JcActivity.this))
-                {   showCreateTaskDialog();}
+            firebasetask = FirebaseDatabase.getInstance().getReference("Tasks");
+            firebasemembers = FirebaseDatabase.getInstance().getReference("CSI Members");
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksstring);
+            arrayAdaptermembers = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstring);
+            tasklist.setAdapter(arrayAdapter);
+            createtask.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isConnected(JcActivity.this)) {
+                        showCreateTaskDialog();
+                    } else {
+                        Toast.makeText(JcActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
-                else
-                { Toast.makeText(JcActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();}
-            }
-        });
+            tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    taskid = tasks.get(position).Id;
+                    showEditTaskDialog();
+                    return false;
+                }
+            });
 
-        tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                taskid=tasks.get(position).Id;
-                showEditTaskDialog();
-                return false;
-            }
-        });
-
-        tasklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent= new Intent(JcActivity.this,NotifyActivity.class);
-                intent.putExtra("taskmodel",tasks.get(position));
-                startActivity(intent);
-            }
-        });
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(JcActivity.this,GSignin.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("EXIT", true);
-                startActivity(intent);
-            }
-        });
-
+            tasklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(JcActivity.this, NotifyActivity.class);
+                    intent.putExtra("taskmodel", tasks.get(position));
+                    startActivity(intent);
+                }
+            });
+            exit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(JcActivity.this, GSignin.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("EXIT", true);
+                    startActivity(intent);
+                }
+            });
+        }
         ///////////////////////////// Important : Here tasks has the list of Tasks and members Has the list of members//////////////////////////////////////
     }
     public void showCreateTaskDialog()
@@ -257,7 +252,7 @@ public class JcActivity extends AppCompatActivity {
                 {
                     Model model= fire.getValue(Model.class);
                     if(model.getPreference1().equals("Technical") && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
-                        arrayAdaptermembers.add("\nRoll NO: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nCurrent task:"+model.getCurrenttask());
+                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nCurrent task: "+model.getCurrenttask());
                         members.add(model);
                     }
                 }
@@ -288,11 +283,6 @@ public class JcActivity extends AppCompatActivity {
             case R.id.logout:
                 db.deleteUsers();
                 finish();
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(JcActivity.this,GSignin.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("EXIT", true);
-                startActivity(intent);
                 return true;
             case R.id.editprofile:
                 Model model = new Model();

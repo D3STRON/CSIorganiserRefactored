@@ -1,9 +1,6 @@
 package com.csi.csi_organiser;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,26 +34,26 @@ import java.util.HashMap;
 public class GSignin extends AppCompatActivity {
     private SignInButton mGoogleBtn;
     private FirebaseAuth mAuth;
-    private DatabaseReference databaseReference,firebaserole;
     private static final int RC_SIGN_IN = 2;
     private GoogleApiClient mGoogleApiClient;
     FirebaseAuth.AuthStateListener mAuthListener;
-    public static final String  TAG = "Main Activity";
-    public static String personEmail2;
-SQLiteHelper db= new SQLiteHelper(this);
+    ArrayList<Model> memlist;
     HashMap<String,String> users;
-    ArrayList<Model2> memList;
-
-    @Override
+    DatabaseReference firebase;
+    public static final String  TAG = "Main Activity";
+    String personEmail2;
+    SQLiteHelper db;
+    String personEmail="";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-        users= db.getAllValues();
+        db= new SQLiteHelper(this);
+        users=db.getAllValues();
         if(getIntent().getBooleanExtra("EXIT",false))
         {
             finish();
         }
-         else if(!users.isEmpty())
+        else if(!users.isEmpty())
         {
             Toast.makeText(GSignin.this,"There is a current User!",Toast.LENGTH_LONG).show();
             if(users.get("priority").matches("1"))
@@ -76,72 +73,48 @@ SQLiteHelper db= new SQLiteHelper(this);
                 Intent intent =new Intent(GSignin.this,Members.class);
                 startActivity(intent);
             }
-
         }
-        else {
-            mGoogleBtn = (SignInButton) findViewById(R.id.sign_in_button);
-            mAuth = FirebaseAuth.getInstance();
-            memList = new ArrayList<>();
-            firebaserole = FirebaseDatabase.getInstance().getReference("Roles");
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("CSI Members");
+        firebase= FirebaseDatabase.getInstance().getReference("CSI Members");
+        memlist=new ArrayList<>();
+        mGoogleBtn = (SignInButton) findViewById(R.id.sign_in_button);
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() != null){
 
-            mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    final FirebaseUser user = firebaseAuth.getCurrentUser();
-                    if (user != null) {
-                        final String uuid = user.getUid();
-                        databaseReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Model model = dataSnapshot.child(uuid).getValue(Model.class);
-                                if (model == null) {
-                                    Intent intent = new Intent(GSignin.this, HomeActivity.class);
-                                    intent.putExtra("message", user.getEmail());
-                                    startActivity(intent);
-                                } else if (model != null && model.getPriority().equals("0")) {
-                                    startActivity(new Intent(GSignin.this, Members.class));
-                                } else {
-                                        startActivity(new Intent(GSignin.this, JcActivity.class).putExtra("model", model));
-                                }
-                            }
+                }
+            }
+        };
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                  Log.e(TAG, databaseError.getMessage());
-                            }
-                        });
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Toast.makeText(GSignin.this,"You got an error",Toast.LENGTH_LONG).show();
                     }
-                }
-            });
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        mGoogleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
 
-
-
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .build();
-            mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
-                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                            Toast.makeText(GSignin.this, "You got an error", Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-            mGoogleBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    signIn();
-                }
-            });
-        }
+        });
     }
+
+
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -151,11 +124,41 @@ SQLiteHelper db= new SQLiteHelper(this);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount acct = result.getSignInAccount();
-            //personEmail2 = acct.getEmail();
+            personEmail = acct.getEmail();
+            personEmail2 = personEmail;
+///////////////////////////
+
+            Intent intent;
+            boolean k = true;
+
+            if(!personEmail.isEmpty()){
+                for (int i = 0; i < memlist.size(); i++) {
+                    if (memlist.get(i).getEmail().matches(personEmail)) {
+                        k = false;
+                        db.addInfo(memlist.get(i).getCurrenttask(),memlist.get(i).getName(), memlist.get(i).getEmail(),
+                                memlist.get(i).getNumber(),memlist.get(i).getNeareststation(),memlist.get(i).getNumberoftasks(),
+                                memlist.get(i).getPreference1(), memlist.get(i).getPreference2(),memlist.get(i).getPreference3(),
+                                memlist.get(i).getPriority(),memlist.get(i).getRollno(),memlist.get(i).Id);
+
+                        if (memlist.get(i).getPriority().matches("2")) {
+                            intent = new Intent(GSignin.this, JcActivity.class);
+                        } else {
+                            intent = new Intent(GSignin.this, Members.class);
+                        }
+                        startActivity(intent);
+                        break;
+                    }
+                }
+                if (k) {
+                    intent = new Intent(GSignin.this, HomeActivity.class);
+                    intent.putExtra("email", personEmail);
+                    startActivity(intent);
+                }
+            }
+            //////////////////////////////
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
-                personEmail2 = account.getEmail();
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
@@ -166,6 +169,8 @@ SQLiteHelper db= new SQLiteHelper(this);
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+
+
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -175,8 +180,7 @@ SQLiteHelper db= new SQLiteHelper(this);
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //if(databaseReference.child(user.getUid()) == null)
-
+                            //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -184,30 +188,36 @@ SQLiteHelper db= new SQLiteHelper(this);
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
+
                         // ...
                     }
                 });
+
     }
-
-    public boolean isConnected(Context context)
-    {
-
-        ConnectivityManager cm= (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
-        NetworkInfo netinfo= cm.getActiveNetworkInfo();
-        if(netinfo!=null && netinfo.isConnectedOrConnecting())
-        {
-            android.net.NetworkInfo wifi= cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            android.net.NetworkInfo mobile=cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-            if((mobile!=null && mobile.isConnectedOrConnecting())|| (wifi!=null && wifi.isConnectedOrConnecting()))
-            {
-                return true;
+    protected void onStart() {
+        super.onStart();
+        firebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                memlist.clear();
+                for (DataSnapshot fire : dataSnapshot.getChildren()) {
+                    Model model = fire.getValue(Model.class);
+                    model.Id=fire.getKey();
+                    memlist.add(model);
+                }
             }
-            else
-                return false;
-        }
-        else
-            return false;
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mAuth.addAuthStateListener(mAuthListener);
+
     }
 
 }
+
+/*
+
+*/

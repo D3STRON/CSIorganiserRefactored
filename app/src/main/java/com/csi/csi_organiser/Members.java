@@ -43,23 +43,19 @@ public class Members extends AppCompatActivity {
         mYesBtn = (Button) findViewById(R.id.yesBtn);
         db = new SQLiteHelper(this);
         users =db.getAllValues();
-        if(users.isEmpty())
+        if(getIntent().getBooleanExtra("EXIT",false))
         {
-            Model model=(Model)getIntent().getSerializableExtra("model");
-            db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
-                    model.getNumber(), model.getNeareststation(), model.getNumberoftasks(),
-                    model.getPreference1(), model.getPreference2(), model.getPreference3(),
-                    model.getPriority(), model.getRollno(), model.Id);
-            users=db.getAllValues();
+            finish();
         }
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("TASK MANAGER");
-        db = new SQLiteHelper(this);
-        mNoBtn = (Button) findViewById(R.id.noBtn);
-        mSubmitBtn = (Button) findViewById(R.id.submitBtn);
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("Task");
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        else {
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle("TASK MANAGER");
+            db = new SQLiteHelper(this);
+            mNoBtn = (Button) findViewById(R.id.noBtn);
+            mSubmitBtn = (Button) findViewById(R.id.submitBtn);
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference("Task");
+            mDatabase = FirebaseDatabase.getInstance().getReference();
        /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -72,20 +68,20 @@ public class Members extends AppCompatActivity {
             }
 
         });*/
-        mSubmitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDatabase.child("Reason").setValue(mReasonBox.getText().toString().trim());
-            }
-        });
-        mNoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mReasonBox.setVisibility(View.VISIBLE);
-                mSubmitBtn.setVisibility(View.VISIBLE);
-            }
-        });
-
+            mSubmitBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDatabase.child("Reason").setValue(mReasonBox.getText().toString().trim());
+                }
+            });
+            mNoBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mReasonBox.setVisibility(View.VISIBLE);
+                    mSubmitBtn.setVisibility(View.VISIBLE);
+                }
+            });
+        }
     }
 
     @Override
@@ -109,16 +105,11 @@ public class Members extends AppCompatActivity {
             case R.id.logout:
                 db.deleteUsers();
                 finish();
-                Intent intent = new Intent(Members.this,HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("EXIT", true);
-                FirebaseAuth.getInstance().signOut();
-                startActivity(intent);
                 return true;
             case R.id.editprofile:
                 Model model = new Model();
-                model.setValue(users.get("name"),users.get("email"),users.get("phone"),users.get("station"),users.get("rollno"),users.get("pref1"),users.get("pref2"),users.get("pref3"),users.get("cuttenttask"),Integer.parseInt(users.get("nooftasks")));
-                Toast.makeText(Members.this,model.getName(),Toast.LENGTH_SHORT).show();
+                Intent intenteditprofile= new Intent(Members.this,EditProfile.class);
+                startActivity(intenteditprofile);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

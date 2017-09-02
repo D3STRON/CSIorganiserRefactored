@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
         db = new SQLiteHelper(this);
         lastname= (EditText)findViewById(R.id.lastname);
         email= (EditText)findViewById(R.id.email);
-        email.setText(getIntent().getStringExtra("message"));
+        email.setText(getIntent().getStringExtra("email"));
         email.setEnabled(false);
         rollno=(EditText)findViewById(R.id.rollno);
         number= (EditText)findViewById(R.id.number);
@@ -80,7 +80,14 @@ public class HomeActivity extends AppCompatActivity {
         team2.setAdapter(teams);
         team3.setAdapter(teams);
         HashMap<String,String> users=db.getAllValues();
-
+        firstname.setText("Anurag");
+        lastname.setText("ghosh");
+        neareststation.setText("Bhandup");
+        rollno.setText("15ce7021");
+        number.setText("9892237363");
+        team1.setSelection(1);
+        team2.setSelection(2);
+        team3.setSelection(3);
         team1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -115,16 +122,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
-
-        email.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(email.getText().toString().isEmpty())
-                    email.setText("@gmail.com");
-
-                return false;
             }
         });
 
@@ -224,14 +221,26 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
 
-                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    //String Id= firebase.push().getKey();
-                    firebase.child(id).setValue(model);
+
+                    String Id= firebase.push().getKey();
+                    firebase.child(Id).setValue(model);
+                    db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
+                            model.getNumber(), model.getNeareststation(), model.getNumberoftasks(),
+                            model.getPreference1(), model.getPreference2(), model.getPreference3(),
+                            model.getPriority(), model.getRollno(),Id);
+                    Intent intent;
+                    if (model.getPriority().matches("0")) {
+                        intent = new Intent(HomeActivity.this, Members.class);
+                        startActivity(intent);
+                    } else {
+                        intent = new Intent(HomeActivity.this, JcActivity.class);
+                        startActivity(intent);
+                    }
 
                     memlist.clear();
                     rolelist.clear();
                     alertDialog.dismiss();
-
+                    finish();
                 }
             }
         });
