@@ -30,8 +30,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 public class JcActivity extends AppCompatActivity {
     Button createtask,exit;
@@ -146,7 +151,17 @@ public class JcActivity extends AppCompatActivity {
                  arrayAdapter.notifyDataSetChanged();
                 */
                 String Id=firebasetask.push().getKey();
-                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),users.get("phone"),Id);firebasetask.child(Id).setValue(taskModel);
+                Date currentLocalTime = Calendar.getInstance().getTime();
+                Long dat= System.currentTimeMillis();
+                SimpleDateFormat sdf=new SimpleDateFormat("MMM dd yyyy");
+                String datestring= sdf.format(dat);
+                DateFormat date = new SimpleDateFormat("HH:mm");
+                date.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
+                String localTime = date.format(currentLocalTime);
+                taskModel.setValues(tasktitle.getText().toString(),tasksubtitle.getText().toString(),taskdetails.getText().toString(),users.get("rollno"),users.get("phone"),Id);
+                taskModel.setTime(localTime+".."+datestring);
+                firebasetask.child(Id).setValue(taskModel);
+
                 if(!arrayAdapter.isEmpty())
                     Toast.makeText(JcActivity.this,"New Task Created!",Toast.LENGTH_SHORT).show();
 
@@ -209,7 +224,7 @@ public class JcActivity extends AppCompatActivity {
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     TaskModel taskModel= fire.getValue(TaskModel.class);
-                    arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
+                    arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails+"\nAt: "+taskModel.getTime());
                     tasks.add(taskModel);
                 }
                 arrayAdapter.notifyDataSetChanged();

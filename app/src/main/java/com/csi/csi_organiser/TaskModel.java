@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 
 public class TaskModel implements Serializable {
-     public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id, jcnumber;
+     public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id, jcnumber,time;
      public ArrayList<String> Notification, rollnos;
 
     public void setValues(String tasktitle, String tasksubtitle, String taskdetails, String jcrollno, String jcnumber,String Id)
@@ -22,6 +22,14 @@ public class TaskModel implements Serializable {
         this.jcrollno=jcrollno;
         this.Id=Id;
         this.jcnumber=jcnumber;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getTime() {
+        return time;
     }
 
     public String getJcrollno() {

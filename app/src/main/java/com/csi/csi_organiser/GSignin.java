@@ -141,7 +141,7 @@ SQLiteHelper db= new SQLiteHelper(this);
                     signIn();
                 }
             });
-        }  Toast.makeText(GSignin.this, "Authentication failed.",  Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void signIn() {
