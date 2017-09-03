@@ -138,12 +138,12 @@ public class GSignin extends AppCompatActivity {
                         db.addInfo(memlist.get(i).getCurrenttask(),memlist.get(i).getName(), memlist.get(i).getEmail(),
                                 memlist.get(i).getNumber(),memlist.get(i).getNeareststation(),memlist.get(i).getNumberoftasks(),
                                 memlist.get(i).getPreference1(), memlist.get(i).getPreference2(),memlist.get(i).getPreference3(),
-                                memlist.get(i).getPriority(),memlist.get(i).getRollno(),memlist.get(i).Id);
+                                memlist.get(i).getPriority(),memlist.get(i).getRollno(),memlist.get(i).getId());
 
-                        if (memlist.get(i).getPriority().matches("2")) {
-                            intent = new Intent(GSignin.this, JcActivity.class);
-                        } else {
+                        if (memlist.get(i).getPriority().matches("0")) {
                             intent = new Intent(GSignin.this, Members.class);
+                        } else {
+                            intent = new Intent(GSignin.this, JcActivity.class);
                         }
                         startActivity(intent);
                         break;
@@ -202,7 +202,7 @@ public class GSignin extends AppCompatActivity {
                 memlist.clear();
                 for (DataSnapshot fire : dataSnapshot.getChildren()) {
                     Model model = fire.getValue(Model.class);
-                    model.Id=fire.getKey();
+                    model.setId(fire.getKey());
                     memlist.add(model);
                 }
             }

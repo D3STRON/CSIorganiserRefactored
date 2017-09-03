@@ -64,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         lastname= (EditText)findViewById(R.id.lastname);
         email= (EditText)findViewById(R.id.email);
         email.setText(getIntent().getStringExtra("email"));
-        email.setEnabled(false);
+       // email.setEnabled(false);
         rollno=(EditText)findViewById(R.id.rollno);
         number= (EditText)findViewById(R.id.number);
         firebase=FirebaseDatabase.getInstance().getReference("CSI Members");

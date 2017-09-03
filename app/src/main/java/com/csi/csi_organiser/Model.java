@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class Model implements Serializable {
-    public String Id;
+    private String Id;
     public String name;
     public String email;
     public String number;
@@ -54,6 +54,14 @@ public class Model implements Serializable {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
+
+    public String getId() {
+        return Id;
     }
 
     public String getPreference1() {

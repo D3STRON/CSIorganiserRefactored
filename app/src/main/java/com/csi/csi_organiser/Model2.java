@@ -6,7 +6,7 @@ package com.csi.csi_organiser;
 public class Model2 {
     public  String rollno;
     public String number;
-    public String priority="2";
+    public String priority="3";
 
 
 
