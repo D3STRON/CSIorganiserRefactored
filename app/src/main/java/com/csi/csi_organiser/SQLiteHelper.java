@@ -42,7 +42,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         String INSERT = "INSERT INTO user VALUES('"+currentTask+"','"+name+"','"+email+"','"+phone+
                 "','"+station+"',"+nooftasks+",'"+pref1+"','"+pref2+"','"+pref3+"','"+priority+"','"+rollno+"','"+uuid+"');";
         db.execSQL(INSERT);
-        db.close();
         Log.d(TAG, "New user inserted into sqlite");
     }
 
@@ -53,8 +52,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Log.d(TAG, "Deleted all user info from sqlite");
     }
 
-    public boolean updateValues(String name, String station, String pref1, String pref2, String pref3, String phone){
+    public void updateValues(String name, String station, String pref1, String pref2, String pref3, String phone){
+        /*
         SQLiteDatabase db = this.getWritableDatabase();
+        String UPDATE_QUERY = "UPDATE user SET name = '"+name+"', station = '"+station+"'," +
+                " pref1 = '"+pref1+"', pref2 = '"+pref2+"', pref3 = '"+pref3+"', phone = '"+phone+"'," +
+                " priority = '"+this.getAllValues().get("priority")+"';";
+        db.execSQL(UPDATE_QUERY);*/
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("name",name);
         cv.put("station",station);
@@ -63,10 +68,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         cv.put("pref3",pref3);
         cv.put("phone",phone);
         cv.put("priority",this.getAllValues().get("priority"));
-        db.update("user",cv,null,null);
-        return true;
+        sqLiteDatabase.update("user",cv,null,null);
     }
-
 
     public HashMap<String,String> getAllValues(){
         HashMap<String,String> values = new HashMap<>();
@@ -89,7 +92,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             values.put("UUID",cursor.getString(11));
         }
         cursor.close();
-        db.close();
         Log.d(TAG, "Fetching user from Sqlite: " + values.toString());
         return  values;
     }
