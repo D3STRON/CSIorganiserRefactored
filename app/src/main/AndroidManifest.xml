@@ -13,8 +13,7 @@
         android:roundIcon="@drawable/photo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".Members" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".GSignin">
@@ -26,7 +25,11 @@
         </activity>
         <activity android:name=".JcActivity" />
         <activity android:name=".EditProfile" />
-        <activity android:name=".NotifyActivity"></activity>
+        <activity android:name=".NotifyActivity" />
+        <activity
+            android:name=".ViewMembersActivity"
+            android:label="@string/title_activity_view_members"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

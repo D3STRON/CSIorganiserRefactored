@@ -8,4 +8,5 @@
         <item>Publicity</item>
     </string-array>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_view_members">ViewMembersActivity</string>
 </resources>

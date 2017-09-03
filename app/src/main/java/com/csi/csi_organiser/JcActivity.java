@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,9 +53,9 @@ public class JcActivity extends AppCompatActivity {
     Toolbar toolbar;
     ArrayList<String> tasksstring,memberstring;
     HashMap<String ,String> users;
-    DatabaseReference firebasetask,firebasemembers;
+    DatabaseReference firebasetask,firebasemembers,temp;
     SQLiteHelper db;
-    String taskid,searchedmember="";
+    String taskid,searchedmember="",AddId,AddName,AddRollNo,AddTaskId, currentteam;
     ArrayAdapter<String> arrayAdapter,arrayAdaptermembers;
 
     @Override
@@ -85,18 +86,25 @@ public class JcActivity extends AppCompatActivity {
            switch(Integer.parseInt(users.get("priority"))){
                case(2):
                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Technical");
+                   currentteam="Tasks-Technical";
                        break;
                case(3):
                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Creative");
+                   currentteam="Tasks-Creative";
                    break;
                case(4):
                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-GOT");
+                   currentteam="Tasks-GOT";
                    break;
                case(5):
                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Publicity");
+                   currentteam="Tasks-Publicity";
                    break;
                    }
             firebasemembers = FirebaseDatabase.getInstance().getReference("CSI Members");
+            temp= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
+
+
             arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksstring);
             arrayAdaptermembers = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstring);
             tasklist.setAdapter(arrayAdapter);
@@ -115,7 +123,8 @@ public class JcActivity extends AppCompatActivity {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     taskid = tasks.get(position).Id;
-                    showEditTaskDialog();
+                    Toast.makeText(JcActivity.this,taskid, Toast.LENGTH_SHORT).show();
+                    showEditTaskDialog(taskid);
                     return true;
                 }
             });
@@ -192,68 +201,78 @@ public class JcActivity extends AppCompatActivity {
         });
     }
 /////////////////
-
-    public void showEditTaskDialog()
-    {
-        final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
-        LayoutInflater layoutInflater= getLayoutInflater();
-        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
-        dialogbuilder2.setView(createtaskview2);
-        dialogbuilder2.setTitle("EDIT TASK");
-        final ListView memlist;
-        final EditText firstname, lastname;
-        final Button destroytask,addmembers,cancel,serach;
-        firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
-        lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
-        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
-        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
-        serach=(Button)createtaskview2.findViewById(R.id.search);
-        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
-        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
-        memlist.setAdapter(arrayAdaptermembers);
-        final AlertDialog createtaskdialog2=dialogbuilder2.create();
-        createtaskdialog2.show();
-        createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                searchedmember="";
+public void showEditTaskDialog(final String taskid)
+{
+    final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
+    LayoutInflater layoutInflater= getLayoutInflater();
+    final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
+    dialogbuilder2.setView(createtaskview2);
+    dialogbuilder2.setTitle("EDIT TASK");
+    final ListView memlist;
+    final EditText firstname, lastname;
+    final Button destroytask,addmembers,cancel,serach;
+    firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
+    lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
+    destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
+    addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
+    serach=(Button)createtaskview2.findViewById(R.id.search);
+    cancel=(Button)createtaskview2.findViewById(R.id.cancel);
+    memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
+    memlist.setAdapter(arrayAdaptermembers);
+    final AlertDialog createtaskdialog2=dialogbuilder2.create();
+    createtaskdialog2.show();
+    createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            searchedmember="";
+        }
+    });
+    memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(searchedmember.matches("")) {
+                AddId = members.get(position).getId();
+                AddName = members.get(position).getName();
+                AddRollNo = members.get(position).getRollno();
+                AddTaskId=taskid;
+                firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
+                HashMap<String,String> dataMap = new HashMap<String, String>();
+                dataMap.put("Name",AddName);
+                dataMap.put("Roll No",AddRollNo);
+                firebasetask.child(AddTaskId).child("Members").child(AddId).setValue(dataMap);
+                Toast.makeText(JcActivity.this,AddId, Toast.LENGTH_SHORT).show();
             }
-        });
-         memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-             @Override
-             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                 if(searchedmember.matches(""))
-                 Toast.makeText(JcActivity.this, members.get(position).getId(), Toast.LENGTH_SHORT).show();
-                 else
-                     Toast.makeText(JcActivity.this,searchedmember, Toast.LENGTH_SHORT).show();
-             }
-         });
-        serach.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
+            else{
+                Toast.makeText(JcActivity.this, searchedmember, Toast.LENGTH_SHORT).show();
+            }
+        }
+    });
+    serach.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
+            {
+                String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
+                for(int i=0;i<members.size();i++)
                 {
-                    String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
-                    for(int i=0;i<members.size();i++)
+                    if(members.get(i).getName().matches(name))
                     {
-                       if(members.get(i).getName().matches(name))
-                       {
-                           ArrayList<String> temp=new ArrayList<String>();
-                           searchedmember=members.get(i).getId();
-                           temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
-                           ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
-                           memlist.setAdapter(tempaa);
-                           break;
-                       }
+                        ArrayList<String> temp=new ArrayList<String>();
+                        searchedmember=members.get(i).getId();
+                        temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
+                        ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
+                        memlist.setAdapter(tempaa);
+                        break;
                     }
                 }
-                else
-                {
-                    searchedmember="";
-                    memlist.setAdapter(arrayAdaptermembers);
-                }
             }
-        });
+            else
+            {
+                searchedmember="";
+                memlist.setAdapter(arrayAdaptermembers);
+            }
+        }
+    });
 
         addmembers.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,8 +319,8 @@ public class JcActivity extends AppCompatActivity {
 
             }
         });
+/////////////////////////////////////
 
-        ////////////////////////
 
         firebasemembers.addValueEventListener(new ValueEventListener() {
             @Override
@@ -396,10 +415,150 @@ public class JcActivity extends AppCompatActivity {
             return false;
     }
     //////////////////
+
+
 }
 
 /*
   /* tasks.add(taskModel);
                 arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
                  arrayAdapter.notifyDataSetChanged();
+/////////////////////
+public void showEditTaskDialog(final String taskid)
+    {
+        final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater= getLayoutInflater();
+        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
+        dialogbuilder2.setView(createtaskview2);
+        dialogbuilder2.setTitle("EDIT TASK");
+        final ListView memlist;
+        final EditText firstname, lastname;
+        final Button destroytask,addmembers,cancel,serach;
+        firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
+        lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
+        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
+        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
+        serach=(Button)createtaskview2.findViewById(R.id.search);
+        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
+        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
+        memlist.setAdapter(arrayAdaptermembers);
+        final AlertDialog createtaskdialog2=dialogbuilder2.create();
+        createtaskdialog2.show();
+        createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                searchedmember="";
+            }
+        });
+        memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(searchedmember.matches("")) {
+                    AddId = members.get(position).getId();
+                    AddName = members.get(position).getName();
+                    AddRollNo = members.get(position).getRollno();
+                    AddTaskId=taskid;
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Technical");
+                    HashMap<String,String> dataMap = new HashMap<String, String😠);
+                    dataMap.put("Name",AddName);
+                    dataMap.put("Roll No",AddRollNo);
+                    firebasetask.child(AddTaskId).child("Members").child(AddId).setValue(dataMap);
+                    Toast.makeText(JcActivity.this, JcActivity.this.AddTaskId, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(JcActivity.this, searchedmember, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        serach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
+                {
+                    String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
+                    for(int i=0;i<members.size();i++)
+                    {
+                       if(members.get(i).getName().matches(name))
+                       {
+                           ArrayList<String> temp=new ArrayList<String😠);
+                           searchedmember=members.get(i).getId();
+                           temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
+                           ArrayAdapter<String> tempaa= new ArrayAdapter<String😠JcActivity.this, android.R.layout.simple_list_item_1, temp);
+                           memlist.setAdapter(tempaa);
+                           break;
+                       }
+                    }
+                }
+                else
+                {
+                    searchedmember="";
+                    memlist.setAdapter(arrayAdaptermembers);
+                }
+            }
+        });
+//////////////////////////////////////
+                 public void showEditTaskDialog()
+    {
+        final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater= getLayoutInflater();
+        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
+        dialogbuilder2.setView(createtaskview2);
+        dialogbuilder2.setTitle("EDIT TASK");
+        final ListView memlist;
+        final EditText firstname, lastname;
+        final Button destroytask,addmembers,cancel,serach;
+        firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
+        lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
+        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
+        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
+        serach=(Button)createtaskview2.findViewById(R.id.search);
+        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
+        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
+        memlist.setAdapter(arrayAdaptermembers);
+        final AlertDialog createtaskdialog2=dialogbuilder2.create();
+        createtaskdialog2.show();
+        createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                searchedmember="";
+            }
+        });
+         memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+             @Override
+             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 if(searchedmember.matches(""))
+                 Toast.makeText(JcActivity.this, members.get(position).getId(), Toast.LENGTH_SHORT).show();
+                 else
+                     Toast.makeText(JcActivity.this,searchedmember, Toast.LENGTH_SHORT).show();
+             }
+         });
+        serach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
+                {
+                    String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
+                    for(int i=0;i<members.size();i++)
+                    {
+                       if(members.get(i).getName().matches(name))
+                       {
+                           ArrayList<String> temp=new ArrayList<String>();
+                           searchedmember=members.get(i).getId();
+                           temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
+                           ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
+                           memlist.setAdapter(tempaa);
+                           break;
+                       }
+                    }
+                }
+                else
+                {
+                    searchedmember="";
+                    memlist.setAdapter(arrayAdaptermembers);
+                }
+            }
+        });
+
+
                 */
+
