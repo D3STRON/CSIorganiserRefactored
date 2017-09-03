@@ -236,14 +236,30 @@ public class EditProfile extends AppCompatActivity {
                     ////////////////
                     firebase.child(Id).setValue(model);
                    db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
-                    Toast.makeText(getBaseContext(),db.getAllValues().get("priority"),Toast.LENGTH_LONG).show();
-                    users = db.getAllValues();
                     alertDialog.dismiss();
-                    Intent intent=getParentActivityIntent();
-                    finish();
+                   goBack();
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+       goBack();
+    }
+    public void goBack()
+    {
+        Intent intent;
+        if(users.get("priority").matches("0"))
+        {
+            intent= new Intent(EditProfile.this,Members.class);
+        }
+        else
+        {
+            intent= new Intent(EditProfile.this,JcActivity.class);
+        }
+        startActivity(intent);
+        finish();
     }
 }
 /*

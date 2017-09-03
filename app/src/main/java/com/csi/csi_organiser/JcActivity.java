@@ -367,6 +367,7 @@ public class JcActivity extends AppCompatActivity {
                 Model model = new Model();
                 Intent intenteditprofile= new Intent(JcActivity.this,EditProfile.class);
                 startActivity(intenteditprofile);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

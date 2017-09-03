@@ -110,6 +110,7 @@ public class Members extends AppCompatActivity {
                 Model model = new Model();
                 Intent intenteditprofile= new Intent(Members.this,EditProfile.class);
                 startActivity(intenteditprofile);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
