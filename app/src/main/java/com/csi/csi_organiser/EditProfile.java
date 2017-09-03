@@ -218,7 +218,7 @@ public class EditProfile extends AppCompatActivity {
                     String Id = users.get("UUID");
                     Toast.makeText(EditProfile.this, Id, Toast.LENGTH_LONG).show();
                     firebase.child(Id).setValue(model);
-                  boolean a=  db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
+                   db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
                     Toast.makeText(getBaseContext(),db.getAllValues().get("priority"),Toast.LENGTH_LONG).show();
                     users = db.getAllValues();
                     alertDialog.dismiss();
