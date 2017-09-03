@@ -1,6 +1,7 @@
 package com.csi.csi_organiser;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -227,6 +228,12 @@ public class JcActivity extends AppCompatActivity {
         memlist.setAdapter(arrayAdaptermembers);
         final AlertDialog createtaskdialog2=dialogbuilder2.create();
         createtaskdialog2.show();
+        createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                searchedmember="";
+            }
+        });
          memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
              @Override
              public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
