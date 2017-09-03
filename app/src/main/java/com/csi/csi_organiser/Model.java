@@ -18,7 +18,7 @@ public class Model implements Serializable {
     public String preference3;
     public String priority="0";
     public String currenttask="null";
-    public int numberoftasks=0;
+    public String teamtask="";
 
     public void setValue(String name, String email, String number, String neareststation, String rollno, String preference1, String preference2, String preference3)
     {
@@ -64,6 +64,10 @@ public class Model implements Serializable {
         return Id;
     }
 
+    public void setCurrenttask(String currenttask) {
+        this.currenttask = currenttask;
+    }
+
     public String getPreference1() {
         return preference1;
     }
@@ -80,8 +84,12 @@ public class Model implements Serializable {
         this.preference1 = preference1;
     }
 
-    public int getNumberoftasks() {
-        return numberoftasks;
+    public String getTeamtask() {
+        return teamtask;
+    }
+
+    public void setTeamtask(String teamtask) {
+        this.teamtask = teamtask;
     }
 
     public String getPreference2() {

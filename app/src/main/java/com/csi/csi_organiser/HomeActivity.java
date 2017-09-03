@@ -239,7 +239,7 @@ public class HomeActivity extends AppCompatActivity {
                     String Id= firebase.push().getKey();
                     firebase.child(Id).setValue(model);
                     db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
-                            model.getNumber(), model.getNeareststation(), model.getNumberoftasks(),
+                            model.getNumber(), model.getNeareststation(),model.getTeamtask(),
                             model.getPreference1(), model.getPreference2(), model.getPreference3(),
                             model.getPriority(), model.getRollno(),Id);
                     Intent intent;

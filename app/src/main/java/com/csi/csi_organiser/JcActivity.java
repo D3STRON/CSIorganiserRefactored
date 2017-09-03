@@ -230,18 +230,19 @@ public void showEditTaskDialog(final String taskid)
     memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            HashMap<String,String> dataMap = new HashMap<String, String>();
             if(searchedmember.matches("")) {
+                Model model=members.get(position);
+              //  model.setCurrenttask(taskid);
                 AddId = members.get(position).getId();
                 AddName = members.get(position).getName();
                 AddRollNo = members.get(position).getRollno();
-                AddTaskId=taskid;
                 firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
-                HashMap<String,String> dataMap = new HashMap<String, String>();
                 dataMap.put("Name",AddName);
                 dataMap.put("Roll No",AddRollNo);
-                firebasetask.child(AddTaskId).child("Members").child(AddId).setValue(dataMap);
-
-                Toast.makeText(JcActivity.this,AddId, Toast.LENGTH_SHORT).show();
+                firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
+                firebasemembers.child(AddId).setValue(model);
+                Toast.makeText(JcActivity.this, model.getName()+" is Added!", Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(JcActivity.this, searchedmember, Toast.LENGTH_SHORT).show();

@@ -136,7 +136,7 @@ public class GSignin extends AppCompatActivity {
                     if (memlist.get(i).getEmail().matches(personEmail)) {
                         k = false;
                         db.addInfo(memlist.get(i).getCurrenttask(),memlist.get(i).getName(), memlist.get(i).getEmail(),
-                                memlist.get(i).getNumber(),memlist.get(i).getNeareststation(),memlist.get(i).getNumberoftasks(),
+                                memlist.get(i).getNumber(),memlist.get(i).getNeareststation(),memlist.get(i).getTeamtask(),
                                 memlist.get(i).getPreference1(), memlist.get(i).getPreference2(),memlist.get(i).getPreference3(),
                                 memlist.get(i).getPriority(),memlist.get(i).getRollno(),memlist.get(i).getId());
 
