@@ -128,7 +128,7 @@ public class JcActivity extends AppCompatActivity {
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     taskid = tasks.get(position).Id;
                     showEditTaskDialog();
-                    return false;
+                    return true;
                 }
             });
 
