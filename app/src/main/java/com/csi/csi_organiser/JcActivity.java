@@ -95,18 +95,6 @@ public class JcActivity extends AppCompatActivity {
                case(5):
                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Publicity");
                    break;
-               case(6):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Research Wing");
-                   break;
-               case(7):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Sponsor Ship");
-                   break;
-               case(8):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Creative");
-                   break;
-               case(9):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Cozine");
-                   break;
                    }
             firebasemembers = FirebaseDatabase.getInstance().getReference("CSI Members");
             arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksstring);
@@ -178,10 +166,7 @@ public class JcActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TaskModel taskModel= new TaskModel();
-               /* tasks.add(taskModel);
-                arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
-                 arrayAdapter.notifyDataSetChanged();
-                */
+
                 boolean connection=isConnected(JcActivity.this);
                 if(connection) {
                     String Id = firebasetask.push().getKey();
@@ -412,3 +397,8 @@ public class JcActivity extends AppCompatActivity {
     //////////////////
 }
 
+/*
+  /* tasks.add(taskModel);
+                arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
+                 arrayAdapter.notifyDataSetChanged();
+                */

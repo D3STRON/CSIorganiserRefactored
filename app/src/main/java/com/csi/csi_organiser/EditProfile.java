@@ -68,7 +68,6 @@ public class EditProfile extends AppCompatActivity {
         team1.setAdapter(teams);
         team2.setAdapter(teams);
         team3.setAdapter(teams);
-
         int a = users.get("name").indexOf(" ");
         firstname.setText(users.get("name").substring(0, a));
         lastname.setText(users.get("name").substring(a + 1));
@@ -217,11 +216,30 @@ public class EditProfile extends AppCompatActivity {
                 else if (result) {
                     String Id = users.get("UUID");
                     Toast.makeText(EditProfile.this, Id, Toast.LENGTH_LONG).show();
+                    /////////////////
+                    switch(Integer.parseInt(users.get("priority"))){
+                        case (0):
+                            break;
+                        case(2):
+                            model.setPreference1(team1.getItemAtPosition(1).toString());
+                            break;
+                        case(3):
+                            model.setPreference1(team1.getItemAtPosition(2).toString());
+                            break;
+                        case(4):
+                            model.setPreference1(team1.getItemAtPosition(3).toString());
+                            break;
+                        case(5):
+                            model.setPreference1(team1.getItemAtPosition(4).toString());
+                            break;
+                    }
+                    ////////////////
                     firebase.child(Id).setValue(model);
                    db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
                     Toast.makeText(getBaseContext(),db.getAllValues().get("priority"),Toast.LENGTH_LONG).show();
                     users = db.getAllValues();
                     alertDialog.dismiss();
+                    Intent intent=getParentActivityIntent();
                     finish();
                 }
             }

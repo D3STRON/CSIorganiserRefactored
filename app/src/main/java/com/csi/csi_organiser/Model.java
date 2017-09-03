@@ -76,6 +76,10 @@ public class Model implements Serializable {
         return currenttask;
     }
 
+    public void setPreference1(String preference1) {
+        this.preference1 = preference1;
+    }
+
     public int getNumberoftasks() {
         return numberoftasks;
     }
@@ -87,7 +91,6 @@ public class Model implements Serializable {
     public String getPreference3() {
         return preference3;
     }
-
 
 
     public void setValue(String name, String email, String number, String neareststation, String rollno, String preference1, String preference2, String preference3, String priority)

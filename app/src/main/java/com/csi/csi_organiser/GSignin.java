@@ -62,15 +62,15 @@ public class GSignin extends AppCompatActivity {
                 //startActivity(intent);
 
             }
-            else if(users.get("priority").matches("2"))
+            else if(users.get("priority").matches("0"))
             {
-                Intent intent= new Intent(GSignin.this,JcActivity.class);
+                Intent intent= new Intent(GSignin.this,Members.class);
                 startActivity(intent);
             }
             else
             {
 
-                Intent intent =new Intent(GSignin.this,Members.class);
+                Intent intent =new Intent(GSignin.this,JcActivity.class);
                 startActivity(intent);
             }
         }

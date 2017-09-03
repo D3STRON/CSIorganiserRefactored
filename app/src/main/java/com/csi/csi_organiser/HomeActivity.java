@@ -214,8 +214,23 @@ public class HomeActivity extends AppCompatActivity {
 
                     for(int i=0;i<rolelist.size();i++) {
                         if (model.getRollno().matches(rolelist.get(i).getRollno())) {
-
                             model.setPriority(rolelist.get(i).getPriority());
+                           ///////////
+                            switch(Integer.parseInt(model.getPriority())){
+                                case(2):
+                                    model.setPreference1(team1.getItemAtPosition(1).toString());
+                                    break;
+                                case(3):
+                                    model.setPreference1(team1.getItemAtPosition(2).toString());
+                                    break;
+                                case(4):
+                                    model.setPreference1(team1.getItemAtPosition(3).toString());
+                                    break;
+                                case(5):
+                                    model.setPreference1(team1.getItemAtPosition(4).toString());
+                                    break;
+                            }
+                            ////////////////
                             Toast.makeText(HomeActivity.this, "You are a committee member.", Toast.LENGTH_SHORT).show();
                         }
                     }
