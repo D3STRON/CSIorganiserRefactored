@@ -194,7 +194,7 @@ public class JcActivity extends AppCompatActivity {
                     String localTime = date.format(currentLocalTime);
                     taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(), users.get("rollno"), users.get("phone"), Id);
                     taskModel.setTime(localTime + ".." + datestring);
-                    firebasetask.child(Id).setValue(taskModel);
+                   firebasetask.child(Id).setValue(taskModel);
 
                     if (!arrayAdapter.isEmpty())
                         Toast.makeText(JcActivity.this, "New Task Created!", Toast.LENGTH_SHORT).show();

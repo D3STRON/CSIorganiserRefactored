@@ -52,6 +52,31 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Log.d(TAG, "Deleted all user info from sqlite");
     }
 
+    public void updateValues(String name, String station, String pref1, String pref2, String pref3, String phone){
+        SQLiteDatabase dbr = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM user;";
+        String UPDATE_QUERY = "UPDATE user SET name = '"+name+"', station = '"+station+"', pref1 = '"+pref1+"', pref2 = '"+pref2+"', pref3 = '"+pref3+"', phone = '"+phone+";";
+        Cursor c = dbr.rawQuery(query,null);
+        c.moveToFirst();
+        try {
+            if (c.getCount() > 0) {
+                db.execSQL(UPDATE_QUERY);
+            }
+            else{
+                Log.e("DBError","Table or Table Entry doesn't exist.");
+            }
+        }
+        catch(Exception e){
+            Log.e("DBError",e.getMessage());
+        }
+        finally{
+            db.close();
+            dbr.close();
+            c.close();
+        }
+    }
+
     public HashMap<String,String> getAllValues(){
         HashMap<String,String> values = new HashMap<>();
         String query = "SELECT * FROM user;";
