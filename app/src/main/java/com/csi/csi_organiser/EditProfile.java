@@ -41,14 +41,12 @@ public class EditProfile extends AppCompatActivity {
     Button update, delete;
     SQLiteHelper db;
     DatabaseReference firebase;
-    ArrayList<Model> memlist;
     HashMap<String, String> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        memlist = new ArrayList<>();
         firstname = (EditText) findViewById(R.id.firstname);
         lastname = (EditText) findViewById(R.id.lastname);
         firebase = FirebaseDatabase.getInstance().getReference("CSI Members");
@@ -223,7 +221,6 @@ public class EditProfile extends AppCompatActivity {
                     firebase.child(Id).setValue(model);
                     db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
                     users = db.getAllValues();
-                    memlist.clear();
                     alertDialog.dismiss();
                     finish();
                 }
