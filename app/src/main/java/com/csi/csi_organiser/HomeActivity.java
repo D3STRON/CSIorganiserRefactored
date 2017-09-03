@@ -39,15 +39,15 @@ public class HomeActivity extends AppCompatActivity {
     Button submit;
     SQLiteHelper db;
     DatabaseReference firebase,firebaserole;
-    ArrayList<Model> memlist;
+    ArrayList<String> rollnolist;
     ArrayList<Model2> rolelist;
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ///
-        memlist= new ArrayList<>();
+        rollnolist= new ArrayList<>();
         rolelist=new ArrayList<>();
-        memlist.clear();
+        rollnolist.clear();
         rolelist.clear();
         ///
         super.onCreate(savedInstanceState);
@@ -189,10 +189,10 @@ public class HomeActivity extends AppCompatActivity {
 
                 boolean result=isConnected(HomeActivity.this);
 
-                if(!memlist.isEmpty())
-                {for(int i=0;i<memlist.size();i++)
+                if(!rollnolist.isEmpty())
+                {for(int i=0;i<rollnolist.size();i++)
                 {
-                    if(model.getRollno().matches(memlist.get(i).getRollno()))
+                    if(model.getRollno().matches(rollnolist.get(i)))
                     {
                         Toast.makeText(HomeActivity.this,"This Entry Already Exists!",Toast.LENGTH_LONG).show();
                         alertDialog.dismiss();
@@ -236,7 +236,7 @@ public class HomeActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
 
-                    memlist.clear();
+                    rollnolist.clear();
                     rolelist.clear();
                     alertDialog.dismiss();
                     finish();
@@ -250,11 +250,10 @@ public class HomeActivity extends AppCompatActivity {
         firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                memlist.clear();
+                rollnolist.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
-                    Model model= fire.getValue(Model.class);
-                    memlist.add(model);
+                    rollnolist.add( fire.getValue(Model.class).getRollno());
                 }
             }
 
@@ -308,7 +307,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        memlist.clear();
+        rollnolist.clear();
         rolelist.clear();
         super.onBackPressed();
     }
