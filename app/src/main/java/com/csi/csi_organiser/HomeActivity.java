@@ -324,6 +324,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         rollnolist.clear();
         rolelist.clear();
+        firebase.removeEventListener(ve);
         super.onBackPressed();
     }
 }

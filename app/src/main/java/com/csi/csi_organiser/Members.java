@@ -32,9 +32,9 @@ public class Members extends AppCompatActivity {
     private Button mSubmitBtn;
     Toolbar toolbar;
     SQLiteHelper db;
-    String currenttask="",taskteam="";
+    String currenttask="",teamtask="";
     HashMap<String ,String> users;
-    DatabaseReference monitor,firetask;
+    DatabaseReference monitor,firetask,notificationdata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +72,6 @@ public class Members extends AppCompatActivity {
                 mNoBtn.setVisibility(View.INVISIBLE);
                 mYesBtn.setVisibility(View.INVISIBLE);
             }
-       /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mTaskDesc.setText(dataSnapshot.getValue().toString());
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
             mSubmitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,15 +136,15 @@ public class Members extends AppCompatActivity {
                if(currenttask.isEmpty())
                 currenttask=dataSnapshot.getValue().toString();
                else
-                   taskteam=dataSnapshot.getValue().toString();
+                   teamtask=dataSnapshot.getValue().toString();
 
-                if(!taskteam.isEmpty())
+                if(!teamtask.isEmpty())
                 {
-                    firetask= FirebaseDatabase.getInstance().getReference(taskteam);
-                    db.updateValues(taskteam,currenttask);
+                    firetask= FirebaseDatabase.getInstance().getReference(teamtask);
+                    db.updateValues(teamtask,currenttask);
                     mNoBtn.setVisibility(View.VISIBLE);
                     mYesBtn.setVisibility(View.VISIBLE);
-                    Toast.makeText(Members.this,db.getAllValues().get("taskteam"),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Members.this,db.getAllValues().get("teamtask"),Toast.LENGTH_SHORT).show();
                     addtaskListener(firetask,currenttask);
                 }
             }

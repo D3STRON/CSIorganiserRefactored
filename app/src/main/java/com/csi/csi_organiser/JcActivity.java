@@ -55,9 +55,8 @@ public class JcActivity extends AppCompatActivity {
     HashMap<String ,String> users;
     DatabaseReference firebasetask,firebasemembers,temp;
     SQLiteHelper db;
-    String taskid,searchedmember="",AddId,AddName,AddRollNo,tasktitle, currentteam;
+    String taskid,searchedmember="",AddId,AddName,AddRollNo,tasktitle, currentteam,searchedname,searchedrollno;
     ArrayAdapter<String> arrayAdapter,arrayAdaptermembers;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +190,7 @@ public class JcActivity extends AppCompatActivity {
                     DateFormat date = new SimpleDateFormat("HH:mm");
                     date.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
                     String localTime = date.format(currentLocalTime);
-                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(), users.get("rollno"), users.get("phone"), Id);
+                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(), users.get("rollno")+users.get("name"), users.get("phone"), Id);
                     taskModel.setTime(localTime + ".." + datestring);
                    firebasetask.child(Id).setValue(taskModel);
 
@@ -252,6 +251,9 @@ public void showEditTaskDialog(final String taskid)
             else{
                firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
                 firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
+                dataMap.put("Name",searchedname);
+                dataMap.put("Roll No",searchedrollno);
+                firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
                 memlist.setAdapter(arrayAdaptermembers);
                 Toast.makeText(JcActivity.this,"This member is Added to this task.", Toast.LENGTH_SHORT).show();
             }
@@ -269,7 +271,9 @@ public void showEditTaskDialog(final String taskid)
                     {
                         ArrayList<String> temp=new ArrayList<String>();
                         searchedmember=members.get(i).getId();
-                        temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
+                        searchedname=members.get(i).getName();
+                        searchedrollno=members.get(i).getRollno();
+                        temp.add("\nRoll No: "+searchedrollno+"\nName: "+searchedname+"\nNearest Station: "+members.get(i).getNeareststation());
                         ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
                         memlist.setAdapter(tempaa);
 

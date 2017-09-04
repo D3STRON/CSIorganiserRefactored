@@ -25,7 +25,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USER_TABLE =
                 "CREATE TABLE IF NOT EXISTS user ( currentTask TEXT, name TEXT, " +
-                        "email TEXT UNIQUE, phone TEXT, station TEXT, taskteam TEXT, " +
+                        "email TEXT UNIQUE, phone TEXT, station TEXT, teamtask TEXT, " +
                         "pref1 TEXT, pref2 TEXT, pref3 TEXT, priority TEXT, rollno TEXT, UuId TEXT);";
         db.execSQL(CREATE_USER_TABLE);
         Log.d(TAG, "Database tables created");
@@ -37,10 +37,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addInfo(String currentTask, String name,String email, String phone, String station, String taskteam, String pref1, String pref2, String pref3, String priority, String rollno, String uuid){
+    public void addInfo(String currentTask, String name,String email, String phone, String station, String teamtask, String pref1, String pref2, String pref3, String priority, String rollno, String uuid){
         SQLiteDatabase db = this.getWritableDatabase();
         String INSERT = "INSERT INTO user VALUES('"+currentTask+"','"+name+"','"+email+"','"+phone+
-                "','"+station+"','"+taskteam+"','"+pref1+"','"+pref2+"','"+pref3+"','"+priority+"','"+rollno+"','"+uuid+"');";
+                "','"+station+"','"+teamtask+"','"+pref1+"','"+pref2+"','"+pref3+"','"+priority+"','"+rollno+"','"+uuid+"');";
         db.execSQL(INSERT);
         Log.d(TAG, "New user inserted into sqlite");
     }
@@ -62,14 +62,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         cv.put("pref3",pref3);
         cv.put("phone",phone);
         cv.put("priority",this.getAllValues().get("priority"));
-        cv.put("taskteam",this.getAllValues().get("taskteam"));
+        cv.put("teamtask",this.getAllValues().get("teamtask"));
         cv.put("currentTask",this.getAllValues().get("currentTask"));
         sqLiteDatabase.update("user",cv,null,null);
     }
     public void updateValues(String teamTask,String currentTask){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("taskteam",teamTask);
+        cv.put("teamtask",teamTask);
         cv.put("currentTask",currentTask);
         cv.put("priority",this.getAllValues().get("priority"));
         sqLiteDatabase.update("user",cv,null,null);
@@ -87,7 +87,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             values.put("email",cursor.getString(2));
             values.put("phone",cursor.getString(3));
             values.put("station",cursor.getString(4));
-            values.put("taskteam",cursor.getString(5));
+            values.put("teamtask",cursor.getString(5));
             values.put("pref1",cursor.getString(6));
             values.put("pref2",cursor.getString(7));
             values.put("pref3",cursor.getString(8));
