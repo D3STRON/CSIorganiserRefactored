@@ -66,6 +66,7 @@ public class NotifyActivity extends AppCompatActivity {
                     String id= notificationdata.push().getKey();
                     notificationdata.child(id).setValue(obj);
                     message.setText("");
+                    notificationlistener();
                     obj.clear();
                 }
             }
@@ -75,6 +76,33 @@ public class NotifyActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+       notificationlistener();
+    }
+    public void notificationlistener()
+    {
+        notificationdata.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        arrayAdapter.clear();
+                        for(DataSnapshot fire: dataSnapshot.getChildren())
+                        {
+                            String S=(String)fire.child("Message").getValue();
+                           arrayAdapter.add(S);
+                            arrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+}
+
+/*
 
  notificationdata.addChildEventListener(new ChildEventListener() {
      @Override
@@ -103,6 +131,4 @@ public class NotifyActivity extends AppCompatActivity {
 
      }
  });
-    }
-
-}
+ */
