@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,9 +32,9 @@ public class Members extends AppCompatActivity {
     private Button mSubmitBtn;
     Toolbar toolbar;
     SQLiteHelper db;
+    String a="",b="";
     HashMap<String ,String> users;
-    private DatabaseReference mDatabaseReference;
-    private DatabaseReference mDatabase;
+    DatabaseReference monitor,firetask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,9 @@ public class Members extends AppCompatActivity {
             db = new SQLiteHelper(this);
             mNoBtn = (Button) findViewById(R.id.noBtn);
             mSubmitBtn = (Button) findViewById(R.id.submitBtn);
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference("Task");
-            mDatabase = FirebaseDatabase.getInstance().getReference();
+            mTaskDesc= (TextView)findViewById(R.id.taskDesc);
+            monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
+
        /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -71,7 +74,7 @@ public class Members extends AppCompatActivity {
             mSubmitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mDatabase.child("Reason").setValue(mReasonBox.getText().toString().trim());
+
                 }
             });
             mNoBtn.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +85,8 @@ public class Members extends AppCompatActivity {
                 }
             });
         }
+
+
     }
 
     @Override
@@ -107,7 +112,6 @@ public class Members extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.editprofile:
-                Model model = new Model();
                 Intent intenteditprofile= new Intent(Members.this,EditProfile.class);
                 startActivity(intenteditprofile);
                 finish();
@@ -117,5 +121,68 @@ public class Members extends AppCompatActivity {
         }
     }
 
-}
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ChildEventListener childEventListener = monitor.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+               if(a.isEmpty())
+                a=dataSnapshot.getValue().toString();
+               else
+                 b=dataSnapshot.getValue().toString();
+
+                if(!b.isEmpty())
+                {
+                    Toast.makeText(Members.this,"here",Toast.LENGTH_SHORT).show();
+                    firetask= FirebaseDatabase.getInstance().getReference(b);
+                    addtaskListener(firetask,a);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+       public void addtaskListener(DatabaseReference firetask,final String k)
+       {
+          firetask.addListenerForSingleValueEvent(new ValueEventListener() {
+              @Override
+              public void onDataChange(DataSnapshot dataSnapshot) {
+                  for(DataSnapshot fire : dataSnapshot.getChildren())
+                  {
+                      TaskModel taskmodel= fire.getValue(TaskModel.class);
+                      if(taskmodel.Id.matches(k))
+                      {
+                          mTaskDesc.setText("You Have A New Task: "+taskmodel.getTaskdetails());
+                          break;
+                      }
+                  }
+              }
+
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+
+              }
+          });
+       }
+}

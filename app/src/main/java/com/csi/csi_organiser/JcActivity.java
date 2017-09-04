@@ -55,7 +55,7 @@ public class JcActivity extends AppCompatActivity {
     HashMap<String ,String> users;
     DatabaseReference firebasetask,firebasemembers,temp;
     SQLiteHelper db;
-    String taskid,searchedmember="",AddId,AddName,AddRollNo,AddTaskId, currentteam;
+    String taskid,searchedmember="",AddId,AddName,AddRollNo,tasktitle, currentteam;
     ArrayAdapter<String> arrayAdapter,arrayAdaptermembers;
 
     @Override
@@ -123,6 +123,7 @@ public class JcActivity extends AppCompatActivity {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     taskid = tasks.get(position).Id;
+                    tasktitle= tasks.get(position).getTasktitle();
                     Toast.makeText(JcActivity.this,taskid, Toast.LENGTH_SHORT).show();
                     showEditTaskDialog(taskid);
                     return true;
@@ -207,7 +208,7 @@ public void showEditTaskDialog(final String taskid)
     LayoutInflater layoutInflater= getLayoutInflater();
     final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
     dialogbuilder2.setView(createtaskview2);
-    dialogbuilder2.setTitle("EDIT TASK");
+    dialogbuilder2.setTitle("EDIT TASK: "+tasktitle);
     final ListView memlist;
     final EditText firstname, lastname;
     final Button destroytask,addmembers,cancel,serach;
@@ -232,8 +233,9 @@ public void showEditTaskDialog(final String taskid)
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             HashMap<String,String> dataMap = new HashMap<String, String>();
             if(searchedmember.matches("")) {
-                Model model=members.get(position);
+               // Model model=members.get(position);
               //  model.setCurrenttask(taskid);
+               // model.setTeamtask(currentteam);
                 AddId = members.get(position).getId();
                 AddName = members.get(position).getName();
                 AddRollNo = members.get(position).getRollno();
@@ -241,8 +243,9 @@ public void showEditTaskDialog(final String taskid)
                 dataMap.put("Name",AddName);
                 dataMap.put("Roll No",AddRollNo);
                 firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
-                firebasemembers.child(AddId).setValue(model);
-                Toast.makeText(JcActivity.this, model.getName()+" is Added!", Toast.LENGTH_SHORT).show();
+                firebasemembers.child(AddId).child("currenttask").setValue(taskid);
+                firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
+                Toast.makeText(JcActivity.this, AddName+" is Added to this task.", Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(JcActivity.this, searchedmember, Toast.LENGTH_SHORT).show();
@@ -310,7 +313,7 @@ public void showEditTaskDialog(final String taskid)
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     TaskModel taskModel= fire.getValue(TaskModel.class);
-                    arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails+"\nAt: "+taskModel.getTime());
+                    arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask description: "+taskModel.taskdetails+"\nAt: "+taskModel.getTime());
                     tasks.add(taskModel);
                 }
                 arrayAdapter.notifyDataSetChanged();
@@ -323,12 +326,10 @@ public void showEditTaskDialog(final String taskid)
         });
 /////////////////////////////////////
 
-
         firebasemembers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrayAdaptermembers.clear();
-                memberstring.clear();
                 members.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
@@ -365,6 +366,7 @@ public void showEditTaskDialog(final String taskid)
 
             }
         });
+
         ///////////////////////////
 
     }
@@ -426,78 +428,7 @@ public void showEditTaskDialog(final String taskid)
                 arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
                  arrayAdapter.notifyDataSetChanged();
 /////////////////////
-public void showEditTaskDialog(final String taskid)
-    {
-        final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
-        LayoutInflater layoutInflater= getLayoutInflater();
-        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
-        dialogbuilder2.setView(createtaskview2);
-        dialogbuilder2.setTitle("EDIT TASK");
-        final ListView memlist;
-        final EditText firstname, lastname;
-        final Button destroytask,addmembers,cancel,serach;
-        firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
-        lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
-        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
-        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
-        serach=(Button)createtaskview2.findViewById(R.id.search);
-        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
-        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
-        memlist.setAdapter(arrayAdaptermembers);
-        final AlertDialog createtaskdialog2=dialogbuilder2.create();
-        createtaskdialog2.show();
-        createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                searchedmember="";
-            }
-        });
-        memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(searchedmember.matches("")) {
-                    AddId = members.get(position).getId();
-                    AddName = members.get(position).getName();
-                    AddRollNo = members.get(position).getRollno();
-                    AddTaskId=taskid;
-                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Technical");
-                    HashMap<String,String> dataMap = new HashMap<String, String😠);
-                    dataMap.put("Name",AddName);
-                    dataMap.put("Roll No",AddRollNo);
-                    firebasetask.child(AddTaskId).child("Members").child(AddId).setValue(dataMap);
-                    Toast.makeText(JcActivity.this, JcActivity.this.AddTaskId, Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(JcActivity.this, searchedmember, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        serach.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
-                {
-                    String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
-                    for(int i=0;i<members.size();i++)
-                    {
-                       if(members.get(i).getName().matches(name))
-                       {
-                           ArrayList<String> temp=new ArrayList<String😠);
-                           searchedmember=members.get(i).getId();
-                           temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
-                           ArrayAdapter<String> tempaa= new ArrayAdapter<String😠JcActivity.this, android.R.layout.simple_list_item_1, temp);
-                           memlist.setAdapter(tempaa);
-                           break;
-                       }
-                    }
-                }
-                else
-                {
-                    searchedmember="";
-                    memlist.setAdapter(arrayAdaptermembers);
-                }
-            }
-        });
+
 //////////////////////////////////////
                  public void showEditTaskDialog()
     {
@@ -561,6 +492,47 @@ public void showEditTaskDialog(final String taskid)
             }
         });
 
+//////////////////////
+firebasemembers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayAdaptermembers.clear();
+                memberstring.clear();
+                members.clear();
+                for(DataSnapshot fire: dataSnapshot.getChildren())
+                {
+                    Model model= fire.getValue(Model.class);
+                    if(model.getPreference1().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
+                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference1: "+model.getPreference1());
+                        model.setId(fire.getKey());
+                        members.add(model);
+                    }
+                }
+                for(DataSnapshot fire: dataSnapshot.getChildren())
+                {
+                    Model model= fire.getValue(Model.class);
+                    if(model.getPreference2().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
+                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference2: "+model.getPreference2());
+                        model.setId(fire.getKey());
+                        members.add(model);
+                    }
+                }
+                for(DataSnapshot fire: dataSnapshot.getChildren())
+                {
+                    Model model= fire.getValue(Model.class);
+                    if(model.getPreference3().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
+                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference3: "+model.getPreference3());
+                        model.setId(fire.getKey());
+                        members.add(model);
+                    }
+                }
+                arrayAdaptermembers.notifyDataSetChanged();
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError){
+
+            }
+        });
                 */
 

@@ -38,7 +38,8 @@ public class HomeActivity extends AppCompatActivity {
     String preference1, preference2, preference3;
     Button submit;
     SQLiteHelper db;
-    DatabaseReference firebase,firebaserole;
+    static ValueEventListener ve;
+    DatabaseReference firebaserole,firebase;
     ArrayList<String> rollnolist;
     ArrayList<Model2> rolelist;
     Toolbar toolbar;
@@ -47,8 +48,6 @@ public class HomeActivity extends AppCompatActivity {
         ///
         rollnolist= new ArrayList<>();
         rolelist=new ArrayList<>();
-        rollnolist.clear();
-        rolelist.clear();
         ///
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -83,7 +82,7 @@ public class HomeActivity extends AppCompatActivity {
         firstname.setText("Anurag");
         lastname.setText("ghosh");
         neareststation.setText("Bhandup");
-        rollno.setText("15ce7021");
+        rollno.setText("15ce7022");
         number.setText("9892237363");
         team1.setSelection(1);
         team2.setSelection(2);
@@ -211,7 +210,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 else if(result)
                 {
-
+                    firebase.removeEventListener(ve);
                     for(int i=0;i<rolelist.size();i++) {
                         if (model.getRollno().matches(rolelist.get(i).getRollno())) {
                             model.setPriority(rolelist.get(i).getPriority());
@@ -262,9 +261,10 @@ public class HomeActivity extends AppCompatActivity {
 
     protected void onStart() {
         super.onStart();
-        firebase.addValueEventListener(new ValueEventListener() {
+         ve=firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Toast.makeText(HomeActivity.this,"Here",Toast.LENGTH_SHORT).show();
                 rollnolist.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {

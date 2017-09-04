@@ -40,6 +40,7 @@ public class GSignin extends AppCompatActivity {
     ArrayList<Model> memlist;
     HashMap<String,String> users;
     DatabaseReference firebase;
+    ValueEventListener ve;
     public static final String  TAG = "Main Activity";
     String personEmail2;
     SQLiteHelper db;
@@ -128,10 +129,11 @@ public class GSignin extends AppCompatActivity {
             personEmail2 = personEmail;
 ///////////////////////////
 
-            Intent intent;
-            boolean k = true;
 
-            if(!personEmail.isEmpty()){
+
+            if(!personEmail.isEmpty() && !memlist.isEmpty()){
+                Intent intent;
+                boolean k = true;
                 for (int i = 0; i < memlist.size(); i++) {
                     if (memlist.get(i).getEmail().matches(personEmail)) {
                         k = false;
@@ -196,7 +198,7 @@ public class GSignin extends AppCompatActivity {
     }
     protected void onStart() {
         super.onStart();
-        firebase.addValueEventListener(new ValueEventListener() {
+       firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 memlist.clear();
@@ -206,7 +208,6 @@ public class GSignin extends AppCompatActivity {
                     memlist.add(model);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
