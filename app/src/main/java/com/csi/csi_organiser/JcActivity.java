@@ -37,6 +37,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -47,11 +48,10 @@ public class JcActivity extends AppCompatActivity {
     //    ArrayList<TaskModel> tasks;
     //  ArrayList<Model> members;
     ArrayList<TaskModel> tasks;
-    ArrayList<Model> members;
-
+    ArrayList<Model> members,mempref2,mempref3;
     TextView welcome;
     Toolbar toolbar;
-    ArrayList<String> tasksstring,memberstring;
+    ArrayList<String> tasksstring,memberstring,colpref3,colpref2;
     HashMap<String ,String> users;
     DatabaseReference firebasetask,firebasemembers,temp;
     SQLiteHelper db;
@@ -65,6 +65,10 @@ public class JcActivity extends AppCompatActivity {
         tasks= new ArrayList<>();
         tasksstring= new ArrayList<>();
         members= new ArrayList<>();
+        colpref2=new ArrayList<>();
+        colpref3=new ArrayList<>();
+        mempref2=new ArrayList<>();
+        mempref3=new ArrayList<>();
         memberstring=new ArrayList<>();
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -233,9 +237,6 @@ public void showEditTaskDialog(final String taskid)
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             HashMap<String,String> dataMap = new HashMap<String, String>();
             if(searchedmember.matches("")) {
-               // Model model=members.get(position);
-              //  model.setCurrenttask(taskid);
-               // model.setTeamtask(currentteam);
                 AddId = members.get(position).getId();
                 AddName = members.get(position).getName();
                 AddRollNo = members.get(position).getRollno();
@@ -246,6 +247,7 @@ public void showEditTaskDialog(final String taskid)
                 firebasemembers.child(AddId).child("currenttask").setValue(taskid);
                 firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
                 Toast.makeText(JcActivity.this, AddName+" is Added to this task.", Toast.LENGTH_SHORT).show();
+
             }
             else{
                firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
@@ -270,6 +272,7 @@ public void showEditTaskDialog(final String taskid)
                         temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
                         ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
                         memlist.setAdapter(tempaa);
+
                         break;
                     }
                 }
@@ -333,34 +336,38 @@ public void showEditTaskDialog(final String taskid)
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrayAdaptermembers.clear();
+                colpref2.clear();
+                colpref3.clear();
                 members.clear();
+                mempref2.clear();
+                mempref3.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     Model model= fire.getValue(Model.class);
-                    if(model.getPreference1().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
-                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference1: "+model.getPreference1());
-                        model.setId(fire.getKey());
-                        members.add(model);
+
+                    if(!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")) {
+                        if (model.getPreference1().matches(users.get("pref1"))) {
+                            arrayAdaptermembers.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
+                            model.setId(fire.getKey());
+                            members.add(model);
+                        } else if (model.getPreference2().matches(users.get("pref1")))
+                        {
+                            colpref2.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference2: " + model.getPreference2());
+                            model.setId(fire.getKey());
+                            mempref2.add(model);
+                        }
+                        else if(model.getPreference3().matches(users.get("pref1")))
+                        {
+                            colpref3.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference3: " + model.getPreference3());
+                            model.setId(fire.getKey());
+                            mempref3.add(model);
+                        }
                     }
                 }
-                for(DataSnapshot fire: dataSnapshot.getChildren())
-                {
-                    Model model= fire.getValue(Model.class);
-                    if(model.getPreference2().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
-                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference2: "+model.getPreference2());
-                        model.setId(fire.getKey());
-                        members.add(model);
-                    }
-                }
-                for(DataSnapshot fire: dataSnapshot.getChildren())
-                {
-                    Model model= fire.getValue(Model.class);
-                    if(model.getPreference3().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
-                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference3: "+model.getPreference3());
-                        model.setId(fire.getKey());
-                        members.add(model);
-                    }
-                }
+                arrayAdaptermembers.addAll(colpref2);
+                arrayAdaptermembers.addAll(colpref3);
+                members.addAll(mempref2);
+                members.addAll(mempref3);
                 arrayAdaptermembers.notifyDataSetChanged();
             }
 
@@ -537,5 +544,7 @@ firebasemembers.addValueEventListener(new ValueEventListener() {
 
             }
         });
+
+
                 */
 

@@ -59,7 +59,19 @@ public class Members extends AppCompatActivity {
             mSubmitBtn = (Button) findViewById(R.id.submitBtn);
             mTaskDesc= (TextView)findViewById(R.id.taskDesc);
             monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
+            if(!users.get("taskteam").isEmpty())
+            {
 
+                mNoBtn.setVisibility(View.VISIBLE);
+                mYesBtn.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
+
+                mNoBtn.setVisibility(View.INVISIBLE);
+                mYesBtn.setVisibility(View.INVISIBLE);
+            }
        /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -139,6 +151,8 @@ public class Members extends AppCompatActivity {
                 {
                     firetask= FirebaseDatabase.getInstance().getReference(taskteam);
                     db.updateValues(taskteam,currenttask);
+                    mNoBtn.setVisibility(View.VISIBLE);
+                    mYesBtn.setVisibility(View.VISIBLE);
                     Toast.makeText(Members.this,db.getAllValues().get("taskteam"),Toast.LENGTH_SHORT).show();
                     addtaskListener(firetask,currenttask);
                 }
@@ -172,7 +186,7 @@ public class Members extends AppCompatActivity {
                       TaskModel taskmodel= fire.getValue(TaskModel.class);
                       if(taskmodel.Id.matches(k))
                       {
-                          mTaskDesc.setText("You Have A New Task: "+taskmodel.getTaskdetails());
+                          mTaskDesc.setText("You Have A New Task:\n "+taskmodel.getTaskdetails());
                           break;
                       }
                   }
