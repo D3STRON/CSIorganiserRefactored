@@ -64,7 +64,6 @@ public class Members extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mTaskDesc.setText(dataSnapshot.getValue().toString());
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
