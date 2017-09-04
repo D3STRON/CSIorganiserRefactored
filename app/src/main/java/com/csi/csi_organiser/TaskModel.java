@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class TaskModel implements Serializable {
      public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id, jcnumber,time;
-     public ArrayList<String> Notification, rollnos;
+
 
     public void setValues(String tasktitle, String tasksubtitle, String taskdetails, String jcrollno, String jcnumber,String Id)
     {

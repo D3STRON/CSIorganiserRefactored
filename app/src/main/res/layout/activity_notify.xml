@@ -33,7 +33,7 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:layout_weight="0.75"
-             android:id="@+id/notify"
+             android:id="@+id/message"
              android:background="@drawable/myedittextstyle2"
              android:hint="Enter new Notification!"
 
@@ -42,6 +42,7 @@
              android:layout_width="wrap_content"
              android:layout_height="match_parent"
              android:text="NOTIFY"
+             android:id="@+id/notify"
              />
      </LinearLayout>
     </LinearLayout>
