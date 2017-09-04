@@ -67,9 +67,7 @@ public class Members extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
-
         });*/
             mSubmitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
