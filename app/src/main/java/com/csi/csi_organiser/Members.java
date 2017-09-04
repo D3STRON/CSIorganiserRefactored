@@ -32,7 +32,7 @@ public class Members extends AppCompatActivity {
     private Button mSubmitBtn;
     Toolbar toolbar;
     SQLiteHelper db;
-    String a="",b="";
+    String currenttask="",taskteam="";
     HashMap<String ,String> users;
     DatabaseReference monitor,firetask;
 
@@ -45,6 +45,7 @@ public class Members extends AppCompatActivity {
         mYesBtn = (Button) findViewById(R.id.yesBtn);
         db = new SQLiteHelper(this);
         users =db.getAllValues();
+
         if(getIntent().getBooleanExtra("EXIT",false))
         {
             finish();
@@ -129,16 +130,17 @@ public class Members extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-               if(a.isEmpty())
-                a=dataSnapshot.getValue().toString();
+               if(currenttask.isEmpty())
+                currenttask=dataSnapshot.getValue().toString();
                else
-                 b=dataSnapshot.getValue().toString();
+                   taskteam=dataSnapshot.getValue().toString();
 
-                if(!b.isEmpty())
+                if(!taskteam.isEmpty())
                 {
-                    Toast.makeText(Members.this,"here",Toast.LENGTH_SHORT).show();
-                    firetask= FirebaseDatabase.getInstance().getReference(b);
-                    addtaskListener(firetask,a);
+                    firetask= FirebaseDatabase.getInstance().getReference(taskteam);
+                    db.updateValues(taskteam,currenttask);
+                    Toast.makeText(Members.this,db.getAllValues().get("taskteam"),Toast.LENGTH_SHORT).show();
+                    addtaskListener(firetask,currenttask);
                 }
             }
 
