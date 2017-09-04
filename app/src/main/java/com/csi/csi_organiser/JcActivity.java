@@ -248,7 +248,10 @@ public void showEditTaskDialog(final String taskid)
                 Toast.makeText(JcActivity.this, AddName+" is Added to this task.", Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(JcActivity.this, searchedmember, Toast.LENGTH_SHORT).show();
+               firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
+                firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
+                memlist.setAdapter(arrayAdaptermembers);
+                Toast.makeText(JcActivity.this,"This member is Added to this task.", Toast.LENGTH_SHORT).show();
             }
         }
     });
