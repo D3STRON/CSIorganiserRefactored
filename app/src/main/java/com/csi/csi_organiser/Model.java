@@ -101,7 +101,7 @@ public class Model implements Serializable {
     }
 
 
-    public void setValue(String name, String email, String number, String neareststation, String rollno, String preference1, String preference2, String preference3, String priority)
+    public void setValue(String name, String email, String number, String neareststation, String rollno, String preference1, String preference2, String preference3, String priority,String currenttask,String teamtask)
     {
         this.email=email;
         this.name=name;
@@ -112,5 +112,7 @@ public class Model implements Serializable {
         this.preference3=preference3;
         this.neareststation=neareststation;
         this.priority = priority;
+        this.currenttask=currenttask;
+        this.teamtask=teamtask;
     }
 }

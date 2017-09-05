@@ -53,12 +53,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void updateValues(String name, String station, String pref1, String pref2, String pref3, String phone){
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        String UPDATE_QUERY = "UPDATE user SET name = '"+name+"', station = '"+station+"'," +
-                " pref1 = '"+pref1+"', pref2 = '"+pref2+"', pref3 = '"+pref3+"', phone = '"+phone+"'," +
-                " priority = '"+this.getAllValues().get("priority")+"';";
-        db.execSQL(UPDATE_QUERY);*/
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("name",name);
@@ -68,6 +62,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         cv.put("pref3",pref3);
         cv.put("phone",phone);
         cv.put("priority",this.getAllValues().get("priority"));
+        cv.put("currentTask",this.getAllValues().get("currentTask"));
+        cv.put("taskteam",this.getAllValues().get("taskteam"));
         sqLiteDatabase.update("user",cv,null,null);
     }
 

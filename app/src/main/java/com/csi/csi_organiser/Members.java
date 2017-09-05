@@ -1,6 +1,7 @@
 package com.csi.csi_organiser;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,19 +25,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Members extends AppCompatActivity {
     private EditText mReasonBox;
     private TextView mTaskDesc;
-    private Button mYesBtn;
+    private Button cancel;
     private Button mNoBtn;
+    ListView notificationList;
     private Button mSubmitBtn;
     Toolbar toolbar;
+    ArrayAdapter<String> arrayAdapter;
+    ArrayList<String>  notificationstringlist;
     SQLiteHelper db;
-    String currenttask="",taskteam="";
+    String currenttask="",teamtask="";
     HashMap<String ,String> users;
-
+    ChildEventListener ce;
     DatabaseReference monitor,firetask, notificationdata;
 
     @Override
@@ -42,8 +49,13 @@ public class Members extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_members);
         mReasonBox = (EditText) findViewById(R.id.reasonBox);
+        cancel=(Button)findViewById(R.id.cancel);
         mTaskDesc = (TextView) findViewById(R.id.taskDesc);
-        mYesBtn = (Button) findViewById(R.id.yesBtn);
+        notificationstringlist=new ArrayList<>();
+
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, notificationstringlist);
+        notificationList=(ListView)findViewById(R.id.notificationList);
+        notificationList.setAdapter(arrayAdapter);
         db = new SQLiteHelper(this);
         users =db.getAllValues();
 
@@ -62,44 +74,13 @@ public class Members extends AppCompatActivity {
             monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
             if(!users.get("taskteam").isEmpty())
             {
-               firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam"));
-                addtaskListener(firetask,users.get("currentTask"));
-                notificationdata=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask")).child("Notification");
-                notificationdata.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Toast.makeText(Members.this,dataSnapshot.child("Message").getValue().toString(),Toast.LENGTH_SHORT).show();
-                        //////////Notiffication required hreeee!!!!!.///////////////////////////
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-                mNoBtn.setVisibility(View.VISIBLE);
-                mYesBtn.setVisibility(View.VISIBLE);
+               addChildlistenerofNotifications(ce,firetask);
             }
             else
             {
                 mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
                 mNoBtn.setVisibility(View.INVISIBLE);
-                mYesBtn.setVisibility(View.INVISIBLE);
+                notificationList.setVisibility(View.INVISIBLE);
             }
        /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -113,7 +94,27 @@ public class Members extends AppCompatActivity {
             mSubmitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    mReasonBox.setVisibility(View.GONE);
+                    mSubmitBtn.setVisibility(View.GONE);
+                    cancel.setVisibility(View.GONE);
+                    mNoBtn.setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    String[] to = {"9769084086"};
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.putExtra(Intent.EXTRA_EMAIL, to);
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "To Back Out From task :"+toolbar.getTitle());
+                   intent.putExtra(Intent.EXTRA_TEXT, mReasonBox.getText().toString());
+                    intent.setType("text/plain");
+                    startActivity(Intent.createChooser(intent, "Send email"));
+                }
+            });
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mReasonBox.setVisibility(View.GONE);
+                    mSubmitBtn.setVisibility(View.GONE);
+                    cancel.setVisibility(View.GONE);
+                    mNoBtn.setVisibility(View.VISIBLE);
                 }
             });
             mNoBtn.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +122,8 @@ public class Members extends AppCompatActivity {
                 public void onClick(View v) {
                     mReasonBox.setVisibility(View.VISIBLE);
                     mSubmitBtn.setVisibility(View.VISIBLE);
-
+                    cancel.setVisibility(View.VISIBLE);
+                    mNoBtn.setVisibility(View.GONE);
                 }
             });
         }
@@ -131,7 +133,7 @@ public class Members extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(Members.this,MainActivity.class);
+        Intent intent = new Intent(Members.this,GSignin.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("EXIT", true);
         startActivity(intent);
@@ -164,27 +166,42 @@ public class Members extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ChildEventListener childEventListener = monitor.addChildEventListener(new ChildEventListener() {
+        monitor.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-               if(currenttask.isEmpty())
+               if(currenttask.isEmpty() && dataSnapshot.getKey().matches("currenttask"))
                 currenttask=dataSnapshot.getValue().toString();
-               else
-                   taskteam=dataSnapshot.getValue().toString();
+               else if(dataSnapshot.getKey().matches("teamtask")) {
+                   teamtask = dataSnapshot.getValue().toString();
+                   db.updateValues(teamtask,currenttask);
+                   users=db.getAllValues();
+                   if(!teamtask.isEmpty())
+                   {
+                       firetask= FirebaseDatabase.getInstance().getReference(teamtask);
+                       Toast.makeText(Members.this,users.get("taskteam"),Toast.LENGTH_SHORT).show();
+                       notificationList.setVisibility(View.VISIBLE);
+                       mNoBtn.setVisibility(View.VISIBLE);
+                       addtaskListener(firetask,currenttask);
+                       addChildlistenerofNotifications(ce,firetask);
+                       /////Notification required here!!!!////////////////////
+                   }
+                   else
+                   {
+                       getSupportActionBar().setTitle("TASK MANAGER");
+                       mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
+                       mNoBtn.setVisibility(View.INVISIBLE);
+                       notificationList.setVisibility(View.INVISIBLE);
+                       mReasonBox.setVisibility(View.GONE);
+                       mSubmitBtn.setVisibility(View.GONE);
+                       cancel.setVisibility(View.GONE);
+                   }
 
-                if(!taskteam.isEmpty())
-                {
-                    firetask= FirebaseDatabase.getInstance().getReference(taskteam);
-                    db.updateValues(taskteam,currenttask);
-                    mNoBtn.setVisibility(View.VISIBLE);
-                    mYesBtn.setVisibility(View.VISIBLE);
-                    addtaskListener(firetask,currenttask);
-                    /////Notification required here!!!!////////////////////
-                }
+               }
+
             }
 
             @Override
@@ -210,7 +227,12 @@ public class Members extends AppCompatActivity {
           firetask.addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
-                 mTaskDesc.setText("THERE IS A NEW TASK REQUEST: "+(String) dataSnapshot.child(k).child("tasktitle").getValue());
+                  String senderdetails= (String) dataSnapshot.child(k).child("jcrollno").getValue();
+                  senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
+                  mTaskDesc.setText("TASK DETAILS: "+(String) dataSnapshot.child(k).child("taskdetails").getValue()+"\n-"+senderdetails);
+                  getSupportActionBar().setTitle((String) dataSnapshot.child(k).child("tasktitle").getValue());
+                  mNoBtn.setVisibility(View.VISIBLE);
+                  notificationList.setVisibility(View.VISIBLE);
 
               }
 
@@ -220,4 +242,41 @@ public class Members extends AppCompatActivity {
               }
           });
        }
+
+       public void addChildlistenerofNotifications(ChildEventListener ce,DatabaseReference firetask)
+       {
+           firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam"));
+           addtaskListener(firetask,users.get("currentTask"));
+           notificationdata=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask")).child("Notification");
+           ce= notificationdata.addChildEventListener(new ChildEventListener() {
+               @Override
+               public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                   arrayAdapter.add(dataSnapshot.child("Message").getValue().toString());
+                   arrayAdapter.notifyDataSetChanged();
+                   //////////Notiffication required hreeee!!!!!.///////////////////////////
+               }
+
+               @Override
+               public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+               }
+
+               @Override
+               public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+               }
+
+               @Override
+               public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+               }
+
+               @Override
+               public void onCancelled(DatabaseError databaseError) {
+
+               }
+           });
+       }
 }
+/*
+ */

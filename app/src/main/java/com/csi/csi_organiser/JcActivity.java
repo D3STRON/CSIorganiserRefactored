@@ -48,10 +48,10 @@ public class JcActivity extends AppCompatActivity {
     //    ArrayList<TaskModel> tasks;
     //  ArrayList<Model> members;
     ArrayList<TaskModel> tasks;
-    ArrayList<Model> members,mempref2,mempref3;
+    ArrayList<Model> members,mempref2,mempref3,memnopref;
     TextView welcome;
     Toolbar toolbar;
-    ArrayList<String> tasksstring,memberstring,colpref3,colpref2;
+    ArrayList<String> tasksstring,memberstring,colpref3,colpref2,colnopref;
     HashMap<String ,String> users;
     DatabaseReference firebasetask,firebasemembers,temp;
     SQLiteHelper db;
@@ -68,6 +68,8 @@ public class JcActivity extends AppCompatActivity {
         colpref3=new ArrayList<>();
         mempref2=new ArrayList<>();
         mempref3=new ArrayList<>();
+        memnopref=new ArrayList<>();
+        colnopref=new ArrayList<>();
         memberstring=new ArrayList<>();
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -214,11 +216,11 @@ public void showEditTaskDialog(final String taskid)
     dialogbuilder2.setTitle("EDIT TASK: "+tasktitle);
     final ListView memlist;
     final EditText firstname, lastname;
-    final Button destroytask,addmembers,cancel,serach;
+    final Button destroytask,scoutmoremembers,cancel,serach;
     firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
     lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
     destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
-    addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
+    scoutmoremembers=(Button)createtaskview2.findViewById(R.id.scoutmoremembers);
     serach=(Button)createtaskview2.findViewById(R.id.search);
     cancel=(Button)createtaskview2.findViewById(R.id.cancel);
     memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
@@ -231,7 +233,12 @@ public void showEditTaskDialog(final String taskid)
             searchedmember="";
         }
     });
+    scoutmoremembers.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
+        }
+    });
 
 
     memlist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -297,12 +304,7 @@ public void showEditTaskDialog(final String taskid)
         }
     });
 
-        addmembers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ///////start code here Important : Here also tasks has the list of Tasks and members Has the list of members///////////////////////////////////
-            }
-        });
+
 
         destroytask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,7 +316,7 @@ public void showEditTaskDialog(final String taskid)
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createtaskdialog2.dismiss();
+                    createtaskdialog2.dismiss();
             }
         });;
     }
@@ -350,9 +352,11 @@ public void showEditTaskDialog(final String taskid)
                 arrayAdaptermembers.clear();
                 colpref2.clear();
                 colpref3.clear();
+                colnopref.clear();
                 members.clear();
                 mempref2.clear();
                 mempref3.clear();
+                memnopref.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     Model model= fire.getValue(Model.class);
@@ -374,12 +378,20 @@ public void showEditTaskDialog(final String taskid)
                             model.setId(fire.getKey());
                             mempref3.add(model);
                         }
+                        else
+                        {
+                            colnopref.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation());
+                            model.setId(fire.getKey());
+                            memnopref.add(model);
+                        }
                     }
                 }
                 arrayAdaptermembers.addAll(colpref2);
                 arrayAdaptermembers.addAll(colpref3);
+                arrayAdaptermembers.addAll(colnopref);
                 members.addAll(mempref2);
                 members.addAll(mempref3);
+                members.addAll(memnopref);
                 arrayAdaptermembers.notifyDataSetChanged();
             }
 
@@ -446,9 +458,7 @@ public void showEditTaskDialog(final String taskid)
 }
 
 /*
-  /* tasks.add(taskModel);
-                arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask subtutle: "+taskModel.tasksubtitle+"\nTask description: "+taskModel.taskdetails);
-                 arrayAdapter.notifyDataSetChanged();
+
 /////////////////////
 
 //////////////////////////////////////

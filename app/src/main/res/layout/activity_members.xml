@@ -1,73 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.csi.csi_organiser.Members">
- <include
-     android:id="@+id/toolbar"
-     layout="@layout/actionbar"/>
-    <TextView
-        android:id="@+id/taskDesc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="93dp"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:textSize="20sp"/>
+    android:background="@drawable/colorshade"
+    tools:context="com.csi.csi_organiser.Members"
+    android:weightSum="1">
 
-    <EditText
-        android:id="@+id/reasonBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/taskDesc"
-        android:layout_marginTop="15dp"
-        android:hint="Reason"
-        android:visibility="gone"/>
-
-    <Button
-        android:id="@+id/noBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="96dp"
-        android:layout_marginStart="96dp"
-        android:text="NO"
-        android:layout_below="@+id/reasonBox"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="68dp"/>
-
-    <Button
-        android:id="@+id/yesBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="YES"
-        android:layout_alignBaseline="@+id/noBtn"
-        android:layout_alignBottom="@+id/noBtn"
-        android:layout_toRightOf="@+id/noBtn"
-        android:layout_toEndOf="@+id/noBtn"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp"/>
-
-    <Button
-        android:id="@+id/submitBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_below="@+id/reasonBox"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:visibility = "gone"/>
+   <include
+       android:id="@+id/toolbar"
+       layout="@layout/actionbar"
+       />
+     <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+   <TextView
+    android:id="@+id/taskDesc"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="textMultiLine"
+    android:paddingLeft="10dp"
+    android:textColor="#ffff"
+    android:textSize="20sp"/>
 
 
-</RelativeLayout>
+   <ListView
+       android:id="@+id/notificationList"
+       android:layout_width="match_parent"
+       android:layout_height="411dp"
+       android:background="#ffff"
+       android:layout_above="@+id/taskDesc"
+       android:layout_below="@+id/scrollView2"
+       android:stackFromBottom="true"
+       android:transcriptMode="normal" />
 
+   <EditText
+       android:id="@+id/reasonBox"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="5dp"
+       android:layout_marginLeft="5dp"
+       android:layout_marginRight="5dp"
+       android:ems="10"
+       android:hint="Reason"
+       android:background="@drawable/myedittextstyle2"
+       android:layout_above="@+id/submitBtn"
+       android:visibility="gone"
+       android:layout_alignParentStart="true"/>
+
+   <Button
+       android:id="@+id/noBtn"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="96dp"
+       android:text="SEND BACKOUT REQUEST"
+       />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+   <Button
+       android:id="@+id/submitBtn"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Submit"
+       android:visibility="gone"
+
+     />
+
+   <Button
+       android:id="@+id/cancel"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="CANCEL"
+       android:visibility="gone"
+       /></LinearLayout>
+
+
+        </LinearLayout>
+     </ScrollView>
+
+        </LinearLayout>

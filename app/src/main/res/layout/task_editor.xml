@@ -49,7 +49,7 @@
       android:layout_weight="0.5"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/addmembers"
+      android:id="@+id/scoutmoremembers"
       android:text="SCOUT MORE MEMBERS"
       />
     </LinearLayout>

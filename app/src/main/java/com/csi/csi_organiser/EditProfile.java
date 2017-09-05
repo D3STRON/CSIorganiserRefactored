@@ -205,7 +205,7 @@ public class EditProfile extends AppCompatActivity {
                 Model model = new Model();
                 model.setValue(firstname.getText().toString().replaceAll(" ", "").toLowerCase() + " " + lastname.getText().toString().replaceAll(" ", "").toLowerCase(),
                         email.getText().toString(), number.getText().toString(), neareststation.getText().toString(),
-                        rollno.getText().toString().toUpperCase(), preference1, preference2, preference3 ,db.getAllValues().get("priority"));
+                        rollno.getText().toString().toUpperCase(), preference1, preference2, preference3 ,db.getAllValues().get("priority"),db.getAllValues().get("currentTask"),db.getAllValues().get("taskteam"));
 
                 boolean result = isConnected(EditProfile.this);
 
