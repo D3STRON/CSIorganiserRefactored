@@ -167,7 +167,6 @@ public class Members extends AppCompatActivity {
         ChildEventListener childEventListener = monitor.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
