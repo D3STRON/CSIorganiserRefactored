@@ -192,7 +192,7 @@ public class JcActivity extends AppCompatActivity {
                     DateFormat date = new SimpleDateFormat("HH:mm");
                     date.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
                     String localTime = date.format(currentLocalTime);
-                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(), users.get("rollno")+users.get("name"), users.get("phone"), Id);
+                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(),users.get("rollno")+" "+users.get("name").toUpperCase(), users.get("phone"), Id);
                     taskModel.setTime(localTime + ".." + datestring);
                    firebasetask.child(Id).setValue(taskModel);
 

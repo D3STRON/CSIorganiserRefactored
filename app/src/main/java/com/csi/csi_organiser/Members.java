@@ -220,7 +220,7 @@ public class Members extends AppCompatActivity {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
                   String senderdetails= (String) dataSnapshot.child(k).child("jcrollno").getValue();
-                  senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
+                  //senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
                   mTaskDesc.setText("TASK DETAILS: "+(String) dataSnapshot.child(k).child("taskdetails").getValue()+"\n-"+senderdetails);
                   getSupportActionBar().setTitle((String) dataSnapshot.child(k).child("tasktitle").getValue());
                   mNoBtn.setVisibility(View.VISIBLE);
