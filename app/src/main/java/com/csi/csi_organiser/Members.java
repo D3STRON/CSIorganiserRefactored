@@ -69,7 +69,7 @@ public class Members extends AppCompatActivity {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Toast.makeText(Members.this,dataSnapshot.child("Message").getValue().toString(),Toast.LENGTH_SHORT).show();
-                   //////////Notiffication required hreeee!!!!!.///////////////////////////
+                        //////////Notiffication required hreeee!!!!!.///////////////////////////
                     }
 
                     @Override
