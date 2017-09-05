@@ -55,7 +55,6 @@ public class ViewMembersActivity extends AppCompatActivity {
         getSupportActionBar().setSubtitle("Current Members of this task...");
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, presentmemstring);
         presentmembers = (ListView) findViewById(R.id.presentmembers);
-        fetchpresentmembers();
         presentmembers.setAdapter(arrayAdapter);
 
         presentmembers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -64,17 +63,17 @@ public class ViewMembersActivity extends AppCompatActivity {
                 firecsi.child(idstring.get(position)).child("currenttask").setValue("null");
                 firecsi.child(idstring.get(position)).child("teamtask").setValue("");
                 firemembers.child(idstring.get(position)).removeValue();
-                fetchpresentmembers();
                 return true;
             }
         });
     }
     public void fetchpresentmembers()
     {
-        arrayAdapter.clear();
+
           firemembers.addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
+                  arrayAdapter.clear();
                   for(DataSnapshot fire :dataSnapshot.getChildren())
                   {
                       arrayAdapter.add((String) fire.child("Name").getValue()+" "+(String) fire.child("Roll No").getValue());
@@ -88,7 +87,6 @@ public class ViewMembersActivity extends AppCompatActivity {
 
               }
           });
-        arrayAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -97,6 +95,7 @@ public class ViewMembersActivity extends AppCompatActivity {
         childEventListener=firemembers.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                fetchpresentmembers();
             }
 
             @Override
@@ -106,7 +105,7 @@ public class ViewMembersActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                 fetchpresentmembers();
+                fetchpresentmembers();
             }
 
             @Override
