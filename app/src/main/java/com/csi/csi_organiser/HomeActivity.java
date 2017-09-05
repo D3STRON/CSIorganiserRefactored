@@ -210,7 +210,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 else if(result)
                 {
-                    firebase.removeEventListener(ve);
                     for(int i=0;i<rolelist.size();i++) {
                         if (model.getRollno().matches(rolelist.get(i).getRollno())) {
                             model.setPriority(rolelist.get(i).getPriority());
@@ -234,13 +233,15 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
 
-
+                    firebase.removeEventListener(ve);
                     String Id= firebase.push().getKey();
                     firebase.child(Id).setValue(model);
-                    db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
-                            model.getNumber(), model.getNeareststation(),model.getTeamtask(),
-                            model.getPreference1(), model.getPreference2(), model.getPreference3(),
-                            model.getPriority(), model.getRollno(),Id);
+                    if(db.getAllValues().isEmpty()) {
+                        db.addInfo(model.getCurrenttask(), model.getName(), model.getEmail(),
+                                model.getNumber(), model.getNeareststation(), model.getTeamtask(),
+                                model.getPreference1(), model.getPreference2(), model.getPreference3(),
+                                model.getPriority(), model.getRollno(), Id);
+                    }
                     Intent intent;
                     if (model.getPriority().matches("0")) {
                         intent = new Intent(HomeActivity.this, Members.class);

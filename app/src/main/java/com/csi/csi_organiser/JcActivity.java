@@ -231,9 +231,12 @@ public void showEditTaskDialog(final String taskid)
             searchedmember="";
         }
     });
-    memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+
+    memlist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             HashMap<String,String> dataMap = new HashMap<String, String>();
             if(searchedmember.matches("")) {
                 AddId = members.get(position).getId();
@@ -249,7 +252,7 @@ public void showEditTaskDialog(final String taskid)
 
             }
             else{
-               firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
+                firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
                 firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
                 dataMap.put("Name",searchedname);
                 dataMap.put("Roll No",searchedrollno);
@@ -257,8 +260,11 @@ public void showEditTaskDialog(final String taskid)
                 memlist.setAdapter(arrayAdaptermembers);
                 Toast.makeText(JcActivity.this,"This member is Added to this task.", Toast.LENGTH_SHORT).show();
             }
+
+            return true;
         }
     });
+
     serach.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -284,6 +290,8 @@ public void showEditTaskDialog(final String taskid)
             else
             {
                 searchedmember="";
+                searchedname="";
+                searchedrollno="";
                 memlist.setAdapter(arrayAdaptermembers);
             }
         }

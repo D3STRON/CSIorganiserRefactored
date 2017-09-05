@@ -32,9 +32,10 @@ public class Members extends AppCompatActivity {
     private Button mSubmitBtn;
     Toolbar toolbar;
     SQLiteHelper db;
-    String currenttask="",teamtask="";
+    String currenttask="",taskteam="";
     HashMap<String ,String> users;
-    DatabaseReference monitor,firetask,notificationdata;
+
+    DatabaseReference monitor,firetask, notificationdata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +62,53 @@ public class Members extends AppCompatActivity {
             monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
             if(!users.get("taskteam").isEmpty())
             {
+               firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam"));
+                addtaskListener(firetask,users.get("currentTask"));
+                notificationdata=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask")).child("Notification");
+                notificationdata.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        Toast.makeText(Members.this,dataSnapshot.child("Message").getValue().toString(),Toast.LENGTH_SHORT).show();
+                    }
 
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 mNoBtn.setVisibility(View.VISIBLE);
                 mYesBtn.setVisibility(View.VISIBLE);
             }
             else
             {
                 mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
-
                 mNoBtn.setVisibility(View.INVISIBLE);
                 mYesBtn.setVisibility(View.INVISIBLE);
             }
+       /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mTaskDesc.setText(dataSnapshot.getValue().toString());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });*/
             mSubmitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,6 +120,7 @@ public class Members extends AppCompatActivity {
                 public void onClick(View v) {
                     mReasonBox.setVisibility(View.VISIBLE);
                     mSubmitBtn.setVisibility(View.VISIBLE);
+
                 }
             });
         }
@@ -136,15 +174,14 @@ public class Members extends AppCompatActivity {
                if(currenttask.isEmpty())
                 currenttask=dataSnapshot.getValue().toString();
                else
-                   teamtask=dataSnapshot.getValue().toString();
+                   taskteam=dataSnapshot.getValue().toString();
 
-                if(!teamtask.isEmpty())
+                if(!taskteam.isEmpty())
                 {
-                    firetask= FirebaseDatabase.getInstance().getReference(teamtask);
-                    db.updateValues(teamtask,currenttask);
+                    firetask= FirebaseDatabase.getInstance().getReference(taskteam);
+                    db.updateValues(taskteam,currenttask);
                     mNoBtn.setVisibility(View.VISIBLE);
                     mYesBtn.setVisibility(View.VISIBLE);
-                    Toast.makeText(Members.this,db.getAllValues().get("teamtask"),Toast.LENGTH_SHORT).show();
                     addtaskListener(firetask,currenttask);
                 }
             }
@@ -167,20 +204,12 @@ public class Members extends AppCompatActivity {
 
     }
 
-       public void addtaskListener(DatabaseReference firetask,final String k)
+       public void addtaskListener(final DatabaseReference firetask, final String k)
        {
           firetask.addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
-                  for(DataSnapshot fire : dataSnapshot.getChildren())
-                  {
-                      TaskModel taskmodel= fire.getValue(TaskModel.class);
-                      if(taskmodel.Id.matches(k))
-                      {
-                          mTaskDesc.setText("You Have A New Task:\n "+taskmodel.getTaskdetails());
-                          break;
-                      }
-                  }
+                 mTaskDesc.setText("THERE IS A NEW TASK REQUEST: "+(String) dataSnapshot.child(k).child("tasktitle").getValue());
               }
 
               @Override
