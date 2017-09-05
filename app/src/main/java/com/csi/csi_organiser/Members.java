@@ -69,6 +69,7 @@ public class Members extends AppCompatActivity {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Toast.makeText(Members.this,dataSnapshot.child("Message").getValue().toString(),Toast.LENGTH_SHORT).show();
+                   //////////Notiffication required hreeee!!!!!.///////////////////////////
                     }
 
                     @Override
@@ -183,6 +184,7 @@ public class Members extends AppCompatActivity {
                     mNoBtn.setVisibility(View.VISIBLE);
                     mYesBtn.setVisibility(View.VISIBLE);
                     addtaskListener(firetask,currenttask);
+                    /////Notification required here!!!!////////////////////
                 }
             }
 
@@ -210,6 +212,7 @@ public class Members extends AppCompatActivity {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
                  mTaskDesc.setText("THERE IS A NEW TASK REQUEST: "+(String) dataSnapshot.child(k).child("tasktitle").getValue());
+
               }
 
               @Override
