@@ -72,16 +72,7 @@ public class Members extends AppCompatActivity {
             mSubmitBtn = (Button) findViewById(R.id.submitBtn);
             mTaskDesc= (TextView)findViewById(R.id.taskDesc);
             monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
-            if(!users.get("taskteam").isEmpty())
-            {
-               addChildlistenerofNotifications(ce,firetask);
-            }
-            else
-            {
-                mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
-                mNoBtn.setVisibility(View.INVISIBLE);
-                notificationList.setVisibility(View.INVISIBLE);
-            }
+
        /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -166,6 +157,7 @@ public class Members extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        taskVerify();
         monitor.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -241,6 +233,33 @@ public class Members extends AppCompatActivity {
 
               }
           });
+       }
+
+       public void taskVerify()
+       {
+           monitor.addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(DataSnapshot dataSnapshot) {
+                   db.updateValues((String) dataSnapshot.child("teamtask").getValue(),(String) dataSnapshot.child("currenttask").getValue());
+                  users=db.getAllValues();
+                   String s=(String) dataSnapshot.child("teamtask").getValue();
+                   if(!s.isEmpty())
+                   {
+                       addChildlistenerofNotifications(ce,firetask);
+                   }
+                   else
+                   {
+                       mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
+                       mNoBtn.setVisibility(View.INVISIBLE);
+                       notificationList.setVisibility(View.INVISIBLE);
+                   }
+               }
+
+               @Override
+               public void onCancelled(DatabaseError databaseError) {
+
+               }
+           });
        }
 
        public void addChildlistenerofNotifications(ChildEventListener ce,DatabaseReference firetask)
