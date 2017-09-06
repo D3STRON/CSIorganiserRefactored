@@ -23,10 +23,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 public class Members extends AppCompatActivity {
     private EditText mReasonBox;
@@ -72,7 +76,6 @@ public class Members extends AppCompatActivity {
             mSubmitBtn = (Button) findViewById(R.id.submitBtn);
             mTaskDesc= (TextView)findViewById(R.id.taskDesc);
             monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
-
        /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -157,7 +160,7 @@ public class Members extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        taskVerify();
+       taskVerify();
         monitor.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -165,20 +168,21 @@ public class Members extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-               if(currenttask.isEmpty() && dataSnapshot.getKey().matches("currenttask"))
+               if( dataSnapshot.getKey().matches("currenttask")){
                 currenttask=dataSnapshot.getValue().toString();
+               }
                else if(dataSnapshot.getKey().matches("teamtask")) {
                    teamtask = dataSnapshot.getValue().toString();
                    db.updateValues(teamtask,currenttask);
                    users=db.getAllValues();
-                   if(!teamtask.isEmpty())
+                   if(!teamtask.isEmpty() )
                    {
                        firetask= FirebaseDatabase.getInstance().getReference(teamtask);
-                       Toast.makeText(Members.this,users.get("taskteam"),Toast.LENGTH_SHORT).show();
                        notificationList.setVisibility(View.VISIBLE);
                        mNoBtn.setVisibility(View.VISIBLE);
+                     //  Toast.makeText(Members.this, arrayAdapter.getItem(1),Toast.LENGTH_SHORT).show();
+                       addChildlistenerofNotifications(firetask);
                        addtaskListener(firetask,currenttask);
-                       addChildlistenerofNotifications(ce,firetask);
                        /////Notification required here!!!!////////////////////
                    }
                    else
@@ -190,6 +194,8 @@ public class Members extends AppCompatActivity {
                        mReasonBox.setVisibility(View.GONE);
                        mSubmitBtn.setVisibility(View.GONE);
                        cancel.setVisibility(View.GONE);
+                       arrayAdapter.clear();
+
                    }
 
                }
@@ -219,13 +225,17 @@ public class Members extends AppCompatActivity {
           firetask.addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
-                  String senderdetails= (String) dataSnapshot.child(k).child("jcrollno").getValue();
-                  //senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
-                  mTaskDesc.setText("TASK DETAILS: "+(String) dataSnapshot.child(k).child("taskdetails").getValue()+"\n-"+senderdetails);
-                  getSupportActionBar().setTitle((String) dataSnapshot.child(k).child("tasktitle").getValue());
-                  mNoBtn.setVisibility(View.VISIBLE);
-                  notificationList.setVisibility(View.VISIBLE);
-
+                  for(DataSnapshot fire :dataSnapshot.getChildren()) {
+                     if(fire.getKey().matches(k)) {
+                          String senderdetails = (String) fire.child("jcrollno").getValue();
+                          senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
+                          mTaskDesc.setText("TASK DETAILS: " + (String) fire.child("taskdetails").getValue() + "\n-" + senderdetails);
+                          getSupportActionBar().setTitle((String) fire.child("tasktitle").getValue());
+                          mNoBtn.setVisibility(View.VISIBLE);
+                          notificationList.setVisibility(View.VISIBLE);
+                          break;
+                      }
+                  }
               }
 
               @Override
@@ -245,7 +255,7 @@ public class Members extends AppCompatActivity {
                    String s=(String) dataSnapshot.child("teamtask").getValue();
                    if(!s.isEmpty())
                    {
-                       addChildlistenerofNotifications(ce,firetask);
+                       addChildlistenerofNotifications(firetask);
                    }
                    else
                    {
@@ -262,14 +272,17 @@ public class Members extends AppCompatActivity {
            });
        }
 
-       public void addChildlistenerofNotifications(ChildEventListener ce,DatabaseReference firetask)
+       public void addChildlistenerofNotifications(DatabaseReference firetask)
        {
            firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam"));
            addtaskListener(firetask,users.get("currentTask"));
            notificationdata=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask")).child("Notification");
+         if(ce != null){
+            notificationdata.removeEventListener(ce);}
            ce= notificationdata.addChildEventListener(new ChildEventListener() {
                @Override
                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                   Toast.makeText(Members.this,"Huere",Toast.LENGTH_SHORT);
                    arrayAdapter.add(dataSnapshot.child("Message").getValue().toString());
                    arrayAdapter.notifyDataSetChanged();
                    //////////Notiffication required hreeee!!!!!.///////////////////////////
