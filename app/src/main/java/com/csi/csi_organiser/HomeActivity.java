@@ -265,7 +265,6 @@ public class HomeActivity extends AppCompatActivity {
          ve=firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Toast.makeText(HomeActivity.this,"Here",Toast.LENGTH_SHORT).show();
                 rollnolist.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {

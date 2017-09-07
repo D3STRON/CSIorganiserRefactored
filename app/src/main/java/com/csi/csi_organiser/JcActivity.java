@@ -48,29 +48,35 @@ public class JcActivity extends AppCompatActivity {
     //    ArrayList<TaskModel> tasks;
     //  ArrayList<Model> members;
     ArrayList<TaskModel> tasks;
-    ArrayList<Model> members,mempref2,mempref3,memnopref;
+    ArrayList<Model> mempref1,mempref2,mempref3,memmore, currentmemlist,allmembers;
     TextView welcome;
     Toolbar toolbar;
-    ArrayList<String> tasksstring,memberstring,colpref3,colpref2,colnopref;
+    ArrayList<String> tasksstring,memberstringpref1,memberstringpref2,memberstringpref3,memberstringmore;
     HashMap<String ,String> users;
     DatabaseReference firebasetask,firebasemembers,temp;
     SQLiteHelper db;
     String taskid,searchedmember="",AddId,AddName,AddRollNo,tasktitle, currentteam,searchedname,searchedrollno;
-    ArrayAdapter<String> arrayAdapter,arrayAdaptermembers;
+    ArrayAdapter<String> arrayAdapter,arrayAdaptermemberspref1,arrayAdaptermemberspref2,arrayAdaptermemberspref3,arrayAdaptermembersmore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jc);
         tasks= new ArrayList<>();
         tasksstring= new ArrayList<>();
-        members= new ArrayList<>();
-        colpref2=new ArrayList<>();
-        colpref3=new ArrayList<>();
+        mempref1=new ArrayList<>();
         mempref2=new ArrayList<>();
         mempref3=new ArrayList<>();
-        memnopref=new ArrayList<>();
-        colnopref=new ArrayList<>();
-        memberstring=new ArrayList<>();
+        memmore=new ArrayList<>();
+        allmembers=new ArrayList<>();
+        memberstringpref1=new ArrayList<>();
+        memberstringpref2=new ArrayList<>();
+        memberstringpref3=new ArrayList<>();
+        memberstringmore=new ArrayList<>();
+
+        arrayAdaptermemberspref1=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref1);
+        arrayAdaptermemberspref2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref2);
+        arrayAdaptermemberspref3=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref3);
+        arrayAdaptermembersmore=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringmore);
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("TASK MANAGER");
@@ -111,7 +117,6 @@ public class JcActivity extends AppCompatActivity {
 
 
             arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksstring);
-            arrayAdaptermembers = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstring);
             tasklist.setAdapter(arrayAdapter);
             createtask.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -153,7 +158,7 @@ public class JcActivity extends AppCompatActivity {
                 }
             });
         }
-        ///////////////////////////// Important : Here tasks has the list of Tasks and members Has the list of members//////////////////////////////////////
+
     }
     public void showCreateTaskDialog()
     {
@@ -216,15 +221,20 @@ public void showEditTaskDialog(final String taskid)
     dialogbuilder2.setTitle("EDIT TASK: "+tasktitle);
     final ListView memlist;
     final EditText firstname, lastname;
-    final Button destroytask,scoutmoremembers,cancel,serach;
+    final Button preference1,preference2,preference3,more,scoutmoremembers,serach;
     firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
     lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
-    destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
+    preference1=(Button)createtaskview2.findViewById(R.id.preference1);
+    preference2=(Button)createtaskview2.findViewById(R.id.preference2);
+    preference3=(Button)createtaskview2.findViewById(R.id.preference3);
+    more=(Button)createtaskview2.findViewById(R.id.more);
     scoutmoremembers=(Button)createtaskview2.findViewById(R.id.scoutmoremembers);
     serach=(Button)createtaskview2.findViewById(R.id.search);
-    cancel=(Button)createtaskview2.findViewById(R.id.cancel);
     memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
-    memlist.setAdapter(arrayAdaptermembers);
+   ////initial
+    memlist.setAdapter(arrayAdaptermemberspref1);
+    currentmemlist=mempref1;
+    ////
     final AlertDialog createtaskdialog2=dialogbuilder2.create();
     createtaskdialog2.show();
     createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -246,9 +256,9 @@ public void showEditTaskDialog(final String taskid)
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             HashMap<String,String> dataMap = new HashMap<String, String>();
             if(searchedmember.matches("")) {
-                AddId = members.get(position).getId();
-                AddName = members.get(position).getName();
-                AddRollNo = members.get(position).getRollno();
+                AddId = currentmemlist.get(position).getId();
+                AddName = currentmemlist.get(position).getName();
+                AddRollNo = currentmemlist.get(position).getRollno();
                 firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
                 dataMap.put("Name",AddName);
                 dataMap.put("Roll No",AddRollNo);
@@ -264,7 +274,7 @@ public void showEditTaskDialog(final String taskid)
                 dataMap.put("Name",searchedname);
                 dataMap.put("Roll No",searchedrollno);
                 firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
-                memlist.setAdapter(arrayAdaptermembers);
+                memlist.setAdapter(arrayAdaptermemberspref1);
                 Toast.makeText(JcActivity.this,"This member is Added to this task.", Toast.LENGTH_SHORT).show();
             }
 
@@ -275,18 +285,17 @@ public void showEditTaskDialog(final String taskid)
     serach.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
+           if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
             {
                 String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
-                for(int i=0;i<members.size();i++)
+                for(int i=0;i<allmembers.size();i++)
                 {
-                    if(members.get(i).getName().matches(name))
+                    if(allmembers.get(i).getName().matches(name))
                     {
                         ArrayList<String> temp=new ArrayList<String>();
-                        searchedmember=members.get(i).getId();
-                        searchedname=members.get(i).getName();
-                        searchedrollno=members.get(i).getRollno();
-                        temp.add("\nRoll No: "+searchedrollno+"\nName: "+searchedname+"\nNearest Station: "+members.get(i).getNeareststation());
+                        searchedmember=allmembers.get(i).getId();
+                        searchedname=allmembers.get(i).getName();
+                        temp.add("Name: "+searchedname+"\nNearest Station: "+allmembers.get(i).getNeareststation());
                         ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
                         memlist.setAdapter(tempaa);
 
@@ -298,15 +307,44 @@ public void showEditTaskDialog(final String taskid)
             {
                 searchedmember="";
                 searchedname="";
-                searchedrollno="";
-                memlist.setAdapter(arrayAdaptermembers);
+                memlist.setAdapter(arrayAdaptermemberspref1);
             }
+        }
+    });
+    preference1.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+             currentmemlist=mempref1;
+            memlist.setAdapter(arrayAdaptermemberspref1);
+        }
+    });
+
+    preference2.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            currentmemlist=mempref2;
+            memlist.setAdapter(arrayAdaptermemberspref2);
+        }
+    });
+
+    preference3.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            currentmemlist=mempref3;
+            memlist.setAdapter(arrayAdaptermemberspref3);
+        }
+    });
+
+    more.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            currentmemlist=memmore;
+            memlist.setAdapter(arrayAdaptermembersmore);
         }
     });
 
 
-
-        destroytask.setOnClickListener(new View.OnClickListener() {
+        /*destroytask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -328,13 +366,8 @@ public void showEditTaskDialog(final String taskid)
                 firebasetask.child(taskid).removeValue();
                 createtaskdialog2.dismiss();
             }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    createtaskdialog2.dismiss();
-            }
-        });;
+        });*/
+
     }
 
 
@@ -365,50 +398,52 @@ public void showEditTaskDialog(final String taskid)
         firebasemembers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                arrayAdaptermembers.clear();
-                colpref2.clear();
-                colpref3.clear();
-                colnopref.clear();
-                members.clear();
+               arrayAdaptermemberspref1.clear();
+                arrayAdaptermemberspref2.clear();
+                arrayAdaptermemberspref3.clear();
+                arrayAdaptermembersmore.clear();
+                mempref1.clear();
                 mempref2.clear();
                 mempref3.clear();
-                memnopref.clear();
+                memmore.clear();
+                allmembers.clear();
                 for(DataSnapshot fire: dataSnapshot.getChildren())
                 {
                     Model model= fire.getValue(Model.class);
 
                     if(!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")) {
                         if (model.getPreference1().matches(users.get("pref1"))) {
-                            arrayAdaptermembers.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
+                            arrayAdaptermemberspref1.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
                             model.setId(fire.getKey());
-                            members.add(model);
+                            mempref1.add(model);
                         } else if (model.getPreference2().matches(users.get("pref1")))
                         {
-                            colpref2.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference2: " + model.getPreference2());
+                            arrayAdaptermemberspref2.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference2: " + model.getPreference2());
                             model.setId(fire.getKey());
                             mempref2.add(model);
                         }
                         else if(model.getPreference3().matches(users.get("pref1")))
                         {
-                            colpref3.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference3: " + model.getPreference3());
+                            arrayAdaptermemberspref3.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference3: " + model.getPreference3());
                             model.setId(fire.getKey());
                             mempref3.add(model);
                         }
                         else
                         {
-                            colnopref.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation());
+                            arrayAdaptermembersmore.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation());
                             model.setId(fire.getKey());
-                            memnopref.add(model);
+                            memmore.add(model);
                         }
                     }
                 }
-                arrayAdaptermembers.addAll(colpref2);
-                arrayAdaptermembers.addAll(colpref3);
-                arrayAdaptermembers.addAll(colnopref);
-                members.addAll(mempref2);
-                members.addAll(mempref3);
-                members.addAll(memnopref);
-                arrayAdaptermembers.notifyDataSetChanged();
+                allmembers.addAll(mempref1);
+                allmembers.addAll(mempref2);
+                allmembers.addAll(mempref3);
+                allmembers.addAll(memmore);
+                arrayAdaptermemberspref1.notifyDataSetChanged();
+                arrayAdaptermemberspref2.notifyDataSetChanged();
+                arrayAdaptermemberspref3.notifyDataSetChanged();
+                arrayAdaptermembersmore.notifyDataSetChanged();
             }
 
             @Override

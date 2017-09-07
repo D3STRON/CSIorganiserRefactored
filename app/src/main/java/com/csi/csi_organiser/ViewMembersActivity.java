@@ -1,13 +1,16 @@
 package com.csi.csi_organiser;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +42,7 @@ public class ViewMembersActivity extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapter;
     DatabaseReference firemembers,firecsi;
     ChildEventListener childEventListener;
-
+    Button dtwithattendence,dtwithnoattendence;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,8 @@ public class ViewMembersActivity extends AppCompatActivity {
         firemembers = FirebaseDatabase.getInstance().getReference("Tasks-Technical").child(taskmodel.Id).child("Members");
         firecsi=FirebaseDatabase.getInstance().getReference("CSI Members");
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        dtwithattendence=(Button)findViewById(R.id.dtwithattendence);
+        dtwithnoattendence=(Button)findViewById(R.id.dtwithnoattendence);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(taskmodel.getTasktitle());
         getSupportActionBar().setSubtitle("Current Members of this task...");
@@ -64,6 +69,19 @@ public class ViewMembersActivity extends AppCompatActivity {
                 firecsi.child(idstring.get(position)).child("teamtask").setValue("");
                 firemembers.child(idstring.get(position)).removeValue();
                 return true;
+            }
+        });
+
+        dtwithnoattendence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showConformationDialouge(false);
+            }
+        });
+        dtwithattendence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showConformationDialouge(true);
             }
         });
     }
@@ -89,9 +107,38 @@ public class ViewMembersActivity extends AppCompatActivity {
           });
     }
 
+    public void destroyTask(final boolean attendence)
+    {
+        firemembers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayAdapter.clear();
+                for(DataSnapshot fire: dataSnapshot.getChildren())
+                {
+                    if(attendence  /* && ischecked*/)
+                    {
+                        //add date and time of task
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     @Override
     protected void onStart() {
         super.onStart();
+        if(childEventListener != null)
+        {
+            firemembers.removeEventListener(childEventListener);
+        }
         childEventListener=firemembers.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -120,7 +167,44 @@ public class ViewMembersActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+    public void showConformationDialouge(final boolean attendence) {
+        final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
+        LayoutInflater layoutinflater = getLayoutInflater();
+        final View confirmationview = layoutinflater.inflate(R.layout.conformation, null);
+        dialogbuilder.setView(confirmationview);
+        dialogbuilder.setTitle("CONFORMATION");
+        final Button yes, no;
+        final  TextView conformationmessage;
+        yes = (Button) confirmationview.findViewById(R.id.yes);
+        no = (Button) confirmationview.findViewById(R.id.no);
+        conformationmessage=(TextView)confirmationview.findViewById(R.id.conforamtionmessage);
+        conformationmessage.setTextSize(20);
+        if(attendence)
+        {
+            conformationmessage.setText("The task will be destroyed and the checked members will be given attendence for this task");
+        }
+        else if(!attendence)
+        {
+            conformationmessage.setText("The task will be destroyed and no members be given attendence for this task");
+        }
+        final AlertDialog alertDialog = dialogbuilder.create();
+        alertDialog.show();
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+
+        });
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                destroyTask(attendence);
+            }
+        });
+    }
+
+        @Override
     public void onBackPressed() {
         super.onBackPressed();
         firemembers.removeEventListener(childEventListener);

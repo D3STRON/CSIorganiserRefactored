@@ -69,19 +69,34 @@
         android:orientation="horizontal"
         android:padding="5dp"
         >
+
         <Button
+        android:layout_weight="0.5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PREF1"
+        android:id="@+id/preference1"
+        />
+        <Button
+            android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/destroytask"
-            android:text="DESTROY TASK"
-            android:layout_weight="0.5"
+            android:text="PREF2"
+            android:id="@+id/preference2"
             />
         <Button
             android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CANCEL"
-            android:id="@+id/cancel"
+            android:text="PREF3"
+            android:id="@+id/preference3"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/more"
+            android:text="MORE"
+            android:layout_weight="0.5"
             />
     </LinearLayout>
 

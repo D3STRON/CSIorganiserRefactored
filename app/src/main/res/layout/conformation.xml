@@ -5,10 +5,11 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="Are you Sure?"
         android:textSize="30dp"
+        android:id="@+id/conforamtionmessage"
         />
     <View
         android:layout_width="match_parent"
