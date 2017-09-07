@@ -206,20 +206,15 @@ public class Members extends AppCompatActivity {
 
        public void addtaskListener(final DatabaseReference firetask, final String k)
        {
-          firetask.addListenerForSingleValueEvent(new ValueEventListener() {
+          firetask.child(k).addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
-                  for(DataSnapshot fire :dataSnapshot.getChildren()) {
-                     if(fire.getKey().matches(k)) {
-                          String senderdetails = (String) fire.child("jcrollno").getValue();
-                          senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
-                          mTaskDesc.setText("TASK DETAILS: " + (String) fire.child("taskdetails").getValue() + "\n-" + senderdetails);
-                          getSupportActionBar().setTitle((String) fire.child("tasktitle").getValue());
-                          mNoBtn.setVisibility(View.VISIBLE);
-                          notificationList.setVisibility(View.VISIBLE);
-                          break;
-                      }
-                  }
+                  String senderdetails = (String) dataSnapshot.child("jcrollno").getValue();
+                  senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
+                  mTaskDesc.setText("TASK DETAILS: " + (String) dataSnapshot.child("taskdetails").getValue() + "\n-" + senderdetails);
+                  getSupportActionBar().setTitle((String) dataSnapshot.child("tasktitle").getValue());
+                  mNoBtn.setVisibility(View.VISIBLE);
+                  notificationList.setVisibility(View.VISIBLE);
               }
 
               @Override
@@ -295,4 +290,17 @@ public class Members extends AppCompatActivity {
        }
 }
 /*
+
+  for(DataSnapshot fire :dataSnapshot.getChildren()) {
+                     if(fire.getKey().matches(k)) {
+                          String senderdetails = (String) fire.child("jcrollno").getValue();
+                          senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
+                          mTaskDesc.setText("TASK DETAILS: " + (String) fire.child("taskdetails").getValue() + "\n-" + senderdetails);
+                          getSupportActionBar().setTitle((String) fire.child("tasktitle").getValue());
+                          mNoBtn.setVisibility(View.VISIBLE);
+                          notificationList.setVisibility(View.VISIBLE);
+                          break;
+                      }
+                  }
+
  */
