@@ -50,7 +50,7 @@ public class ViewMembersActivity extends AppCompatActivity {
         presentmemstring = new ArrayList<>();
         idstring = new ArrayList<>();
         taskmodel = (TaskModel) getIntent().getSerializableExtra("taskmodel");
-        firemembers = FirebaseDatabase.getInstance().getReference("Tasks-Technical").child(taskmodel.Id).child("Members");
+        firemembers = FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Members");
         firecsi=FirebaseDatabase.getInstance().getReference("CSI Members");
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         dtwithattendence=(Button)findViewById(R.id.dtwithattendence);
@@ -92,9 +92,19 @@ public class ViewMembersActivity extends AppCompatActivity {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
                   arrayAdapter.clear();
+                  idstring.clear();
                   for(DataSnapshot fire :dataSnapshot.getChildren())
                   {
-                      arrayAdapter.add((String) fire.child("Name").getValue()+" "+(String) fire.child("Roll No").getValue());
+                      String reason=(String) fire.child("Backout Request").getValue();
+                      if(reason.matches(""))
+                      {
+                          arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nIs ready for the task.");
+                      }
+                      else
+                      {
+                          arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nBack out request: "+fire.child("Backout Request").getValue());
+                      }
+
                       idstring.add(fire.getKey());
                   }
                   arrayAdapter.notifyDataSetChanged();
@@ -147,7 +157,7 @@ public class ViewMembersActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                fetchpresentmembers();
             }
 
             @Override

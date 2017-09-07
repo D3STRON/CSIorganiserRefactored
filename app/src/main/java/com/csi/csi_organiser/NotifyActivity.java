@@ -38,7 +38,7 @@ public class NotifyActivity extends AppCompatActivity {
         obj= new HashMap<>();
         messagelist=new ArrayList<>();
         taskmodel= (TaskModel) getIntent().getSerializableExtra("taskmodel");
-        notificationdata= FirebaseDatabase.getInstance().getReference("Tasks-Technical").child(taskmodel.Id).child("Notification");
+        notificationdata= FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Notification");
         arrayAdapter= new ArrayAdapter<String>(NotifyActivity.this, android.R.layout.simple_list_item_1, messagelist);
         setContentView(R.layout.activity_notify);
         notify=(Button)findViewById(R.id.notify);
@@ -54,6 +54,7 @@ public class NotifyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent= new Intent(NotifyActivity.this,ViewMembersActivity.class);
                 intent.putExtra("taskmodel",taskmodel);
+                intent.putExtra("currentteam",getIntent().getStringExtra("currentteam"));
                 startActivity(intent);
             }
         });

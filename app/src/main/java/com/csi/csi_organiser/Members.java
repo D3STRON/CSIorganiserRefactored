@@ -76,15 +76,7 @@ public class Members extends AppCompatActivity {
             mSubmitBtn = (Button) findViewById(R.id.submitBtn);
             mTaskDesc= (TextView)findViewById(R.id.taskDesc);
             monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
-       /* mDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mTaskDesc.setText(dataSnapshot.getValue().toString());
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
+      
             mSubmitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

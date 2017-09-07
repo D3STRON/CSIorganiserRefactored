@@ -145,6 +145,7 @@ public class JcActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(JcActivity.this, NotifyActivity.class);
                     intent.putExtra("taskmodel", tasks.get(position));
+                    intent.putExtra("currentteam",currentteam);
                     startActivity(intent);
                 }
             });
@@ -261,7 +262,7 @@ public void showEditTaskDialog(final String taskid)
                 AddRollNo = currentmemlist.get(position).getRollno();
                 firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
                 dataMap.put("Name",AddName);
-                dataMap.put("Roll No",AddRollNo);
+                dataMap.put("Backout Request","");
                 firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
                 firebasemembers.child(AddId).child("currenttask").setValue(taskid);
                 firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
@@ -275,6 +276,7 @@ public void showEditTaskDialog(final String taskid)
                 dataMap.put("Roll No",searchedrollno);
                 firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
                 memlist.setAdapter(arrayAdaptermemberspref1);
+                searchedmember="";
                 Toast.makeText(JcActivity.this,"This member is Added to this task.", Toast.LENGTH_SHORT).show();
             }
 
@@ -298,7 +300,6 @@ public void showEditTaskDialog(final String taskid)
                         temp.add("Name: "+searchedname+"\nNearest Station: "+allmembers.get(i).getNeareststation());
                         ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
                         memlist.setAdapter(tempaa);
-
                         break;
                     }
                 }
