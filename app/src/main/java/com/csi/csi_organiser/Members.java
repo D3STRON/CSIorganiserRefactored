@@ -183,7 +183,6 @@ public class Members extends AppCompatActivity {
                      //  Toast.makeText(Members.this, arrayAdapter.getItem(1),Toast.LENGTH_SHORT).show();
                        addChildlistenerofNotifications(firetask);
                        addtaskListener(firetask,currenttask);
-                       /////Notification required here!!!!////////////////////
                    }
                    else
                    {
@@ -204,17 +203,14 @@ public class Members extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
@@ -278,11 +274,11 @@ public class Members extends AppCompatActivity {
            addtaskListener(firetask,users.get("currentTask"));
            notificationdata=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask")).child("Notification");
          if(ce != null){
-            notificationdata.removeEventListener(ce);}
+             notificationdata.removeEventListener(ce);
+         }
            ce= notificationdata.addChildEventListener(new ChildEventListener() {
                @Override
                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                   Toast.makeText(Members.this,"Huere",Toast.LENGTH_SHORT);
                    arrayAdapter.add(dataSnapshot.child("Message").getValue().toString());
                    arrayAdapter.notifyDataSetChanged();
                    //////////Notiffication required hreeee!!!!!.///////////////////////////
