@@ -264,6 +264,7 @@ public void showEditTaskDialog(final String taskid)
                 dataMap.put("Name",AddName);
                 dataMap.put("Backout Request","");
                 firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
+                firebasetask.child(taskid).child("Members").child(AddId).child("Involvement").setValue("yes");
                 firebasemembers.child(AddId).child("currenttask").setValue(taskid);
                 firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
                 Toast.makeText(JcActivity.this, AddName+" is Added to this task.", Toast.LENGTH_SHORT).show();

@@ -66,15 +66,7 @@ public class ViewMembersActivity extends ListActivity{
 
 
 
-        presentmembers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                firecsi.child(idstring.get(position)).child("currenttask").setValue("null");
-                firecsi.child(idstring.get(position)).child("teamtask").setValue("");
-                firemembers.child(idstring.get(position)).removeValue();
-                return true;
-            }
-        });
+
 
         presentmembers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -136,17 +128,19 @@ public class ViewMembersActivity extends ListActivity{
 
                 for(int i=0; i<idstring.size();i++)
                 {
-                    if(attendence  /* && ischecked*/)
+                    if(attendence )
                     {
-                        //add date and time of task
+                       //String id= FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("Days").push().getKey();
+                       //FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("Days").child(id).setValue();
+
                     }
-                    else
+                     else
                     {
 
                     }
                 }
 
-
+          FirebaseDatabase.getInstance().getReference(taskmodel.Id).removeValue();
 
     }
     @Override
@@ -226,6 +220,7 @@ public class ViewMembersActivity extends ListActivity{
         super.onBackPressed();
         firemembers.removeEventListener(childEventListener);
     }
+
 }
 /*
 
