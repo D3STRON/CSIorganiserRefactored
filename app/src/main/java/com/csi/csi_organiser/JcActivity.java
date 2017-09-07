@@ -394,7 +394,6 @@ public void showEditTaskDialog(final String taskid)
             }
         });
 /////////////////////////////////////
-
         firebasemembers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
