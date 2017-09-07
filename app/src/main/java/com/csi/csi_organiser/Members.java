@@ -1,5 +1,9 @@
 package com.csi.csi_organiser;
 
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,12 +31,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 public class Members extends AppCompatActivity {
+    private static boolean isNotifying = false;
     private EditText mReasonBox;
     private TextView mTaskDesc;
     private Button cancel;
@@ -47,6 +53,21 @@ public class Members extends AppCompatActivity {
     HashMap<String ,String> users;
     ChildEventListener ce;
     DatabaseReference monitor,firetask, notificationdata;
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        startService(new Intent(this,NotifService.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +92,13 @@ public class Members extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setTitle("TASK MANAGER");
-            db = new SQLiteHelper(this);
+
+            scheduleNotifics();
+
+
+            if(!isMyServiceRunning(NotifService.class))
+                startService(new Intent(this,NotifService.class));
+
             mNoBtn = (Button) findViewById(R.id.noBtn);
             mSubmitBtn = (Button) findViewById(R.id.submitBtn);
             mTaskDesc= (TextView)findViewById(R.id.taskDesc);
@@ -111,6 +138,35 @@ public class Members extends AppCompatActivity {
 
     }
 
+
+    private void scheduleNotifics(){
+        if(!isNotifying) {
+            Calendar calendar10am = Calendar.getInstance();
+            calendar10am.set(Calendar.HOUR_OF_DAY, 10);
+            calendar10am.set(Calendar.MINUTE, 0);
+            calendar10am.set(Calendar.SECOND, 0);
+
+            Calendar calender4pm = Calendar.getInstance();
+            calender4pm.set(Calendar.HOUR_OF_DAY, 16);
+            calender4pm.set(Calendar.MINUTE, 0);
+            calender4pm.set(Calendar.SECOND, 0);
+
+            Calendar calender10pm = Calendar.getInstance();
+            calender10pm.set(Calendar.HOUR_OF_DAY, 22);
+            calender10pm.set(Calendar.MINUTE, 0);
+            calender10pm.set(Calendar.SECOND, 0);
+
+            Intent intent = new Intent(getApplicationContext(), NotiRec.class);
+            PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            manager.cancel(pi);
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar10am.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calender4pm.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calender10pm.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+            isNotifying = true;
+        }
+    }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(Members.this,GSignin.class);
@@ -118,6 +174,8 @@ public class Members extends AppCompatActivity {
         intent.putExtra("EXIT", true);
         startActivity(intent);
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

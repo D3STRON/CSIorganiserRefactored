@@ -35,43 +35,48 @@ public class NotifyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        obj= new HashMap<>();
-        messagelist=new ArrayList<>();
-        taskmodel= (TaskModel) getIntent().getSerializableExtra("taskmodel");
-        notificationdata= FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Notification");
-        arrayAdapter= new ArrayAdapter<String>(NotifyActivity.this, android.R.layout.simple_list_item_1, messagelist);
-        setContentView(R.layout.activity_notify);
-        notify=(Button)findViewById(R.id.notify);
-        message=(EditText)findViewById(R.id.message);
-        toolbar=(Toolbar)findViewById(R.id.toolbar);
-        notifications=(ListView)findViewById(R.id.notifications);
-        notifications.setAdapter(arrayAdapter);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(taskmodel.getTasktitle());
-        getSupportActionBar().setSubtitle("Click here to view members..");
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent= new Intent(NotifyActivity.this,ViewMembersActivity.class);
-                intent.putExtra("taskmodel",taskmodel);
-                intent.putExtra("currentteam",getIntent().getStringExtra("currentteam"));
-                startActivity(intent);
-            }
-        });
-        notify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!message.getText().toString().isEmpty())
-                {
-                    obj.put("Message",message.getText().toString());
-                    String id= notificationdata.push().getKey();
-                    notificationdata.child(id).setValue(obj);
-                    message.setText("");
-                    notificationlistener();
-                    obj.clear();
+        if(getIntent().getBooleanExtra("EXIT",false))
+        {
+            finish();
+        }
+        else {
+            obj = new HashMap<>();
+            messagelist = new ArrayList<>();
+            taskmodel = (TaskModel) getIntent().getSerializableExtra("taskmodel");
+            notificationdata = FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Notification");
+            arrayAdapter = new ArrayAdapter<String>(NotifyActivity.this, android.R.layout.simple_list_item_1, messagelist);
+            setContentView(R.layout.activity_notify);
+            notify = (Button) findViewById(R.id.notify);
+            message = (EditText) findViewById(R.id.message);
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            notifications = (ListView) findViewById(R.id.notifications);
+            notifications.setAdapter(arrayAdapter);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(taskmodel.getTasktitle());
+            getSupportActionBar().setSubtitle("Click here to view members..");
+            toolbar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(NotifyActivity.this, ViewMembersActivity.class);
+                    intent.putExtra("taskmodel", taskmodel);
+                    intent.putExtra("currentteam", getIntent().getStringExtra("currentteam"));
+                    startActivity(intent);
                 }
-            }
-        });
+            });
+            notify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!message.getText().toString().isEmpty()) {
+                        obj.put("Message", message.getText().toString());
+                        String id = notificationdata.push().getKey();
+                        notificationdata.child(id).setValue(obj);
+                        message.setText("");
+                        notificationlistener();
+                        obj.clear();
+                    }
+                }
+            });
+        }
     }
 
     @Override

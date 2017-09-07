@@ -2,6 +2,8 @@ package com.csi.csi_organiser;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,12 +29,17 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Member;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import static java.security.AccessController.getContext;
 
@@ -40,17 +47,24 @@ public class ViewMembersActivity extends ListActivity{
     Toolbar toolbar;
     TaskModel taskmodel;
     ListView presentmembers;
-    ArrayList<String> presentmemstring, idstring;
+    ArrayList<String> presentmemstring, idstring, text;
     ArrayAdapter<String> arrayAdapter;
+    boolean flag=false;
     DatabaseReference firemembers,firecsi;
     ChildEventListener childEventListener;
     Button dtwithattendence,dtwithnoattendence;
+    SQLiteHelper db;
+    HashMap<String, String> users;
+    Boolean[] CHECKBOXARRAY = new Boolean[idstring.size()];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_members);
         presentmemstring = new ArrayList<>();
         idstring = new ArrayList<>();
+        text= new ArrayList<>();
+        db=new SQLiteHelper(this);
+        users=db.getAllValues();
         taskmodel = (TaskModel) getIntent().getSerializableExtra("taskmodel");
         firemembers = FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Members");
         firecsi=FirebaseDatabase.getInstance().getReference("CSI Members");
@@ -58,8 +72,10 @@ public class ViewMembersActivity extends ListActivity{
         dtwithattendence=(Button)findViewById(R.id.dtwithattendence);
         dtwithnoattendence=(Button)findViewById(R.id.dtwithnoattendence);
         //setSupportActionBar(toolbar);
-       // getSupportActionBar().setTitle(taskmodel.getTasktitle());
-       // getSupportActionBar().setSubtitle("Current Members of this task...");
+       toolbar.setTitle(taskmodel.getTasktitle());
+       toolbar.setSubtitle("Current Members of this task...");
+        toolbar.setTitleTextColor(0xFFFFFFFF);
+        toolbar.setSubtitleTextColor(0xFFFFFFFF);
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.row,R.id.nameView);
         ListView presentmembers =this.getListView();
         presentmembers.setAdapter(arrayAdapter);
@@ -82,12 +98,15 @@ public class ViewMembersActivity extends ListActivity{
             @Override
             public void onClick(View v) {
                 showConformationDialouge(false);
+                flag=true;
             }
         });
         dtwithattendence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showConformationDialouge(true);
+               flag=true;
+                ///
             }
         });
     }
@@ -125,27 +144,42 @@ public class ViewMembersActivity extends ListActivity{
 
     public void destroyTask(final boolean attendence)
     {
-
+                   String list="";
                 for(int i=0; i<idstring.size();i++)
                 {
-                    if(attendence )
+                   // if(attendence /*check whether the check box of list item at position i is checked*/)
                     {
-                       //String id= FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("Days").push().getKey();
-                       //FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("Days").child(id).setValue();
-
+                      text.add("ii"/*Get the string in text view of the list item at position i*/);
                     }
-                     else
-                    {
+                    FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("currenttask").setValue("null");
+                    FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("teamtask").setValue("");
 
-                    }
                 }
-
-          FirebaseDatabase.getInstance().getReference(taskmodel.Id).removeValue();
-
+                ///////////////////////////////sending mail
+        if(attendence && !text.isEmpty()){
+        Date currentLocalTime = Calendar.getInstance().getTime();
+        Long dat = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
+        String datestring = sdf.format(dat);
+        Intent intent= new Intent(Intent.ACTION_SEND);
+        String[] to={users.get("email")};
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, to);
+        intent.putExtra(Intent.EXTRA_SUBJECT, taskmodel.getTasktitle()+"-"+taskmodel.getTasksubtitle());
+        intent.putExtra(Intent.EXTRA_TEXT, "on "+datestring+"\n"+text);
+        intent.setType("text/plain");
+        startActivity(Intent.createChooser(intent, "Send email"));}
+        /////////////////////////
+               FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).removeValue();
+          toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
+        toolbar.setTitleTextColor(0xFFFFFFFF);
+        dtwithnoattendence.setVisibility(View.GONE);
+         dtwithattendence.setVisibility(View.GONE);
     }
     @Override
     protected void onStart() {
         super.onStart();
+        flag=false;
         if(childEventListener != null)
         {
             firemembers.removeEventListener(childEventListener);
@@ -211,6 +245,7 @@ public class ViewMembersActivity extends ListActivity{
             @Override
             public void onClick(View v) {
                 destroyTask(attendence);
+                alertDialog.dismiss();
             }
         });
     }
@@ -219,81 +254,13 @@ public class ViewMembersActivity extends ListActivity{
     public void onBackPressed() {
         super.onBackPressed();
         firemembers.removeEventListener(childEventListener);
-    }
-
-}
-/*
-
-package com.csi.csi_organiser;
-
-import android.app.ListActivity;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
-import android.widget.ListView;
-
-
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-
-import static com.csi.csi_organiser.R.layout.row;
-
-public class ViewMembersActivity extends ListActivity {
-    Toolbar toolbar;
-    TaskModel taskmodel;
-    ListView presentmembers;
-    ArrayList<String> presentmemstring, idstring;
-    ArrayAdapter<String> arrayAdapter;
-    DatabaseReference firemembers,firecsi;
-    ChildEventListener childEventListener;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_members);
-        presentmemstring = new ArrayList<>();
-        idstring = new ArrayList<>();
-        taskmodel = (TaskModel) getIntent().getSerializableExtra("taskmodel");
-        firemembers = FirebaseDatabase.getInstance().getReference("Tasks-Technical").child(taskmodel.Id).child("Members");
-        firecsi=FirebaseDatabase.getInstance().getReference("CSI Members");
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-        //getSupportActionBar().setTitle(taskmodel.getTasktitle());
-        //getSupportActionBar().setSubtitle("Current Members of this task...");
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.row,R.id.nameView);
-        ListView presentmembers =this.getListView();
-        presentmembers.setAdapter(arrayAdapter);
-
-        presentmembers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                firecsi.child(idstring.get(position)).child("currenttask").setValue("null");
-                firecsi.child(idstring.get(position)).child("teamtask").setValue("");
-                firemembers.child(idstring.get(position)).removeValue();
-                return true;
+            if(flag)
+            {
+                Intent intent = new Intent(ViewMembersActivity.this, NotifyActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
             }
-        });
-
     }
-
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        CheckedTextView check = (CheckedTextView)v;
-        check.setChecked(!check.isChecked());
-    }
-
-
 
 }
-
- */

@@ -261,11 +261,10 @@ public void showEditTaskDialog(final String taskid)
                 AddName = currentmemlist.get(position).getName();
                 AddRollNo = currentmemlist.get(position).getRollno();
                 firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
-                dataMap.put("Name",AddName);
+                dataMap.put("Name",AddName+" "+AddRollNo);
                 dataMap.put("Backout Request","");
                 firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
-                firebasetask.child(taskid).child("Members").child(AddId).child("Involvement").setValue("yes");
-                firebasemembers.child(AddId).child("currenttask").setValue(taskid);
+               firebasemembers.child(AddId).child("currenttask").setValue(taskid);
                 firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
                 Toast.makeText(JcActivity.this, AddName+" is Added to this task.", Toast.LENGTH_SHORT).show();
 
@@ -273,8 +272,8 @@ public void showEditTaskDialog(final String taskid)
             else{
                 firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
                 firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
-                dataMap.put("Name",searchedname);
-                dataMap.put("Roll No",searchedrollno);
+                dataMap.put("Name",searchedname+" "+searchedrollno);
+                dataMap.put("Backout Request","");
                 firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
                 memlist.setAdapter(arrayAdaptermemberspref1);
                 searchedmember="";
@@ -298,6 +297,7 @@ public void showEditTaskDialog(final String taskid)
                         ArrayList<String> temp=new ArrayList<String>();
                         searchedmember=allmembers.get(i).getId();
                         searchedname=allmembers.get(i).getName();
+                        searchedrollno=allmembers.get(i).getRollno();
                         temp.add("Name: "+searchedname+"\nNearest Station: "+allmembers.get(i).getNeareststation());
                         ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
                         memlist.setAdapter(tempaa);
