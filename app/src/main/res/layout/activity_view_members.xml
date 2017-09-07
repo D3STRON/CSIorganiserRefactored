@@ -1,27 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.csi.csi_organiser.ViewMembersActivity">
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/actionbar"/>
-   <ScrollView
-       android:layout_width="match_parent"
-       android:layout_height="454dp">
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <LinearLayout
+    tools:context="com.csi.csi_organiser.ViewMembersActivity"
+    android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/actionbar" android:id="@+id/toolbar"/>
+
+
+    <ScrollView
+        android:layout_height="450dp"
+        android:layout_width="match_parent">
+
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
     <ListView
+        android:layout_height="500dp"
         android:layout_width="match_parent"
-        android:id="@+id/presentmembers"
-        android:layout_height="450dp">
-    </ListView>
-       </LinearLayout>
-   </ScrollView>
+        android:id="@android:id/list"
+        android:choiceMode="multipleChoice"
+        android:drawSelectorOnTop="false"></ListView>
+
+</LinearLayout>
+
+</ScrollView>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,15 +38,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/dtwithattendence"
             android:layout_weight="0.5"
+            android:textSize="13dp"
             android:text="DESTROY TASK AND ADD ATTENDENCE"
             />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/dtwithnoattendence"
+            android:textSize="13dp"
             android:text="DESTROY TASK WITH NO ATTENDENCE"
             android:layout_weight="0.5"
             />
     </LinearLayout>
 
-    </LinearLayout>
+</LinearLayout>
+

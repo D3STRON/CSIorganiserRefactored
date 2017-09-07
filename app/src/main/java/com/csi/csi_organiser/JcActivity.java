@@ -576,48 +576,5 @@ public void showEditTaskDialog(final String taskid)
         });
 
 //////////////////////
-firebasemembers.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                arrayAdaptermembers.clear();
-                memberstring.clear();
-                members.clear();
-                for(DataSnapshot fire: dataSnapshot.getChildren())
-                {
-                    Model model= fire.getValue(Model.class);
-                    if(model.getPreference1().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
-                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference1: "+model.getPreference1());
-                        model.setId(fire.getKey());
-                        members.add(model);
-                    }
-                }
-                for(DataSnapshot fire: dataSnapshot.getChildren())
-                {
-                    Model model= fire.getValue(Model.class);
-                    if(model.getPreference2().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
-                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference2: "+model.getPreference2());
-                        model.setId(fire.getKey());
-                        members.add(model);
-                    }
-                }
-                for(DataSnapshot fire: dataSnapshot.getChildren())
-                {
-                    Model model= fire.getValue(Model.class);
-                    if(model.getPreference3().matches(users.get("pref1")) && !model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")){
-                        arrayAdaptermembers.add("\nRoll No: "+model.getRollno()+"\nName: "+model.getName()+"\nNearest Station: "+model.getNeareststation()+"\nPreference3: "+model.getPreference3());
-                        model.setId(fire.getKey());
-                        members.add(model);
-                    }
-                }
-                arrayAdaptermembers.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError){
-
-            }
-        });
-
-
                 */
 
