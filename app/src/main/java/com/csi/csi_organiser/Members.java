@@ -76,22 +76,16 @@ public class Members extends AppCompatActivity {
             mSubmitBtn = (Button) findViewById(R.id.submitBtn);
             mTaskDesc= (TextView)findViewById(R.id.taskDesc);
             monitor= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
-      
+
             mSubmitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask")).child("Members").child(users.get("UUID")).child("Backout Request").setValue(mReasonBox.getText().toString());
+                    mReasonBox.setText("");
                     mReasonBox.setVisibility(View.GONE);
                     mSubmitBtn.setVisibility(View.GONE);
                     cancel.setVisibility(View.GONE);
                     mNoBtn.setVisibility(View.VISIBLE);
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    String[] to = {"9769084086"};
-                    intent.setData(Uri.parse("mailto:"));
-                    intent.putExtra(Intent.EXTRA_EMAIL, to);
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "To Back Out From task :"+toolbar.getTitle());
-                   intent.putExtra(Intent.EXTRA_TEXT, mReasonBox.getText().toString());
-                    intent.setType("text/plain");
-                    startActivity(Intent.createChooser(intent, "Send email"));
                 }
             });
             cancel.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +175,8 @@ public class Members extends AppCompatActivity {
                        getSupportActionBar().setTitle("TASK MANAGER");
                        mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
                        mNoBtn.setVisibility(View.INVISIBLE);
+                       db.updateValues("","null");
+                       users=db.getAllValues();
                        notificationList.setVisibility(View.INVISIBLE);
                        mReasonBox.setVisibility(View.GONE);
                        mSubmitBtn.setVisibility(View.GONE);
