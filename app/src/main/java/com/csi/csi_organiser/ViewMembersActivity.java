@@ -2,46 +2,30 @@ package com.csi.csi_organiser;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Member;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-
-import static java.security.AccessController.getContext;
 
 public class ViewMembersActivity extends ListActivity{
     Toolbar toolbar;
@@ -55,7 +39,7 @@ public class ViewMembersActivity extends ListActivity{
     Button dtwithattendence,dtwithnoattendence;
     SQLiteHelper db;
     HashMap<String, String> users;
-    Boolean[] CHECKBOXARRAY = new Boolean[idstring.size()];
+   // Boolean[] CHECKBOXARRAY = new Boolean[idstring.size()];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +60,7 @@ public class ViewMembersActivity extends ListActivity{
        toolbar.setSubtitle("Current Members of this task...");
         toolbar.setTitleTextColor(0xFFFFFFFF);
         toolbar.setSubtitleTextColor(0xFFFFFFFF);
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.row,R.id.nameView);
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.row, R.id.nameView);
         ListView presentmembers =this.getListView();
         presentmembers.setAdapter(arrayAdapter);
 

@@ -1,10 +1,6 @@
 package com.csi.csi_organiser;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Created by Anurag on 25-08-2017.

@@ -31,6 +31,24 @@
             android:name=".ViewMembersActivity"
             android:label="@string/title_activity_view_members"
             android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".NotifService">
+        </service>
+
+        <receiver android:name=".NotiRec">
+            <intent-filter>
+                <action android:name="notify">
+                </action>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".NotifReceiver">
+            <intent-filter>
+                <action android:name="no">
+                </action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
