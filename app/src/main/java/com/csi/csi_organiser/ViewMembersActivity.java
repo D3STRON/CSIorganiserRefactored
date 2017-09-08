@@ -6,13 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -39,7 +43,16 @@ public class ViewMembersActivity extends ListActivity{
     Button dtwithattendence,dtwithnoattendence;
     SQLiteHelper db;
     HashMap<String, String> users;
-   // Boolean[] CHECKBOXARRAY = new Boolean[idstring.size()];
+    ArrayList<Boolean> attendencelist;
+    SparseBooleanArray sparseBooleanArray;
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+       // CheckBox b=(CheckBox)l.ite.findViewById(R.id.checkBoxes);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +61,7 @@ public class ViewMembersActivity extends ListActivity{
         idstring = new ArrayList<>();
         text= new ArrayList<>();
         db=new SQLiteHelper(this);
+        attendencelist=new ArrayList<>();
         users=db.getAllValues();
         taskmodel = (TaskModel) getIntent().getSerializableExtra("taskmodel");
         firemembers = FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Members");
@@ -63,7 +77,6 @@ public class ViewMembersActivity extends ListActivity{
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.row, R.id.nameView);
         ListView presentmembers =this.getListView();
         presentmembers.setAdapter(arrayAdapter);
-
 
 
 
@@ -94,6 +107,7 @@ public class ViewMembersActivity extends ListActivity{
             }
         });
     }
+
     public void fetchpresentmembers()
     {
 
@@ -105,13 +119,21 @@ public class ViewMembersActivity extends ListActivity{
                   for(DataSnapshot fire :dataSnapshot.getChildren())
                   {
                       String reason=(String) fire.child("Backout Request").getValue();
-                      if(reason.matches(""))
+                      String attended=(String)fire.child("Attended").getValue();
+                      if(reason.matches("") && attended.matches(""))
                       {
                           arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nIs ready for the task.");
+                          attendencelist.add(false);
                       }
-                      else
+                      else if(attended.matches("") && !reason.isEmpty())
                       {
                           arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nBack out request: "+fire.child("Backout Request").getValue());
+                          attendencelist.add(false);
+                      }
+                      else if(attended.matches("yes"))
+                      {
+                          arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nAttended the task");
+                          attendencelist.add(true);
                       }
 
                       idstring.add(fire.getKey());
@@ -128,37 +150,34 @@ public class ViewMembersActivity extends ListActivity{
 
     public void destroyTask(final boolean attendence)
     {
-                   String list="";
                 for(int i=0; i<idstring.size();i++)
                 {
-                   // if(attendence /*check whether the check box of list item at position i is checked*/)
-                    {
-                      text.add("ii"/*Get the string in text view of the list item at position i*/);
-                    }
+
+                      Toast.makeText(ViewMembersActivity.this,Boolean.toString(sparseBooleanArray.get(i)),Toast.LENGTH_SHORT).show();
                     FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("currenttask").setValue("null");
                     FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("teamtask").setValue("");
 
                 }
                 ///////////////////////////////sending mail
-        if(attendence && !text.isEmpty()){
+       if(attendence && !text.isEmpty()){
         Date currentLocalTime = Calendar.getInstance().getTime();
         Long dat = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
-        String datestring = sdf.format(dat);
+       String datestring = sdf.format(dat);
         Intent intent= new Intent(Intent.ACTION_SEND);
-        String[] to={users.get("email")};
-        intent.setData(Uri.parse("mailto:"));
+       String[] to={users.get("email")};
+       intent.setData(Uri.parse("mailto:"));
         intent.putExtra(Intent.EXTRA_EMAIL, to);
         intent.putExtra(Intent.EXTRA_SUBJECT, taskmodel.getTasktitle()+"-"+taskmodel.getTasksubtitle());
-        intent.putExtra(Intent.EXTRA_TEXT, "on "+datestring+"\n"+text);
+      intent.putExtra(Intent.EXTRA_TEXT, "on "+datestring+"\n"+text);
         intent.setType("text/plain");
-        startActivity(Intent.createChooser(intent, "Send email"));}
+      startActivity(Intent.createChooser(intent, "Send email"));}
         /////////////////////////
-               FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).removeValue();
-          toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
+             FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).removeValue();
+         toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
         toolbar.setTitleTextColor(0xFFFFFFFF);
         dtwithnoattendence.setVisibility(View.GONE);
-         dtwithattendence.setVisibility(View.GONE);
+        dtwithattendence.setVisibility(View.GONE);
     }
     @Override
     protected void onStart() {
@@ -247,4 +266,9 @@ public class ViewMembersActivity extends ListActivity{
             }
     }
 
+
 }
+/*
+
+
+ */
