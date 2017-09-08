@@ -45,7 +45,7 @@ public class ViewMembersActivity extends ListActivity{
     SQLiteHelper db;
     HashMap<String, String> users;
     ArrayList<Boolean> attendencelist;
-
+    DatabaseReference temp;
 
     /*@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -87,7 +87,7 @@ public class ViewMembersActivity extends ListActivity{
         toolbar.setSubtitleTextColor(0xFFFFFFFF);
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.row, R.id.nameView);
         presentmembers.setAdapter(arrayAdapter);
-
+        temp=FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id);
 
 
 
@@ -153,31 +153,25 @@ public class ViewMembersActivity extends ListActivity{
                   arrayAdapter.clear();
                   idstring.clear();
                   attendencelist.clear();
-                  for(DataSnapshot fire :dataSnapshot.getChildren())
-                  {
-                      String reason=(String) fire.child("Backout Request").getValue();
-                      String attended=(String)fire.child("Attended").getValue();
-                      if(reason.matches("") && attended.matches(""))
-                      {
-                          arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nIs ready for the task.");
-                          attendencelist.add(false);
-                      }
-                      else if(attended.matches("") && !reason.isEmpty())
-                      {
-                          arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nBack out request: "+fire.child("Backout Request").getValue());
-                          attendencelist.add(false);
-                      }
-                      else if(attended.matches("yes"))
-                      {
-                          arrayAdapter.add("Name: "+fire.child("Name").getValue()+"\nAttended the task");
-                          attendencelist.add(true);
-                      }
 
-                      idstring.add(fire.getKey());
-                  }
-                  arrayAdapter.notifyDataSetChanged();
+                       for (DataSnapshot fire : dataSnapshot.getChildren()) {
+                          String reason = (String) fire.child("Backout Request").getValue();
+                          String attended = (String) fire.child("Attended").getValue();
+                          if (reason.matches("") && attended.matches("")) {
+                              arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nIs ready for the task.");
+                              attendencelist.add(false);
+                          } else if (attended.matches("") && !reason.isEmpty()) {
+                              arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nBack out request: " + fire.child("Backout Request").getValue());
+                              attendencelist.add(false);
+                          } else if (attended.matches("yes")) {
+                              arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nAttended the task");
+                              attendencelist.add(true);
+                          }
+
+                          idstring.add(fire.getKey());
+                      }
+                      arrayAdapter.notifyDataSetChanged();
               }
-
               @Override
               public void onCancelled(DatabaseError databaseError) {
 
@@ -224,6 +218,42 @@ public class ViewMembersActivity extends ListActivity{
     protected void onStart() {
         super.onStart();
         flag=false;
+
+       temp.addChildEventListener(new ChildEventListener() {
+           @Override
+           public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+           }
+
+           @Override
+           public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+           }
+
+           @Override
+           public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+
+               if(dataSnapshot.child("jcnumber").getValue()==null)
+               {toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
+               toolbar.setTitleTextColor(0xFFFFFFFF);
+               dtwithnoattendence.setVisibility(View.GONE);
+               dtwithattendence.setVisibility(View.GONE);}
+               flag=true;
+           }
+
+           @Override
+           public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+           }
+
+           @Override
+           public void onCancelled(DatabaseError databaseError) {
+
+           }
+       });
+
+
         if(childEventListener != null)
         {
             firemembers.removeEventListener(childEventListener);

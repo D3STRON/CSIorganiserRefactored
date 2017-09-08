@@ -118,7 +118,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int length=email.getText().toString().length();
 
-                if(firstname.getText().toString().isEmpty() || lastname.getText().toString().isEmpty() || email.getText().toString().isEmpty() || number.getText().toString().isEmpty() || neareststation.getText().toString().isEmpty() || rollno.getText().toString().isEmpty())
+               if(firstname.getText().toString().isEmpty() || lastname.getText().toString().isEmpty() || email.getText().toString().isEmpty() || number.getText().toString().isEmpty() || neareststation.getText().toString().isEmpty() || rollno.getText().toString().isEmpty())
                 {
                     Toast.makeText(HomeActivity.this,"Could not submit:\nOne or multiple empty fields.",Toast.LENGTH_LONG).show();
                 }

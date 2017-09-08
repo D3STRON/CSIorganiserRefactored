@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +55,12 @@ public class JcActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            Thread.sleep(2000);
+            //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
         setContentView(R.layout.activity_jc);
         tasks= new ArrayList<>();
         tasksstring= new ArrayList<>();
@@ -84,7 +92,7 @@ public class JcActivity extends AppCompatActivity {
             createtask = (Button) findViewById(R.id.createtask);
             tasklist = (ListView) findViewById(R.id.tasklist);
             exit = (Button) findViewById(R.id.exit);
-            welcome = (TextView) findViewById(R.id.welcome);
+          welcome = (TextView) findViewById(R.id.welcome);
             welcome.setText("WELCOME " + users.get("name").toUpperCase());
 
            switch(Integer.parseInt(users.get("priority"))){
@@ -151,6 +159,7 @@ public class JcActivity extends AppCompatActivity {
                 }
             });
         }
+        new LongOperation().execute("");
 
     }
     public void showCreateTaskDialog()
@@ -214,15 +223,15 @@ public void showEditTaskDialog(final String taskid)
     dialogbuilder2.setTitle("EDIT TASK: "+tasktitle);
     final ListView memlist;
     final EditText firstname, lastname;
-    final Button preference1,preference2,preference3,more,scoutmoremembers,serach;
+    final Button preference1,preference2,preference3,more,cancel,serach;
     firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
     lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
     preference1=(Button)createtaskview2.findViewById(R.id.preference1);
     preference2=(Button)createtaskview2.findViewById(R.id.preference2);
     preference3=(Button)createtaskview2.findViewById(R.id.preference3);
     more=(Button)createtaskview2.findViewById(R.id.more);
-    scoutmoremembers=(Button)createtaskview2.findViewById(R.id.scoutmoremembers);
     serach=(Button)createtaskview2.findViewById(R.id.search);
+    cancel=(Button)createtaskview2.findViewById(R.id.cancel);
     memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
    ////initial
     memlist.setAdapter(arrayAdaptermemberspref1);
@@ -236,14 +245,8 @@ public void showEditTaskDialog(final String taskid)
             searchedmember="";
         }
     });
-    scoutmoremembers.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
 
-        }
-    });
-
-
+    Toast.makeText(JcActivity.this, "Long Press on any Members to add them to this task!", Toast.LENGTH_LONG).show();
     memlist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -339,7 +342,12 @@ public void showEditTaskDialog(final String taskid)
         }
     });
 
-
+  cancel.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          createtaskdialog2.dismiss();
+      }
+  });
         /*destroytask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -406,7 +414,7 @@ public void showEditTaskDialog(final String taskid)
                 {
                     Model model= fire.getValue(Model.class);
 
-                    if(!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null")) {
+                    if(!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null") && model.getPriority().matches("0")) {
                         if (model.getPreference1().matches(users.get("pref1"))) {
                             arrayAdaptermemberspref1.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
                             model.setId(fire.getKey());
@@ -448,6 +456,7 @@ public void showEditTaskDialog(final String taskid)
         });
 
         ///////////////////////////
+
 
     }
     @Override
@@ -499,7 +508,34 @@ public void showEditTaskDialog(final String taskid)
             return false;
     }
     //////////////////
+    private class LongOperation extends AsyncTask<String, Void, String> {
 
+        @Override
+        protected String doInBackground(String... params) {
+            for (int i = 0; i < 5; i++) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                }
+            }
+          //  progressbar4.setVisibility(View.GONE);
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+           // txt.setText(result);
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
 
 }
 

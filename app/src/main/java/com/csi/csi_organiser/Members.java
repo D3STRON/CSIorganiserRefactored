@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -108,6 +109,7 @@ public class Members extends AppCompatActivity {
                     mSubmitBtn.setVisibility(View.GONE);
                     cancel.setVisibility(View.GONE);
                     mNoBtn.setVisibility(View.VISIBLE);
+                    Toast.makeText(Members.this,"Your Request Has Been Sent!",Toast.LENGTH_LONG).show();
                 }
             });
             cancel.setOnClickListener(new View.OnClickListener() {

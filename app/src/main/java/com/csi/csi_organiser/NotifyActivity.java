@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ public class NotifyActivity extends AppCompatActivity {
     HashMap<String, String> obj;
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> messagelist;
+    DatabaseReference temp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,7 @@ public class NotifyActivity extends AppCompatActivity {
             taskmodel = (TaskModel) getIntent().getSerializableExtra("taskmodel");
             notificationdata = FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Notification");
             arrayAdapter = new ArrayAdapter<String>(NotifyActivity.this, android.R.layout.simple_list_item_1, messagelist);
+            temp=FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id);
             setContentView(R.layout.activity_notify);
             notify = (Button) findViewById(R.id.notify);
             message = (EditText) findViewById(R.id.message);
@@ -65,11 +68,25 @@ public class NotifyActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (!message.getText().toString().isEmpty()) {
                         obj.put("Message", message.getText().toString());
-                        String id = notificationdata.push().getKey();
-                        notificationdata.child(id).setValue(obj);
-                        message.setText("");
-                        notificationlistener();
-                        obj.clear();
+                        final DatabaseReference checker=FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id);
+                        checker.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.child("jcnumber").getValue()!=null)
+                                {
+                                    String id = notificationdata.push().getKey();
+                                    notificationdata.child(id).setValue(obj);
+                                    message.setText("");
+                                    notificationlistener();
+                                    obj.clear();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 }
             });
@@ -80,6 +97,39 @@ public class NotifyActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
        notificationlistener();
+
+        temp.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("jcnumber").getValue()==null)
+                {toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
+                    toolbar.setTitleTextColor(0xFFFFFFFF);
+                    message.setVisibility(View.GONE);
+                    notify.setVisibility(View.GONE);
+                    toolbar.setClickable(false);
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
     public void notificationlistener()
     {
@@ -103,4 +153,5 @@ public class NotifyActivity extends AppCompatActivity {
                 }
         );
     }
+
 }
