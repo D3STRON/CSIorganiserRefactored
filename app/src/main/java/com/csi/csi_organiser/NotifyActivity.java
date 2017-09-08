@@ -29,6 +29,7 @@ public class NotifyActivity extends AppCompatActivity {
     Button notify;
     HashMap<String, String> obj;
     ArrayAdapter<String> arrayAdapter;
+    boolean flag=false;
     ArrayList<String> messagelist;
     DatabaseReference temp;
     @Override
@@ -111,12 +112,14 @@ public class NotifyActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+
                 if(dataSnapshot.getKey().matches("Id"))
                 {toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is inactive!");
                     toolbar.setTitleTextColor(0xFFFFFFFF);
                     message.setVisibility(View.GONE);
                     notify.setVisibility(View.GONE);
                     toolbar.setClickable(false);
+                   temp.removeValue();
                 }
             }
 
