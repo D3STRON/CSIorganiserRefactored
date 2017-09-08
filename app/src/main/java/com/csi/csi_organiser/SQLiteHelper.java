@@ -65,6 +65,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         cv.put("currentTask",this.getAllValues().get("currentTask"));
         cv.put("taskteam",this.getAllValues().get("taskteam"));
         sqLiteDatabase.update("user",cv,null,null);
+
     }
 
     public void updateValues(String teamTask,String currentTask){
