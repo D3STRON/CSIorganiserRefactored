@@ -127,7 +127,6 @@ public class JcActivity extends AppCompatActivity {
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     taskid = tasks.get(position).Id;
                     tasktitle= tasks.get(position).getTasktitle();
-                    Toast.makeText(JcActivity.this,taskid, Toast.LENGTH_SHORT).show();
                     showEditTaskDialog(taskid);
                     return true;
                 }
@@ -269,6 +268,7 @@ public void showEditTaskDialog(final String taskid)
                 dataMap.put("Name",searchedname+" "+searchedrollno);
                 dataMap.put("Backout Request","");
                 firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
+                firebasetask.child(taskid).child("Members").child(searchedmember).child("Attended").setValue("");
                 memlist.setAdapter(arrayAdaptermemberspref1);
                 searchedmember="";
                 Toast.makeText(JcActivity.this,"This member is Added to this task.", Toast.LENGTH_SHORT).show();

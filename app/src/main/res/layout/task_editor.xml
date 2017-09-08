@@ -69,34 +69,33 @@
         android:orientation="horizontal"
         android:padding="5dp"
         >
-
         <Button
-        android:layout_weight="0.5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="PREF1"
-        android:id="@+id/preference1"
-        />
-        <Button
-            android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PREF2"
+            android:id="@+id/preference1"
+            android:text="PREF1"
+            android:layout_weight="0.5"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/preference2"
+            android:text="PREF2"
+            android:layout_weight="0.5"
             />
         <Button
-            android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PREF3"
             android:id="@+id/preference3"
+            android:text="PREF3"
+            android:layout_weight="0.5"
             />
         <Button
+            android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/more"
             android:text="MORE"
-            android:layout_weight="0.5"
+            android:id="@+id/more"
             />
     </LinearLayout>
 

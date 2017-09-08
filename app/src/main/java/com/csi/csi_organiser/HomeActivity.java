@@ -58,7 +58,6 @@ public class HomeActivity extends AppCompatActivity {
         lastname= (EditText)findViewById(R.id.lastname);
         email= (EditText)findViewById(R.id.email);
         email.setText(getIntent().getStringExtra("email"));
-       // email.setEnabled(false);
         rollno=(EditText)findViewById(R.id.rollno);
         number= (EditText)findViewById(R.id.number);
         firebase=FirebaseDatabase.getInstance().getReference("CSI Members");
@@ -74,11 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         team2.setAdapter(teams);
         team3.setAdapter(teams);
         HashMap<String,String> users=db.getAllValues();
-        firstname.setText("Anurag");
-        lastname.setText("ghosh");
-        neareststation.setText("Bhandup");
-        rollno.setText("15ce7022");
-        number.setText("9892237363");
+        email.setEnabled(false);
         team1.setSelection(1);
         team2.setSelection(2);
         team3.setSelection(3);

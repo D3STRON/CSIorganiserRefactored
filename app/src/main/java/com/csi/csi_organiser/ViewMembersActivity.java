@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,19 +45,29 @@ public class ViewMembersActivity extends ListActivity{
     SQLiteHelper db;
     HashMap<String, String> users;
     ArrayList<Boolean> attendencelist;
-    SparseBooleanArray sparseBooleanArray;
 
-    @Override
+
+    /*@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-       // CheckBox b=(CheckBox)l.ite.findViewById(R.id.checkBoxes);
+         CheckBox b=(CheckBox)v.findViewById(R.id.checkBoxes);
+        Toast.makeText(ViewMembersActivity.this,Integer.toString(position),Toast.LENGTH_SHORT).show();
+        // if(b.isChecked())
+         //{
+           //  attendencelist.add(true);
+             //Toast.makeText(ViewMembersActivity.this,Integer.toString(position),Toast.LENGTH_SHORT).show();
+        // }
+         //else
+         //    attendencelist.add(false);
+    }*/
 
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_members);
+        presentmembers=getListView();
         presentmemstring = new ArrayList<>();
         idstring = new ArrayList<>();
         text= new ArrayList<>();
@@ -75,7 +86,6 @@ public class ViewMembersActivity extends ListActivity{
         toolbar.setTitleTextColor(0xFFFFFFFF);
         toolbar.setSubtitleTextColor(0xFFFFFFFF);
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.row, R.id.nameView);
-        ListView presentmembers =this.getListView();
         presentmembers.setAdapter(arrayAdapter);
 
 
@@ -90,6 +100,33 @@ public class ViewMembersActivity extends ListActivity{
                 return true;
             }
         });
+
+
+       presentmembers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+             final DatabaseReference temp= FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Members").child(idstring.get(position)).child("Attended");
+               temp.addListenerForSingleValueEvent(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                      String attend=(String) dataSnapshot.getValue();
+                       if(attend.isEmpty())
+                       {
+                           temp.setValue("yes");
+                       }
+                       else
+                       {
+                           temp.setValue("");
+                       }
+                   }
+
+                   @Override
+                   public void onCancelled(DatabaseError databaseError) {
+
+                   }
+               });
+           }
+       });
 
         dtwithnoattendence.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +153,7 @@ public class ViewMembersActivity extends ListActivity{
               public void onDataChange(DataSnapshot dataSnapshot) {
                   arrayAdapter.clear();
                   idstring.clear();
+                  attendencelist.clear();
                   for(DataSnapshot fire :dataSnapshot.getChildren())
                   {
                       String reason=(String) fire.child("Backout Request").getValue();
@@ -150,16 +188,20 @@ public class ViewMembersActivity extends ListActivity{
 
     public void destroyTask(final boolean attendence)
     {
-                for(int i=0; i<idstring.size();i++)
+                for(int  i=0; i<idstring.size();i++)
                 {
 
-                      Toast.makeText(ViewMembersActivity.this,Boolean.toString(sparseBooleanArray.get(i)),Toast.LENGTH_SHORT).show();
-                    FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("currenttask").setValue("null");
+                    if(attendence && attendencelist.get(i))
+                    {
+                       text.add("\n "+arrayAdapter.getItem(i));
+                    }
+                    //  Toast.makeText(ViewMembersActivity.this,Boolean.toString(sparseBooleanArray.get(i)),Toast.LENGTH_SHORT).show();
+                   FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("currenttask").setValue("null");
                     FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("teamtask").setValue("");
 
                 }
                 ///////////////////////////////sending mail
-       if(attendence && !text.isEmpty()){
+      if(attendence && !text.isEmpty()){
         Date currentLocalTime = Calendar.getInstance().getTime();
         Long dat = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
@@ -229,11 +271,11 @@ public class ViewMembersActivity extends ListActivity{
         conformationmessage.setTextSize(20);
         if(attendence)
         {
-            conformationmessage.setText("The task will be destroyed and the checked members will be given attendence for this task");
+            conformationmessage.setText("The task will be destroyed and the attended will be given attendence for task "+taskmodel.getTasktitle());
         }
         else if(!attendence)
         {
-            conformationmessage.setText("The task will be destroyed and no members will be given attendence for this task");
+            conformationmessage.setText("The task will be destroyed and no members will be given attendence for this task "+taskmodel.getTasktitle());
         }
         final AlertDialog alertDialog = dialogbuilder.create();
         alertDialog.show();
