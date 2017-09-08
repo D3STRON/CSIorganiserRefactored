@@ -38,83 +38,81 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 public class JcActivity extends AppCompatActivity {
-    Button createtask,exit;
+    Button createtask, exit;
     ListView tasklist;
     //    ArrayList<TaskModel> tasks;
     //  ArrayList<Model> members;
     ArrayList<TaskModel> tasks;
-    ArrayList<Model> mempref1,mempref2,mempref3,memmore, currentmemlist,allmembers;
+    ArrayList<Model> mempref1, mempref2, mempref3, memmore, currentmemlist, allmembers;
     TextView welcome;
     Toolbar toolbar;
-    ArrayList<String> tasksstring,memberstringpref1,memberstringpref2,memberstringpref3,memberstringmore;
-    HashMap<String ,String> users;
-    DatabaseReference firebasetask,firebasemembers,temp;
+    ArrayList<String> tasksstring, memberstringpref1, memberstringpref2, memberstringpref3, memberstringmore;
+    HashMap<String, String> users;
+    DatabaseReference firebasetask, firebasemembers, temp;
     SQLiteHelper db;
-    String taskid,searchedmember="",AddId,AddName,AddRollNo,tasktitle, currentteam,searchedname,searchedrollno;
-    ArrayAdapter<String> arrayAdapter,arrayAdaptermemberspref1,arrayAdaptermemberspref2,arrayAdaptermemberspref3,arrayAdaptermembersmore;
+    ProgressBar progressbar4;
+    Long timerforprogressbar;
+    String taskid, searchedmember = "", AddId, AddName, AddRollNo, tasktitle, currentteam, searchedname, searchedrollno;
+    ArrayAdapter<String> arrayAdapter, arrayAdaptermemberspref1, arrayAdaptermemberspref2, arrayAdaptermemberspref3, arrayAdaptermembersmore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            Thread.sleep(2000);
-            //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        timerforprogressbar = (long) 3000;
+        new MyProgressBar().execute((Void) null);
         setContentView(R.layout.activity_jc);
-        tasks= new ArrayList<>();
-        tasksstring= new ArrayList<>();
-        mempref1=new ArrayList<>();
-        mempref2=new ArrayList<>();
-        mempref3=new ArrayList<>();
-        memmore=new ArrayList<>();
-        allmembers=new ArrayList<>();
-        memberstringpref1=new ArrayList<>();
-        memberstringpref2=new ArrayList<>();
-        memberstringpref3=new ArrayList<>();
-        memberstringmore=new ArrayList<>();
+        tasks = new ArrayList<>();
+        tasksstring = new ArrayList<>();
+        mempref1 = new ArrayList<>();
+        mempref2 = new ArrayList<>();
+        mempref3 = new ArrayList<>();
+        memmore = new ArrayList<>();
+        allmembers = new ArrayList<>();
+        memberstringpref1 = new ArrayList<>();
+        memberstringpref2 = new ArrayList<>();
+        memberstringpref3 = new ArrayList<>();
+        memberstringmore = new ArrayList<>();
 
-        arrayAdaptermemberspref1=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref1);
-        arrayAdaptermemberspref2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref2);
-        arrayAdaptermemberspref3=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref3);
-        arrayAdaptermembersmore=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringmore);
-        toolbar=(Toolbar)findViewById(R.id.toolbar);
+        arrayAdaptermemberspref1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref1);
+        arrayAdaptermemberspref2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref2);
+        arrayAdaptermemberspref3 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref3);
+        arrayAdaptermembersmore = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringmore);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("TASK MANAGER");
 
         db = new SQLiteHelper(this);
-        users =db.getAllValues();
-        if(getIntent().getBooleanExtra("EXIT",false))
-        {
+        users = db.getAllValues();
+        if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
-        }
-        else {
+        } else {
             createtask = (Button) findViewById(R.id.createtask);
             tasklist = (ListView) findViewById(R.id.tasklist);
             exit = (Button) findViewById(R.id.exit);
-          welcome = (TextView) findViewById(R.id.welcome);
+            progressbar4 = (ProgressBar) findViewById(R.id.progressBar4);
+            welcome = (TextView) findViewById(R.id.welcome);
             welcome.setText("WELCOME " + users.get("name").toUpperCase());
 
-           switch(Integer.parseInt(users.get("priority"))){
-               case(2):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Technical");
-                   currentteam="Tasks-Technical";
-                       break;
-               case(3):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Creative");
-                   currentteam="Tasks-Creative";
-                   break;
-               case(4):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-GOT");
-                   currentteam="Tasks-GOT";
-                   break;
-               case(5):
-                   firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Publicity");
-                   currentteam="Tasks-Publicity";
-                   break;
-                   }
+            switch (Integer.parseInt(users.get("priority"))) {
+                case (2):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Technical");
+                    currentteam = "Tasks-Technical";
+                    break;
+                case (3):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Creative");
+                    currentteam = "Tasks-Creative";
+                    break;
+                case (4):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-GOT");
+                    currentteam = "Tasks-GOT";
+                    break;
+                case (5):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Publicity");
+                    currentteam = "Tasks-Publicity";
+                    break;
+            }
             firebasemembers = FirebaseDatabase.getInstance().getReference("CSI Members");
-            temp= FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
+            temp = FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
 
 
             arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksstring);
@@ -134,7 +132,7 @@ public class JcActivity extends AppCompatActivity {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     taskid = tasks.get(position).Id;
-                    tasktitle= tasks.get(position).getTasktitle();
+                    tasktitle = tasks.get(position).getTasktitle();
                     showEditTaskDialog(taskid);
                     return true;
                 }
@@ -145,7 +143,7 @@ public class JcActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(JcActivity.this, NotifyActivity.class);
                     intent.putExtra("taskmodel", tasks.get(position));
-                    intent.putExtra("currentteam",currentteam);
+                    intent.putExtra("currentteam", currentteam);
                     startActivity(intent);
                 }
             });
@@ -159,24 +157,23 @@ public class JcActivity extends AppCompatActivity {
                 }
             });
         }
-        new LongOperation().execute("");
-
+        //new LongOperation().execute("");
     }
-    public void showCreateTaskDialog()
-    {
-        final AlertDialog.Builder dialogbuilder= new AlertDialog.Builder(this);
-        LayoutInflater layoutInflater= getLayoutInflater();
-        final View createtaskview = layoutInflater.inflate(R.layout.taskcreate,null);
+
+    public void showCreateTaskDialog() {
+        final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater = getLayoutInflater();
+        final View createtaskview = layoutInflater.inflate(R.layout.taskcreate, null);
         dialogbuilder.setView(createtaskview);
         dialogbuilder.setTitle("CREATE TASK");
-        final EditText tasktitle, tasksubtitle,taskdetails;
-        final Button create,cancel;
-        tasktitle=(EditText)createtaskview.findViewById(R.id.tasktitle);
-        tasksubtitle=(EditText)createtaskview.findViewById(R.id.tasksubtitle);
-        taskdetails=(EditText)createtaskview.findViewById(R.id.taskdetails);
-        create=(Button)createtaskview.findViewById(R.id.create);
-        cancel=(Button)createtaskview.findViewById(R.id.cancel);
-        final AlertDialog createtaskdialog=dialogbuilder.create();
+        final EditText tasktitle, tasksubtitle, taskdetails;
+        final Button create, cancel;
+        tasktitle = (EditText) createtaskview.findViewById(R.id.tasktitle);
+        tasksubtitle = (EditText) createtaskview.findViewById(R.id.tasksubtitle);
+        taskdetails = (EditText) createtaskview.findViewById(R.id.taskdetails);
+        create = (Button) createtaskview.findViewById(R.id.create);
+        cancel = (Button) createtaskview.findViewById(R.id.cancel);
+        final AlertDialog createtaskdialog = dialogbuilder.create();
         createtaskdialog.show();
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,10 +184,10 @@ public class JcActivity extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TaskModel taskModel= new TaskModel();
+                TaskModel taskModel = new TaskModel();
 
-                boolean connection=isConnected(JcActivity.this);
-                if(connection) {
+                boolean connection = isConnected(JcActivity.this);
+                if (connection) {
                     String Id = firebasetask.push().getKey();
                     Date currentLocalTime = Calendar.getInstance().getTime();
                     Long dat = System.currentTimeMillis();
@@ -199,178 +196,149 @@ public class JcActivity extends AppCompatActivity {
                     DateFormat date = new SimpleDateFormat("HH:mm");
                     date.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
                     String localTime = date.format(currentLocalTime);
-                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(),users.get("rollno")+" "+users.get("name"), users.get("phone"), Id);
+                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(), users.get("rollno") + " " + users.get("name"), users.get("phone"), Id);
                     taskModel.setTime(localTime + ".." + datestring);
-                   firebasetask.child(Id).setValue(taskModel);
+                    firebasetask.child(Id).setValue(taskModel);
 
                     if (!arrayAdapter.isEmpty())
                         Toast.makeText(JcActivity.this, "New Task Created!", Toast.LENGTH_SHORT).show();
-                }
-                else
+                } else
                     Toast.makeText(JcActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();
 
-                    createtaskdialog.dismiss();
+                createtaskdialog.dismiss();
             }
         });
     }
-/////////////////
-public void showEditTaskDialog(final String taskid)
-{
-    final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
-    LayoutInflater layoutInflater= getLayoutInflater();
-    final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
-    dialogbuilder2.setView(createtaskview2);
-    dialogbuilder2.setTitle("EDIT TASK: "+tasktitle);
-    final ListView memlist;
-    final EditText firstname, lastname;
-    final Button preference1,preference2,preference3,more,cancel,serach;
-    firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
-    lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
-    preference1=(Button)createtaskview2.findViewById(R.id.preference1);
-    preference2=(Button)createtaskview2.findViewById(R.id.preference2);
-    preference3=(Button)createtaskview2.findViewById(R.id.preference3);
-    more=(Button)createtaskview2.findViewById(R.id.more);
-    serach=(Button)createtaskview2.findViewById(R.id.search);
-    cancel=(Button)createtaskview2.findViewById(R.id.cancel);
-    memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
-   ////initial
-    memlist.setAdapter(arrayAdaptermemberspref1);
-    currentmemlist=mempref1;
-    ////
-    final AlertDialog createtaskdialog2=dialogbuilder2.create();
-    createtaskdialog2.show();
-    createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            searchedmember="";
-        }
-    });
 
-    Toast.makeText(JcActivity.this, "Long Press on any Members to add them to this task!", Toast.LENGTH_LONG).show();
-    memlist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            HashMap<String,String> dataMap = new HashMap<String, String>();
-            if(searchedmember.matches("")) {
-                AddId = currentmemlist.get(position).getId();
-                AddName = currentmemlist.get(position).getName();
-                AddRollNo = currentmemlist.get(position).getRollno();
-                firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
-                dataMap.put("Name",AddName+" "+AddRollNo);
-                dataMap.put("Backout Request","");
-                firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
-                firebasetask.child(taskid).child("Members").child(AddId).child("Attended").setValue("");
-               firebasemembers.child(AddId).child("currenttask").setValue(taskid);
-                firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
-                Toast.makeText(JcActivity.this, AddName+" is Added to this task.", Toast.LENGTH_SHORT).show();
-
+    /////////////////
+    public void showEditTaskDialog(final String taskid) {
+        final AlertDialog.Builder dialogbuilder2 = new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater = getLayoutInflater();
+        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor, null);
+        dialogbuilder2.setView(createtaskview2);
+        dialogbuilder2.setTitle("EDIT TASK: " + tasktitle);
+        final ListView memlist;
+        final EditText firstname, lastname;
+        final Button preference1, preference2, preference3, more, cancel, serach;
+        firstname = (EditText) createtaskview2.findViewById(R.id.firstname);
+        lastname = (EditText) createtaskview2.findViewById(R.id.lastname);
+        preference1 = (Button) createtaskview2.findViewById(R.id.preference1);
+        preference2 = (Button) createtaskview2.findViewById(R.id.preference2);
+        preference3 = (Button) createtaskview2.findViewById(R.id.preference3);
+        more = (Button) createtaskview2.findViewById(R.id.more);
+        serach = (Button) createtaskview2.findViewById(R.id.search);
+        cancel = (Button) createtaskview2.findViewById(R.id.cancel);
+        memlist = (ListView) createtaskview2.findViewById(R.id.memlist);
+        ////initial
+        memlist.setAdapter(arrayAdaptermemberspref1);
+        currentmemlist = mempref1;
+        ////
+        final AlertDialog createtaskdialog2 = dialogbuilder2.create();
+        createtaskdialog2.show();
+        createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                searchedmember = "";
             }
-            else{
-                firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
-                firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
-                dataMap.put("Name",searchedname+" "+searchedrollno);
-                dataMap.put("Backout Request","");
-                firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
-                firebasetask.child(taskid).child("Members").child(searchedmember).child("Attended").setValue("");
-                memlist.setAdapter(arrayAdaptermemberspref1);
-                searchedmember="";
-                Toast.makeText(JcActivity.this,"This member is Added to this task.", Toast.LENGTH_SHORT).show();
-            }
+        });
 
-            return true;
-        }
-    });
+        Toast.makeText(JcActivity.this, "Long Press on any Members to add them to this task!", Toast.LENGTH_LONG).show();
+        memlist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, String> dataMap = new HashMap<String, String>();
+                if (searchedmember.matches("")) {
+                    AddId = currentmemlist.get(position).getId();
+                    AddName = currentmemlist.get(position).getName();
+                    AddRollNo = currentmemlist.get(position).getRollno();
+                    firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
+                    dataMap.put("Name", AddName + " " + AddRollNo);
+                    dataMap.put("Backout Request", "");
+                    firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
+                    firebasetask.child(taskid).child("Members").child(AddId).child("Attended").setValue("");
+                    firebasemembers.child(AddId).child("currenttask").setValue(taskid);
+                    firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
+                    Toast.makeText(JcActivity.this, AddName + " is Added to this task.", Toast.LENGTH_SHORT).show();
 
-    serach.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-           if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
-            {
-                String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
-                for(int i=0;i<allmembers.size();i++)
-                {
-                    if(allmembers.get(i).getName().matches(name))
-                    {
-                        ArrayList<String> temp=new ArrayList<String>();
-                        searchedmember=allmembers.get(i).getId();
-                        searchedname=allmembers.get(i).getName();
-                        searchedrollno=allmembers.get(i).getRollno();
-                        temp.add("Name: "+searchedname+"\nNearest Station: "+allmembers.get(i).getNeareststation());
-                        ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
-                        memlist.setAdapter(tempaa);
-                        break;
-                    }
+                } else {
+                    firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
+                    firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
+                    dataMap.put("Name", searchedname + " " + searchedrollno);
+                    dataMap.put("Backout Request", "");
+                    firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
+                    firebasetask.child(taskid).child("Members").child(searchedmember).child("Attended").setValue("");
+                    memlist.setAdapter(arrayAdaptermemberspref1);
+                    searchedmember = "";
+                    Toast.makeText(JcActivity.this, "This member is Added to this task.", Toast.LENGTH_SHORT).show();
                 }
+
+                return true;
             }
-            else
-            {
-                searchedmember="";
-                searchedname="";
-                memlist.setAdapter(arrayAdaptermemberspref1);
-            }
-        }
-    });
-    preference1.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-             currentmemlist=mempref1;
-            memlist.setAdapter(arrayAdaptermemberspref1);
-        }
-    });
+        });
 
-    preference2.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            currentmemlist=mempref2;
-            memlist.setAdapter(arrayAdaptermemberspref2);
-        }
-    });
-
-    preference3.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            currentmemlist=mempref3;
-            memlist.setAdapter(arrayAdaptermemberspref3);
-        }
-    });
-
-    more.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            currentmemlist=memmore;
-            memlist.setAdapter(arrayAdaptermembersmore);
-        }
-    });
-
-  cancel.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-          createtaskdialog2.dismiss();
-      }
-  });
-        /*destroytask.setOnClickListener(new View.OnClickListener() {
+        serach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                firebasetask.child(taskid).child("Members").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot fire: dataSnapshot.getChildren())
-                        {
-                            firebasemembers.child(fire.getKey()).child("currenttask").setValue("null");
-                            firebasemembers.child(fire.getKey()).child("teamtask").setValue("");
+                if (!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty()) {
+                    String name = firstname.getText().toString().toLowerCase().replace(" ", "") + " " + lastname.getText().toString().toLowerCase().replace(" ", "");
+                    for (int i = 0; i < allmembers.size(); i++) {
+                        if (allmembers.get(i).getName().matches(name)) {
+                            ArrayList<String> temp = new ArrayList<String>();
+                            searchedmember = allmembers.get(i).getId();
+                            searchedname = allmembers.get(i).getName();
+                            searchedrollno = allmembers.get(i).getRollno();
+                            temp.add("Name: " + searchedname + "\nNearest Station: " + allmembers.get(i).getNeareststation());
+                            ArrayAdapter<String> tempaa = new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
+                            memlist.setAdapter(tempaa);
+                            break;
                         }
                     }
+                } else {
+                    searchedmember = "";
+                    searchedname = "";
+                    memlist.setAdapter(arrayAdaptermemberspref1);
+                }
+            }
+        });
+        preference1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentmemlist = mempref1;
+                memlist.setAdapter(arrayAdaptermemberspref1);
+            }
+        });
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+        preference2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentmemlist = mempref2;
+                memlist.setAdapter(arrayAdaptermemberspref2);
+            }
+        });
 
-                    }
-                });
-                firebasetask.child(taskid).removeValue();
+        preference3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentmemlist = mempref3;
+                memlist.setAdapter(arrayAdaptermemberspref3);
+            }
+        });
+
+        more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentmemlist = memmore;
+                memlist.setAdapter(arrayAdaptermembersmore);
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 createtaskdialog2.dismiss();
             }
-        });*/
+        });
+
 
     }
 
@@ -383,10 +351,9 @@ public void showEditTaskDialog(final String taskid)
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrayAdapter.clear();
                 tasks.clear();
-                for(DataSnapshot fire: dataSnapshot.getChildren())
-                {
-                    TaskModel taskModel= fire.getValue(TaskModel.class);
-                    arrayAdapter.add("\nTask title: "+taskModel.tasktitle+"\nTask description: "+taskModel.taskdetails+"\nAt: "+taskModel.getTime());
+                for (DataSnapshot fire : dataSnapshot.getChildren()) {
+                    TaskModel taskModel = fire.getValue(TaskModel.class);
+                    arrayAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
                     tasks.add(taskModel);
                 }
                 arrayAdapter.notifyDataSetChanged();
@@ -401,7 +368,7 @@ public void showEditTaskDialog(final String taskid)
         firebasemembers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               arrayAdaptermemberspref1.clear();
+                arrayAdaptermemberspref1.clear();
                 arrayAdaptermemberspref2.clear();
                 arrayAdaptermemberspref3.clear();
                 arrayAdaptermembersmore.clear();
@@ -410,29 +377,23 @@ public void showEditTaskDialog(final String taskid)
                 mempref3.clear();
                 memmore.clear();
                 allmembers.clear();
-                for(DataSnapshot fire: dataSnapshot.getChildren())
-                {
-                    Model model= fire.getValue(Model.class);
+                for (DataSnapshot fire : dataSnapshot.getChildren()) {
+                    Model model = fire.getValue(Model.class);
 
-                    if(!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null") && model.getPriority().matches("0")) {
+                    if (!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null") && model.getPriority().matches("0")) {
                         if (model.getPreference1().matches(users.get("pref1"))) {
                             arrayAdaptermemberspref1.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
                             model.setId(fire.getKey());
                             mempref1.add(model);
-                        } else if (model.getPreference2().matches(users.get("pref1")))
-                        {
+                        } else if (model.getPreference2().matches(users.get("pref1"))) {
                             arrayAdaptermemberspref2.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference2: " + model.getPreference2());
                             model.setId(fire.getKey());
                             mempref2.add(model);
-                        }
-                        else if(model.getPreference3().matches(users.get("pref1")))
-                        {
+                        } else if (model.getPreference3().matches(users.get("pref1"))) {
                             arrayAdaptermemberspref3.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference3: " + model.getPreference3());
                             model.setId(fire.getKey());
                             mempref3.add(model);
-                        }
-                        else
-                        {
+                        } else {
                             arrayAdaptermembersmore.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation());
                             model.setId(fire.getKey());
                             memmore.add(model);
@@ -450,7 +411,7 @@ public void showEditTaskDialog(final String taskid)
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError){
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -459,10 +420,12 @@ public void showEditTaskDialog(final String taskid)
 
 
     }
+
     @Override
     public void onBackPressed() {
 
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
@@ -477,7 +440,7 @@ public void showEditTaskDialog(final String taskid)
                 return true;
             case R.id.editprofile:
                 Model model = new Model();
-                Intent intenteditprofile= new Intent(JcActivity.this,EditProfile.class);
+                Intent intenteditprofile = new Intent(JcActivity.this, EditProfile.class);
                 startActivity(intenteditprofile);
                 finish();
                 return true;
@@ -487,56 +450,45 @@ public void showEditTaskDialog(final String taskid)
     }
 
     ////////////////////////////
-    public boolean isConnected(Context context)
-    {
+    public boolean isConnected(Context context) {
 
-        ConnectivityManager cm= (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
-        NetworkInfo netinfo= cm.getActiveNetworkInfo();
-        if(netinfo!=null && netinfo.isConnectedOrConnecting())
-        {
-            NetworkInfo wifi= cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            NetworkInfo mobile=cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+        NetworkInfo netinfo = cm.getActiveNetworkInfo();
+        if (netinfo != null && netinfo.isConnectedOrConnecting()) {
+            NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            NetworkInfo mobile = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-            if((mobile!=null && mobile.isConnectedOrConnecting())|| (wifi!=null && wifi.isConnectedOrConnecting()))
-            {
+            if ((mobile != null && mobile.isConnectedOrConnecting()) || (wifi != null && wifi.isConnectedOrConnecting())) {
                 return true;
-            }
-            else
+            } else
                 return false;
-        }
-        else
+        } else
             return false;
     }
-    //////////////////
-    private class LongOperation extends AsyncTask<String, Void, String> {
+
+
+    class MyProgressBar extends AsyncTask<Void, Void, Void> {
 
         @Override
-        protected String doInBackground(String... params) {
-            for (int i = 0; i < 5; i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Thread.interrupted();
-                }
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            try {
+                Thread.sleep(timerforprogressbar);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-          //  progressbar4.setVisibility(View.GONE);
-            return "Executed";
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-           // txt.setText(result);
-            // might want to change "executed" for the returned string passed
-            // into onPostExecute() but that is upto you
+        protected void onPostExecute(Void result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            progressbar4.setVisibility(View.GONE);
         }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
     }
-
 }
 
 /*

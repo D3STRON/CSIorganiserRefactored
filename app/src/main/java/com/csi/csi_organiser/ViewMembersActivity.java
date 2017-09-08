@@ -204,12 +204,12 @@ public class ViewMembersActivity extends ListActivity{
        intent.setData(Uri.parse("mailto:"));
         intent.putExtra(Intent.EXTRA_EMAIL, to);
         intent.putExtra(Intent.EXTRA_SUBJECT, taskmodel.getTasktitle()+"-"+taskmodel.getTasksubtitle());
-      intent.putExtra(Intent.EXTRA_TEXT, "on "+datestring+"\n"+text);
+      intent.putExtra(Intent.EXTRA_TEXT, "on "+datestring+"\ntask: "+taskmodel.getTasktitle()+"\n"+text);
         intent.setType("text/plain");
       startActivity(Intent.createChooser(intent, "Send email"));}
         /////////////////////////
              FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).removeValue();
-         toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
+         toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is Inactive");
         toolbar.setTitleTextColor(0xFFFFFFFF);
         dtwithnoattendence.setVisibility(View.GONE);
         dtwithattendence.setVisibility(View.GONE);
@@ -234,12 +234,15 @@ public class ViewMembersActivity extends ListActivity{
            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
 
-               if(dataSnapshot.child("jcnumber").getValue()==null)
-               {toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
-               toolbar.setTitleTextColor(0xFFFFFFFF);
-               dtwithnoattendence.setVisibility(View.GONE);
-               dtwithattendence.setVisibility(View.GONE);}
-               flag=true;
+              if(dataSnapshot.getKey().matches("Id"))
+              {
+                  toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is Inactive");
+                  toolbar.setTitleTextColor(0xFFFFFFFF);
+                  dtwithnoattendence.setVisibility(View.GONE);
+                  dtwithattendence.setVisibility(View.GONE);
+                  flag=true;
+              }
+
            }
 
            @Override

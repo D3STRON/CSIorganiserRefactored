@@ -111,8 +111,8 @@ public class NotifyActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("jcnumber").getValue()==null)
-                {toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is destroyed");
+                if(dataSnapshot.getKey().matches("Id"))
+                {toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is inactive!");
                     toolbar.setTitleTextColor(0xFFFFFFFF);
                     message.setVisibility(View.GONE);
                     notify.setVisibility(View.GONE);
