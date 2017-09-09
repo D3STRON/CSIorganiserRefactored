@@ -242,22 +242,21 @@ public class JcActivity extends AppCompatActivity {
             }
         });
 
-        Toast.makeText(JcActivity.this, "Long Press on any Members to add them to this task!", Toast.LENGTH_LONG).show();
-        memlist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        Toast.makeText(JcActivity.this, "" +
+                "Tap on any Members to add them to this task!", Toast.LENGTH_LONG).show();
+        memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HashMap<String, String> dataMap = new HashMap<String, String>();
                 if (searchedmember.matches("")) {
                     AddId = currentmemlist.get(position).getId();
                     AddName = currentmemlist.get(position).getName();
                     AddRollNo = currentmemlist.get(position).getRollno();
-                    firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
                     dataMap.put("Name", AddName + " " + AddRollNo);
                     dataMap.put("Backout Request", "");
-                    firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
-                    firebasetask.child(taskid).child("Members").child(AddId).child("Attended").setValue("");
                     firebasemembers.child(AddId).child("currenttask").setValue(taskid);
                     firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
+                    taskVerify(AddId,dataMap);
                     Toast.makeText(JcActivity.this, AddName + " is Added to this task.", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -265,14 +264,12 @@ public class JcActivity extends AppCompatActivity {
                     firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
                     dataMap.put("Name", searchedname + " " + searchedrollno);
                     dataMap.put("Backout Request", "");
-                    firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
-                    firebasetask.child(taskid).child("Members").child(searchedmember).child("Attended").setValue("");
+                    taskVerify(searchedmember,dataMap);
                     memlist.setAdapter(arrayAdaptermemberspref1);
                     searchedmember = "";
                     Toast.makeText(JcActivity.this, "This member is Added to this task.", Toast.LENGTH_SHORT).show();
                 }
 
-                return true;
             }
         });
 
@@ -349,14 +346,18 @@ public class JcActivity extends AppCompatActivity {
         firebasetask.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                arrayAdapter.clear();
-                tasks.clear();
-                for (DataSnapshot fire : dataSnapshot.getChildren()) {
-                    TaskModel taskModel = fire.getValue(TaskModel.class);
-                    arrayAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
-                    tasks.add(taskModel);
-                }
-                arrayAdapter.notifyDataSetChanged();
+
+                    arrayAdapter.clear();
+                    tasks.clear();
+                    for (DataSnapshot fire : dataSnapshot.getChildren()) {
+                        if(!fire.getKey().matches("Days")) {
+                        TaskModel taskModel = fire.getValue(TaskModel.class);
+                        arrayAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
+                        tasks.add(taskModel);
+                        }
+                    }
+                    arrayAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -427,7 +428,7 @@ public class JcActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.jcmenu, menu);
         return true;
     }
 
@@ -444,6 +445,11 @@ public class JcActivity extends AppCompatActivity {
                 startActivity(intenteditprofile);
                 finish();
                 return true;
+            case  R.id.viewattendence:
+                Intent intentattendence = new Intent(JcActivity.this,DateActivity.class);
+                intentattendence.putExtra("currentteam",currentteam);
+                startActivity(intentattendence);
+                return  true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -488,6 +494,29 @@ public class JcActivity extends AppCompatActivity {
             super.onPostExecute(result);
             progressbar4.setVisibility(View.GONE);
         }
+    }
+    public void taskVerify(final String k, final HashMap<String, String> data)
+    {
+        DatabaseReference Verifier=FirebaseDatabase.getInstance().getReference("CSI Members").child(k);
+        Verifier.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String teamtask=(String)dataSnapshot.child("teamtask").getValue();
+                String currenttask=(String)dataSnapshot.child("currenttask").getValue();
+                if(teamtask.matches(currentteam) && currenttask.matches(taskid) && !currenttask.matches("null"))
+                {
+                    firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
+                    firebasetask.child(taskid).child("Members").child(k).setValue(data);
+                    firebasetask.child(taskid).child("Members").child(k).child("Attended").setValue("");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
 

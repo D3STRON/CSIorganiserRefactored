@@ -181,33 +181,24 @@ public class ViewMembersActivity extends ListActivity{
 
     public void destroyTask(final boolean attendence)
     {
+        Date currentLocalTime = Calendar.getInstance().getTime();
+        Long dat = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
+        String datestring = sdf.format(dat);
+        DatabaseReference date=FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child("Days").child(datestring);
                 for(int  i=0; i<idstring.size();i++)
                 {
 
                     if(attendence && attendencelist.get(i))
                     {
-                       text.add("\n "+arrayAdapter.getItem(i));
+                        date.child(idstring.get(i)).child("Details").setValue(arrayAdapter.getItem(i));
                     }
                     //  Toast.makeText(ViewMembersActivity.this,Boolean.toString(sparseBooleanArray.get(i)),Toast.LENGTH_SHORT).show();
                    FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("currenttask").setValue("null");
                     FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("teamtask").setValue("");
 
                 }
-                ///////////////////////////////sending mail
-      if(attendence && !text.isEmpty()){
-        Date currentLocalTime = Calendar.getInstance().getTime();
-        Long dat = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
-       String datestring = sdf.format(dat);
-        Intent intent= new Intent(Intent.ACTION_SEND);
-       String[] to={users.get("email")};
-       intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, to);
-        intent.putExtra(Intent.EXTRA_SUBJECT, taskmodel.getTasktitle()+"-"+taskmodel.getTasksubtitle());
-      intent.putExtra(Intent.EXTRA_TEXT, "on "+datestring+"\ntask: "+taskmodel.getTasktitle()+"\n"+text);
-        intent.setType("text/plain");
-      startActivity(Intent.createChooser(intent, "Send email"));}
-        /////////////////////////
+
              FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).removeValue();
          toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is Inactive");
         toolbar.setTitleTextColor(0xFFFFFFFF);
@@ -218,7 +209,10 @@ public class ViewMembersActivity extends ListActivity{
     protected void onStart() {
         super.onStart();
         flag=false;
-
+        if(childEventListener != null)
+        {
+            firemembers.removeEventListener(childEventListener);
+        }
        temp.addChildEventListener(new ChildEventListener() {
            @Override
            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -257,10 +251,6 @@ public class ViewMembersActivity extends ListActivity{
        });
 
 
-        if(childEventListener != null)
-        {
-            firemembers.removeEventListener(childEventListener);
-        }
         childEventListener=firemembers.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -344,5 +334,18 @@ public class ViewMembersActivity extends ListActivity{
 }
 /*
 
+  Intent intent= new Intent(Intent.ACTION_SEND);
+       String[] to={users.get("email")};
+       intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, to);
+        intent.putExtra(Intent.EXTRA_SUBJECT, taskmodel.getTasktitle()+"-"+taskmodel.getTasksubtitle());
+      intent.putExtra(Intent.EXTRA_TEXT, "on "+datestring+"\ntask: "+taskmodel.getTasktitle()+"\n"+text);
+        intent.setType("text/plain");
+      startActivity(Intent.createChooser(intent, "Send email"));
 
+            ///////////////////////////////sending mail
+      if(attendence && !text.isEmpty()){
+
+      }
+        /////////////////////////
  */
