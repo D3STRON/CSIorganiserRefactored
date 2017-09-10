@@ -1,20 +1,25 @@
 package com.csi.csi_organiser;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +42,7 @@ public class ViewMembersActivity extends ListActivity{
     TaskModel taskmodel;
     ListView presentmembers;
     ArrayList<String> presentmemstring, idstring, text;
-    ArrayAdapter<String> arrayAdapter;
+    MyCustomAdapter arrayAdapter;
     boolean flag=false;
     DatabaseReference firemembers,firecsi;
     ChildEventListener childEventListener;
@@ -85,9 +90,9 @@ public class ViewMembersActivity extends ListActivity{
        toolbar.setSubtitle("Current Members of this task...");
         toolbar.setTitleTextColor(0xFFFFFFFF);
         toolbar.setSubtitleTextColor(0xFFFFFFFF);
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.row, R.id.nameView);
+        arrayAdapter = new MyCustomAdapter(presentmemstring,this);
         presentmembers.setAdapter(arrayAdapter);
-        temp=FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id);
+        temp=FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam"));
 
 
 
@@ -101,10 +106,13 @@ public class ViewMembersActivity extends ListActivity{
             }
         });
 
+
+
        presentmembers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-             final DatabaseReference temp= FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Members").child(idstring.get(position)).child("Attended");
+           public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+               final DatabaseReference temp= FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Members").child(idstring.get(position)).child("Attended");
                temp.addListenerForSingleValueEvent(new ValueEventListener() {
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {
@@ -153,11 +161,17 @@ public class ViewMembersActivity extends ListActivity{
                   arrayAdapter.clear();
                   idstring.clear();
                   attendencelist.clear();
-
+                 int a;
                        for (DataSnapshot fire : dataSnapshot.getChildren()) {
-                          String reason = (String) fire.child("Backout Request").getValue();
+
+                           String reason = (String) fire.child("Backout Request").getValue();
                           String attended = (String) fire.child("Attended").getValue();
-                          if (reason.matches("") && attended.matches("")) {
+                         if(fire.child("Backout Request").getValue()==null || fire.child("Attended").getValue()==null)
+                         {
+                             arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nIs ready for the task.");
+                             attendencelist.add(false);
+                         }
+                           else if (reason.matches("") && attended.matches("")) {
                               arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nIs ready for the task.");
                               attendencelist.add(false);
                           } else if (attended.matches("") && !reason.isEmpty()) {
@@ -167,9 +181,10 @@ public class ViewMembersActivity extends ListActivity{
                               arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nAttended the task");
                               attendencelist.add(true);
                           }
-
+                         //  arrayAdapter.getView(1,R.layout.row);
                           idstring.add(fire.getKey());
                       }
+                      arrayAdapter.setIdString(idstring);
                       arrayAdapter.notifyDataSetChanged();
               }
               @Override
@@ -213,7 +228,7 @@ public class ViewMembersActivity extends ListActivity{
         {
             firemembers.removeEventListener(childEventListener);
         }
-       temp.addChildEventListener(new ChildEventListener() {
+       temp.child(taskmodel.Id).addChildEventListener(new ChildEventListener() {
            @Override
            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -329,8 +344,66 @@ public class ViewMembersActivity extends ListActivity{
                 startActivity(intent);
             }
     }
+/////////////////////////////////////////////
+    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
+        private ArrayList<String> list = new ArrayList<String>();
+        private ArrayList<String> idString = new ArrayList<String>();
+        private Context context;
+        public MyCustomAdapter(ArrayList<String> list, Context context) {
+            this.list = list;
+            this.context = context;
+        }
+        @Override
+        public int getCount() {
+            return list.size();
+        }
 
+        public Object getItem(int position) {
+            return list.get(position);
+        }
 
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.row, null);
+            }
+
+            //Handle TextView and display string from your list
+            TextView listItemText = (TextView)view.findViewById(R.id.nameView);
+            listItemText.setText(list.get(position));
+
+            //Handle buttons and add onClickListeners
+            final Button removemember = (Button)view.findViewById(R.id.removemember);
+            removemember.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    firecsi.child(idstring.get(position)).child("currenttask").setValue("null");
+                    firecsi.child(idstring.get(position)).child("teamtask").setValue("");
+                    firemembers.child(idstring.get(position)).removeValue();
+                }
+            });
+            return view;
+        }
+        public void clear()
+        {
+            list.clear();
+        }
+        public void add(String s)
+        {
+            list.add(s);
+        }
+        public void setIdString(ArrayList<String> idString)
+        {
+            this.idString=idString;
+        }
+    }
 }
 /*
 

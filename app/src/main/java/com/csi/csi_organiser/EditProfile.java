@@ -202,8 +202,7 @@ public class EditProfile extends AppCompatActivity {
                 }
                 else if (result) {
                     String Id = users.get("UUID");
-                    Toast.makeText(EditProfile.this, Id, Toast.LENGTH_LONG).show();
-                    /////////////////
+                   /////////////////
                     switch(Integer.parseInt(users.get("priority"))){
                         case (0):
                             break;
@@ -230,6 +229,7 @@ public class EditProfile extends AppCompatActivity {
         });
     }
 
+
     @Override
     public void onBackPressed() {
        goBack();
@@ -251,67 +251,6 @@ public class EditProfile extends AppCompatActivity {
 }
 /*
 
-
-  delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(EditProfile.this);
-                builder.setTitle("Confirm Delete ?")
-                        .setMessage("Are you sure you want to delete your account ?")
-                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                if(user!=null){
-
-                                    EditProfile.this.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            DatabaseReference dbr = FirebaseDatabase.getInstance().getReference().child("CSI Members").child(user.getUid());
-                                            dbr.removeValue().addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(EditProfile.this,e.getMessage(),Toast.LENGTH_LONG).show();
-                                                    Log.e("EDITpROFILE",e.getMessage());
-                                                }
-                                            });
-                                            db.deleteUsers();
-                                        }
-                                    });
-
-                                    EditProfile.this.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            user.delete().addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(EditProfile.this,e.getMessage(),Toast.LENGTH_LONG).show();
-                                                    Log.e("EDITpROFILE",e.getMessage());
-                                                }
-                                            }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    Intent intent = new Intent(EditProfile.this,GSignin.class);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            });
-                                        }
-                                    });
-
-                                }
-                            }
-                        })
-                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(EditProfile.this,"Be careful next time!",Toast.LENGTH_LONG).show();
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
 
 
  */

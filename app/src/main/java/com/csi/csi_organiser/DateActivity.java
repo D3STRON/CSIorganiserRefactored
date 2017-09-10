@@ -135,7 +135,7 @@ public class DateActivity extends AppCompatActivity {
               {
                  String s=(String) fire.child("Details").getValue();
                   membersAdapter.add(s);
-                  membersstring2.add("\n"+s);
+                  membersstring2.add("\n\n"+s);
               }
               membersAdapter.notifyDataSetChanged();
           }

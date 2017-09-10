@@ -14,10 +14,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -254,21 +257,21 @@ public class JcActivity extends AppCompatActivity {
                     AddRollNo = currentmemlist.get(position).getRollno();
                     dataMap.put("Name", AddName + " " + AddRollNo);
                     dataMap.put("Backout Request", "");
-                    firebasemembers.child(AddId).child("currenttask").setValue(taskid);
-                    firebasemembers.child(AddId).child("teamtask").setValue(currentteam);
-                    taskVerify(AddId,dataMap);
-                    Toast.makeText(JcActivity.this, AddName + " is Added to this task.", Toast.LENGTH_SHORT).show();
+                    dataMap.put("Attended","");
+                    firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
+                    firebasetask.child(taskid).child("Members").child(AddId).setValue(dataMap);
+                    taskVerify(taskid,AddId,AddName);
 
                 } else {
-                    firebasemembers.child(searchedmember).child("currenttask").setValue(taskid);
-                    firebasemembers.child(searchedmember).child("teamtask").setValue(currentteam);
-                    dataMap.put("Name", searchedname + " " + searchedrollno);
+                   dataMap.put("Name", searchedname + " " + searchedrollno);
                     dataMap.put("Backout Request", "");
-                    taskVerify(searchedmember,dataMap);
+                    dataMap.put("Attended","");
+                    firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
+                    firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
+                    taskVerify(taskid,searchedmember,searchedname);
                     memlist.setAdapter(arrayAdaptermemberspref1);
                     searchedmember = "";
-                    Toast.makeText(JcActivity.this, "This member is Added to this task.", Toast.LENGTH_SHORT).show();
-                }
+                   }
 
             }
         });
@@ -289,6 +292,10 @@ public class JcActivity extends AppCompatActivity {
                             memlist.setAdapter(tempaa);
                             break;
                         }
+                    }
+                    if(searchedmember.matches(""))
+                    {
+                        Toast.makeText(JcActivity.this, "No such member found..", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     searchedmember = "";
@@ -495,19 +502,23 @@ public class JcActivity extends AppCompatActivity {
             progressbar4.setVisibility(View.GONE);
         }
     }
-    public void taskVerify(final String k, final HashMap<String, String> data)
+    public void taskVerify(final String k, final String memid, final String name)
     {
-        DatabaseReference Verifier=FirebaseDatabase.getInstance().getReference("CSI Members").child(k);
+        final DatabaseReference Verifier=FirebaseDatabase.getInstance().getReference(currentteam).child(k);
         Verifier.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String teamtask=(String)dataSnapshot.child("teamtask").getValue();
-                String currenttask=(String)dataSnapshot.child("currenttask").getValue();
-                if(teamtask.matches(currentteam) && currenttask.matches(taskid) && !currenttask.matches("null"))
+                if(dataSnapshot.child("jcnumber").getValue()==null)
                 {
-                    firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
-                    firebasetask.child(taskid).child("Members").child(k).setValue(data);
-                    firebasetask.child(taskid).child("Members").child(k).child("Attended").setValue("");
+                   Verifier.removeValue();
+                    Toast.makeText(JcActivity.this,"This Task is Removed!", Toast.LENGTH_SHORT).show();
+
+                }
+                else
+                {
+                    firebasemembers.child(memid).child("currenttask").setValue(taskid);
+                    firebasemembers.child(memid).child("teamtask").setValue(currentteam);
+                    Toast.makeText(JcActivity.this,name+" is added to this task!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -517,6 +528,123 @@ public class JcActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
+        private ArrayList<String> list = new ArrayList<String>();
+        private ArrayList<String> idString = new ArrayList<String>();
+        private Context context;
+        public MyCustomAdapter(ArrayList<String> list, Context context) {
+            this.list = list;
+            this.context = context;
+        }
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.row, null);
+            }
+
+            //Handle TextView and display string from your list
+            TextView listItemText = (TextView)view.findViewById(R.id.nameView);
+            listItemText.setText(list.get(position));
+
+            //Handle buttons and add onClickListeners
+            final Button removemember = (Button)view.findViewById(R.id.removemember);
+            removemember.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context,idString.get(position),Toast.LENGTH_SHORT).show();
+                }
+            });
+            return view;
+        }
+        public void clear()
+        {
+            list.clear();
+        }
+        public void add(String s)
+        {
+            list.add(s);
+        }
+        public void setIdString(ArrayList<String> idString)
+        {
+            this.idString=idString;
+        }
+    }
+
+    public class CustomAdapter extends BaseAdapter implements ListAdapter {
+        private ArrayList<String> list = new ArrayList<String>();
+        private ArrayList<TaskModel> taskModel = new ArrayList<>();
+        private Context context;
+        public CustomAdapter(ArrayList<String> list, Context context) {
+            this.list = list;
+            this.context = context;
+        }
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.row, null);
+            }
+
+            //Handle TextView and display string from your list
+            TextView listItemText = (TextView)view.findViewById(R.id.nameView);
+            listItemText.setText(list.get(position));
+
+            //Handle buttons and add onClickListeners
+            final Button removemember = (Button)view.findViewById(R.id.removemember);
+            removemember.setText("Add Members");
+            removemember.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            return view;
+        }
+        public void clear()
+        {
+            list.clear();
+        }
+        public void add(String s)
+        {
+            list.add(s);
+        }
+        public void setIdString(ArrayList<TaskModel> taskModel)
+        {
+            this.taskModel=taskModel;
+        }
     }
 }
 

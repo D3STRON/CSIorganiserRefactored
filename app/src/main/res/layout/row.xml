@@ -7,12 +7,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         >
 
- <View
-     android:layout_width="50dp"
-     android:layout_height="match_parent"/>
+
 
     <TextView
         android:id="@+id/nameView"
@@ -28,5 +26,14 @@
         android:textIsSelectable="false"
         android:textSize="18dp"
        />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick=""
+            android:id="@+id/removemember"
+            android:textSize="13dp"
+            android:text="REMOVE"
+            />
     </LinearLayout>
 </LinearLayout>
