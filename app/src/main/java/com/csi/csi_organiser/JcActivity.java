@@ -53,6 +53,7 @@ public class JcActivity extends AppCompatActivity {
     HashMap<String, String> users;
     DatabaseReference firebasetask, firebasemembers, temp;
     SQLiteHelper db;
+    CustomAdapter taskAdapter;
     ProgressBar progressbar4;
     Long timerforprogressbar;
     String taskid, searchedmember = "", AddId, AddName, AddRollNo, tasktitle, currentteam, searchedname, searchedrollno;
@@ -117,9 +118,9 @@ public class JcActivity extends AppCompatActivity {
             firebasemembers = FirebaseDatabase.getInstance().getReference("CSI Members");
             temp = FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
 
-
-            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksstring);
-            tasklist.setAdapter(arrayAdapter);
+            taskAdapter= new CustomAdapter(tasksstring,this);
+            // arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksstring);
+            tasklist.setAdapter(taskAdapter);
             createtask.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -131,7 +132,7 @@ public class JcActivity extends AppCompatActivity {
                 }
             });
 
-            tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+          /*  tasklist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     taskid = tasks.get(position).Id;
@@ -139,7 +140,7 @@ public class JcActivity extends AppCompatActivity {
                     showEditTaskDialog(taskid);
                     return true;
                 }
-            });
+            });*/
 
             tasklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -203,7 +204,7 @@ public class JcActivity extends AppCompatActivity {
                     taskModel.setTime(localTime + ".." + datestring);
                     firebasetask.child(Id).setValue(taskModel);
 
-                    if (!arrayAdapter.isEmpty())
+                    if (!taskAdapter.isEmpty())
                         Toast.makeText(JcActivity.this, "New Task Created!", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(JcActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();
@@ -263,7 +264,7 @@ public class JcActivity extends AppCompatActivity {
                     taskVerify(taskid,AddId,AddName);
 
                 } else {
-                   dataMap.put("Name", searchedname + " " + searchedrollno);
+                    dataMap.put("Name", searchedname + " " + searchedrollno);
                     dataMap.put("Backout Request", "");
                     dataMap.put("Attended","");
                     firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
@@ -271,7 +272,7 @@ public class JcActivity extends AppCompatActivity {
                     taskVerify(taskid,searchedmember,searchedname);
                     memlist.setAdapter(arrayAdaptermemberspref1);
                     searchedmember = "";
-                   }
+                }
 
             }
         });
@@ -354,16 +355,17 @@ public class JcActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    arrayAdapter.clear();
-                    tasks.clear();
-                    for (DataSnapshot fire : dataSnapshot.getChildren()) {
-                        if(!fire.getKey().matches("Days")) {
+                taskAdapter.clear();
+                tasks.clear();
+                for (DataSnapshot fire : dataSnapshot.getChildren()) {
+                    if(!fire.getKey().matches("Days")) {
                         TaskModel taskModel = fire.getValue(TaskModel.class);
-                        arrayAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
+                        taskAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
                         tasks.add(taskModel);
-                        }
                     }
-                    arrayAdapter.notifyDataSetChanged();
+                }
+                taskAdapter.setTaskModel(tasks);
+                taskAdapter.notifyDataSetChanged();
 
             }
 
@@ -510,7 +512,7 @@ public class JcActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child("jcnumber").getValue()==null)
                 {
-                   Verifier.removeValue();
+                    Verifier.removeValue();
                     Toast.makeText(JcActivity.this,"This Task is Removed!", Toast.LENGTH_SHORT).show();
 
                 }
@@ -530,63 +532,6 @@ public class JcActivity extends AppCompatActivity {
         });
     }
 
-    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
-        private ArrayList<String> list = new ArrayList<String>();
-        private ArrayList<String> idString = new ArrayList<String>();
-        private Context context;
-        public MyCustomAdapter(ArrayList<String> list, Context context) {
-            this.list = list;
-            this.context = context;
-        }
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        public Object getItem(int position) {
-            return list.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.row, null);
-            }
-
-            //Handle TextView and display string from your list
-            TextView listItemText = (TextView)view.findViewById(R.id.nameView);
-            listItemText.setText(list.get(position));
-
-            //Handle buttons and add onClickListeners
-            final Button removemember = (Button)view.findViewById(R.id.removemember);
-            removemember.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context,idString.get(position),Toast.LENGTH_SHORT).show();
-                }
-            });
-            return view;
-        }
-        public void clear()
-        {
-            list.clear();
-        }
-        public void add(String s)
-        {
-            list.add(s);
-        }
-        public void setIdString(ArrayList<String> idString)
-        {
-            this.idString=idString;
-        }
-    }
 
     public class CustomAdapter extends BaseAdapter implements ListAdapter {
         private ArrayList<String> list = new ArrayList<String>();
@@ -628,7 +573,9 @@ public class JcActivity extends AppCompatActivity {
             removemember.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    taskid = tasks.get(position).Id;
+                    tasktitle = tasks.get(position).getTasktitle();
+                    showEditTaskDialog(taskid);
                 }
             });
             return view;
@@ -641,7 +588,7 @@ public class JcActivity extends AppCompatActivity {
         {
             list.add(s);
         }
-        public void setIdString(ArrayList<TaskModel> taskModel)
+        public void setTaskModel(ArrayList<TaskModel> taskModel)
         {
             this.taskModel=taskModel;
         }
@@ -653,67 +600,6 @@ public class JcActivity extends AppCompatActivity {
 /////////////////////
 
 //////////////////////////////////////
-                 public void showEditTaskDialog()
-    {
-        final AlertDialog.Builder dialogbuilder2= new AlertDialog.Builder(this);
-        LayoutInflater layoutInflater= getLayoutInflater();
-        final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor,null);
-        dialogbuilder2.setView(createtaskview2);
-        dialogbuilder2.setTitle("EDIT TASK");
-        final ListView memlist;
-        final EditText firstname, lastname;
-        final Button destroytask,addmembers,cancel,serach;
-        firstname=(EditText)createtaskview2.findViewById(R.id.firstname);
-        lastname=(EditText)createtaskview2.findViewById(R.id.lastname);
-        destroytask=(Button)createtaskview2.findViewById(R.id.destroytask);
-        addmembers=(Button)createtaskview2.findViewById(R.id.addmembers);
-        serach=(Button)createtaskview2.findViewById(R.id.search);
-        cancel=(Button)createtaskview2.findViewById(R.id.cancel);
-        memlist=(ListView)createtaskview2.findViewById(R.id.memlist);
-        memlist.setAdapter(arrayAdaptermembers);
-        final AlertDialog createtaskdialog2=dialogbuilder2.create();
-        createtaskdialog2.show();
-        createtaskdialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                searchedmember="";
-            }
-        });
-         memlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-             @Override
-             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                 if(searchedmember.matches(""))
-                 Toast.makeText(JcActivity.this, members.get(position).getId(), Toast.LENGTH_SHORT).show();
-                 else
-                     Toast.makeText(JcActivity.this,searchedmember, Toast.LENGTH_SHORT).show();
-             }
-         });
-        serach.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!firstname.getText().toString().isEmpty() && !lastname.getText().toString().isEmpty())
-                {
-                    String name= firstname.getText().toString().toLowerCase().replace(" ","")+" "+lastname.getText().toString().toLowerCase().replace(" ","");
-                    for(int i=0;i<members.size();i++)
-                    {
-                       if(members.get(i).getName().matches(name))
-                       {
-                           ArrayList<String> temp=new ArrayList<String>();
-                           searchedmember=members.get(i).getId();
-                           temp.add("\nRoll No: "+members.get(i).getRollno()+"\nName: "+members.get(i).getName()+"\nNearest Station: "+members.get(i).getNeareststation());
-                           ArrayAdapter<String> tempaa= new ArrayAdapter<String>(JcActivity.this, android.R.layout.simple_list_item_1, temp);
-                           memlist.setAdapter(tempaa);
-                           break;
-                       }
-                    }
-                }
-                else
-                {
-                    searchedmember="";
-                    memlist.setAdapter(arrayAdaptermembers);
-                }
-            }
-        });
 
 //////////////////////
                 */

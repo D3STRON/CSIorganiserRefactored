@@ -46,7 +46,8 @@ public class NotifService extends Service {
         db = new SQLiteHelper(this);
         users = db.getAllValues();
         if(isNetworkAvailable()) {
-            if(!users.get("taskteam").isEmpty())
+
+            if(!users.get("taskteam").isEmpty() && !users.get("currentTask").matches("null"))
             {
                 firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam"));
                 firetask.addValueEventListener(new ValueEventListener() {

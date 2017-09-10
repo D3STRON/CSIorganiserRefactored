@@ -54,7 +54,7 @@ public class NotifyActivity extends AppCompatActivity {
             notifications.setAdapter(arrayAdapter);
             setSupportActionBar(toolbar);
             getSupportActionBar().setTitle(taskmodel.getTasktitle());
-            getSupportActionBar().setSubtitle("Click here to view members..");
+            getSupportActionBar().setSubtitle("Click here to view members or destroy task..");
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
