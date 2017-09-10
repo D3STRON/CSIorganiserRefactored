@@ -134,7 +134,15 @@ public class EditProfile extends AppCompatActivity {
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("EXIT", true);
                     startActivity(intent);
-                } else {
+                }
+                else if(users.get("priority").matches("1") && connection)
+                {
+                    db.deleteUsers();
+                    Intent intent = new Intent(EditProfile.this,CoreActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("EXIT", true);
+                    startActivity(intent);
+                }else {
                     db.deleteUsers();
                     Intent intent = new Intent(EditProfile.this, JcActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

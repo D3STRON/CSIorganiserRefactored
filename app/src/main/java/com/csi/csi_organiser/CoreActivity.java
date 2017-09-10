@@ -32,21 +32,26 @@ public class CoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_core);
-        teamlist=new ArrayList<>();
-        db=new SQLiteHelper(this);
-        welcome=(TextView)findViewById(R.id.welcome);
-        toolbar=(Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("TEAMS");
-        users=db.getAllValues();
-        welcome.setText("WELCOME "+users.get("name").toUpperCase());
-        teamlist.add("Technical");
-        teamlist.add("Creative");
-        teamlist.add("GOT");
-        teamlist.add("Publicity");
-        teams=(ListView)findViewById(R.id.teams);
-        teamAdapter=new CustomAdapter(teamlist,this);
-        teams.setAdapter(teamAdapter);
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
+        else {
+            teamlist = new ArrayList<>();
+            db = new SQLiteHelper(this);
+            welcome = (TextView) findViewById(R.id.welcome);
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle("TEAMS");
+            users = db.getAllValues();
+            welcome.setText("WELCOME " + users.get("name").toUpperCase());
+            teamlist.add("Technical");
+            teamlist.add("Creative");
+            teamlist.add("GOT");
+            teamlist.add("Publicity");
+            teams = (ListView) findViewById(R.id.teams);
+            teamAdapter = new CustomAdapter(teamlist, this);
+            teams.setAdapter(teamAdapter);
+        }
     }
 
     @Override
