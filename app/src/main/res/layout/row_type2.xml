@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:descendantFocusability="blocksDescendants">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/myedittextstyle2"
+        android:orientation="vertical"
+        >
+
+
+
+        <TextView
+            android:id="@+id/nameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/checkBoxes"
+            android:layout_alignParentStart="true"
+            android:padding="8dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="TextView"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textIsSelectable="false"
+            android:textSize="18dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick=""
+                android:id="@+id/viewtasks"
+                android:textSize="13dp"
+                android:text="VIEW ONGOING TASKS"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/nooftasks"
+                android:padding="10dp"
+                android:textSize="17dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+

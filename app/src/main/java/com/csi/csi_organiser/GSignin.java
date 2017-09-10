@@ -59,8 +59,8 @@ public class GSignin extends AppCompatActivity {
             Toast.makeText(GSignin.this,"There is a current User!",Toast.LENGTH_LONG).show();
             if(users.get("priority").matches("1"))
             {
-                //Intent intent= new Intent(HomeActivity.this,CoreActivity.class);
-                //startActivity(intent);
+                Intent intent= new Intent(GSignin.this,CoreActivity.class);
+                startActivity(intent);
 
             }
             else if(users.get("priority").matches("0"))
@@ -144,7 +144,12 @@ public class GSignin extends AppCompatActivity {
 
                         if (memlist.get(i).getPriority().matches("0")) {
                             intent = new Intent(GSignin.this, Members.class);
-                        } else {
+                        } else if(memlist.get(i).getPriority().matches("1"))
+                            {
+                                intent = new Intent(GSignin.this, CoreActivity.class);
+                        }
+                        else
+                        {
                             intent = new Intent(GSignin.this, JcActivity.class);
                         }
                         startActivity(intent);

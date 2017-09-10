@@ -223,7 +223,6 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
 
-                    firebase.removeEventListener(ve);
                     String Id= firebase.push().getKey();
                     firebase.child(Id).setValue(model);
                     if(db.getAllValues().isEmpty()) {
@@ -235,12 +234,15 @@ public class HomeActivity extends AppCompatActivity {
                     Intent intent;
                     if (model.getPriority().matches("0")) {
                         intent = new Intent(HomeActivity.this, Members.class);
-                        startActivity(intent);
-                    } else {
-                        intent = new Intent(HomeActivity.this, JcActivity.class);
-                        startActivity(intent);
                     }
-
+                    else if(model.getPriority().matches("1")){
+                        intent = new Intent(HomeActivity.this,CoreActivity.class);
+                    }
+                    else {
+                        intent = new Intent(HomeActivity.this, JcActivity.class);
+                    }
+                    firebase.removeEventListener(ve);
+                    startActivity(intent);
                     rollnolist.clear();
                     rolelist.clear();
                     alertDialog.dismiss();

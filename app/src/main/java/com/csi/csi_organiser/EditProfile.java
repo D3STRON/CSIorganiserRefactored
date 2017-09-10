@@ -241,6 +241,10 @@ public class EditProfile extends AppCompatActivity {
         {
             intent= new Intent(EditProfile.this,Members.class);
         }
+        else if(users.get("priority").matches("1"))
+        {
+            intent= new Intent(EditProfile.this,CoreActivity.class);
+        }
         else
         {
             intent= new Intent(EditProfile.this,JcActivity.class);

@@ -8,8 +8,17 @@ import java.io.Serializable;
 
 public class TaskModel implements Serializable {
      public String tasktitle, tasksubtitle, taskdetails, jcrollno, Id, jcnumber,time;
+        private int membercount;
 
-    public void setValues(String tasktitle, String tasksubtitle, String taskdetails, String jcrollno, String jcnumber,String Id)
+    public int getMembercount() {
+        return membercount;
+    }
+
+    public void setMembercount(int membercount) {
+        this.membercount = membercount;
+    }
+
+    public void setValues(String tasktitle, String tasksubtitle, String taskdetails, String jcrollno, String jcnumber, String Id)
     {
         this.taskdetails=taskdetails;
         this.tasktitle=tasktitle;

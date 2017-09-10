@@ -32,20 +32,22 @@
             android:label="@string/title_activity_view_members"
             android:theme="@style/AppTheme" />
 
-        <service android:name=".NotifService"></service>
+        <service android:name=".NotifService" />
 
         <receiver android:name=".NotiRec">
             <intent-filter>
-                <action android:name="notify"></action>
+                <action android:name="notify" />
             </intent-filter>
         </receiver>
         <receiver android:name=".NotifReceiver">
             <intent-filter>
-                <action android:name="no"></action>
+                <action android:name="no" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".DateActivity"></activity>
+        <activity android:name=".DateActivity" />
+        <activity android:name=".CoreActivity" />
+        <activity android:name=".CoretaskViewer"></activity>
     </application>
 
 </manifest>

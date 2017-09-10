@@ -271,6 +271,10 @@ public class JcActivity extends AppCompatActivity {
                     firebasetask.child(taskid).child("Members").child(searchedmember).setValue(dataMap);
                     taskVerify(taskid,searchedmember,searchedname);
                     memlist.setAdapter(arrayAdaptermemberspref1);
+                    preference1.setTextColor(0xff0000ff);
+                    preference2.setTextColor(0xff000000);
+                    preference3.setTextColor(0xff000000);
+                    more.setTextColor(0xff000000);
                     searchedmember = "";
                 }
 
@@ -310,6 +314,10 @@ public class JcActivity extends AppCompatActivity {
             public void onClick(View v) {
                 currentmemlist = mempref1;
                 memlist.setAdapter(arrayAdaptermemberspref1);
+                preference1.setTextColor(0xff0000ff);
+                preference2.setTextColor(0xff000000);
+                preference3.setTextColor(0xff000000);
+                more.setTextColor(0xff000000);
             }
         });
 
@@ -318,6 +326,10 @@ public class JcActivity extends AppCompatActivity {
             public void onClick(View v) {
                 currentmemlist = mempref2;
                 memlist.setAdapter(arrayAdaptermemberspref2);
+                preference1.setTextColor(0xff000000);
+                preference2.setTextColor(0xff0000ff);
+                preference3.setTextColor(0xff000000);
+                more.setTextColor(0xff000000);
             }
         });
 
@@ -326,6 +338,10 @@ public class JcActivity extends AppCompatActivity {
             public void onClick(View v) {
                 currentmemlist = mempref3;
                 memlist.setAdapter(arrayAdaptermemberspref3);
+                preference1.setTextColor(0xff000000);
+                preference2.setTextColor(0xff000000);
+                preference3.setTextColor(0xff0000ff);
+                more.setTextColor(0xff000000);
             }
         });
 
@@ -334,6 +350,10 @@ public class JcActivity extends AppCompatActivity {
             public void onClick(View v) {
                 currentmemlist = memmore;
                 memlist.setAdapter(arrayAdaptermembersmore);
+                preference1.setTextColor(0xff000000);
+                preference2.setTextColor(0xff000000);
+                preference3.setTextColor(0xff000000);
+                more.setTextColor(0xff0000ff);
             }
         });
 
@@ -359,8 +379,10 @@ public class JcActivity extends AppCompatActivity {
                 tasks.clear();
                 for (DataSnapshot fire : dataSnapshot.getChildren()) {
                     if(!fire.getKey().matches("Days")) {
+
                         TaskModel taskModel = fire.getValue(TaskModel.class);
                         taskAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
+                        taskModel.setMembercount((int) fire.child("Members").getChildrenCount());
                         tasks.add(taskModel);
                     }
                 }
@@ -535,7 +557,7 @@ public class JcActivity extends AppCompatActivity {
 
     public class CustomAdapter extends BaseAdapter implements ListAdapter {
         private ArrayList<String> list = new ArrayList<String>();
-        private ArrayList<TaskModel> taskModel = new ArrayList<>();
+        private ArrayList<TaskModel> taskModels = new ArrayList<>();
         private Context context;
         public CustomAdapter(ArrayList<String> list, Context context) {
             this.list = list;
@@ -566,7 +588,8 @@ public class JcActivity extends AppCompatActivity {
             //Handle TextView and display string from your list
             TextView listItemText = (TextView)view.findViewById(R.id.nameView);
             listItemText.setText(list.get(position));
-
+            TextView noofmembers=(TextView)view.findViewById(R.id.noofmembers);
+            noofmembers.setText(taskModels.get(position).getMembercount()+" Members");
             //Handle buttons and add onClickListeners
             final Button removemember = (Button)view.findViewById(R.id.removemember);
             removemember.setText("Add Members");
@@ -588,9 +611,9 @@ public class JcActivity extends AppCompatActivity {
         {
             list.add(s);
         }
-        public void setTaskModel(ArrayList<TaskModel> taskModel)
+        public void setTaskModel(ArrayList<TaskModel> taskModels)
         {
-            this.taskModel=taskModel;
+            this.taskModels=taskModels;
         }
     }
 }
