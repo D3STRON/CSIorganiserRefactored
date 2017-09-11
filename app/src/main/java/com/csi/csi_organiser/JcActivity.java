@@ -589,9 +589,12 @@ public class JcActivity extends AppCompatActivity {
             TextView listItemText = (TextView)view.findViewById(R.id.nameView);
             listItemText.setText(list.get(position));
             TextView noofmembers=(TextView)view.findViewById(R.id.noofmembers);
-            noofmembers.setText(taskModels.get(position).getMembercount()+" Members");
+            noofmembers.setText(taskModels.get(position).getMembercount()+" Mem");
             //Handle buttons and add onClickListeners
             final Button removemember = (Button)view.findViewById(R.id.removemember);
+            final Button edittask = (Button)view.findViewById(R.id.move);
+            edittask.setVisibility(View.VISIBLE);
+            edittask.setText("EDIT TASK");
             removemember.setText("Add Members");
             removemember.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -599,6 +602,12 @@ public class JcActivity extends AppCompatActivity {
                     taskid = tasks.get(position).Id;
                     tasktitle = tasks.get(position).getTasktitle();
                     showEditTaskDialog(taskid);
+                }
+            });
+            edittask.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showTaskEditDialog(tasks.get(position));
                 }
             });
             return view;
@@ -615,6 +624,57 @@ public class JcActivity extends AppCompatActivity {
         {
             this.taskModels=taskModels;
         }
+    }
+
+    public void showTaskEditDialog(final TaskModel taskModel) {
+        final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater = getLayoutInflater();
+        final View createtaskview = layoutInflater.inflate(R.layout.taskcreate, null);
+        dialogbuilder.setView(createtaskview);
+        dialogbuilder.setTitle("EDIT TASK");
+        final EditText tasktitle, tasksubtitle, taskdetails;
+        final Button create, cancel;
+        tasktitle = (EditText) createtaskview.findViewById(R.id.tasktitle);
+        tasksubtitle = (EditText) createtaskview.findViewById(R.id.tasksubtitle);
+        taskdetails = (EditText) createtaskview.findViewById(R.id.taskdetails);
+        tasktitle.setText(taskModel.getTasktitle());
+        tasksubtitle.setText(taskModel.getTasksubtitle());
+        taskdetails.setText(taskModel.getTaskdetails());
+        create = (Button) createtaskview.findViewById(R.id.create);
+        create.setText("UPDATE");
+        cancel = (Button) createtaskview.findViewById(R.id.cancel);
+        final AlertDialog createtaskdialog = dialogbuilder.create();
+        createtaskdialog.show();
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createtaskdialog.dismiss();
+            }
+        });
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                boolean connection = isConnected(JcActivity.this);
+                if (connection) {
+                    Date currentLocalTime = Calendar.getInstance().getTime();
+                    Long dat = System.currentTimeMillis();
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
+                    String datestring = sdf.format(dat);
+                    DateFormat date = new SimpleDateFormat("HH:mm");
+                    date.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
+                    String localTime = date.format(currentLocalTime);
+                    firebasetask.child(taskModel.Id).child("tasktitle").setValue(tasktitle.getText().toString());
+                    firebasetask.child(taskModel.Id).child("tasksubtitle").setValue(tasksubtitle.getText().toString());
+                    firebasetask.child(taskModel.Id).child("taskdetails").setValue(taskdetails.getText().toString());
+                    if (!taskAdapter.isEmpty())
+                        Toast.makeText(JcActivity.this, "Task Edited!", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(JcActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();
+
+                createtaskdialog.dismiss();
+            }
+        });
     }
 }
 

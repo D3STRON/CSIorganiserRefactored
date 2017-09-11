@@ -218,7 +218,7 @@ public class Members extends AppCompatActivity {
                 else if(dataSnapshot.getKey().matches("teamtask"))
                 {
                     teamtask=(String) dataSnapshot.getValue();
-                    Toast.makeText(Members.this,(String)dataSnapshot.getValue(),Toast.LENGTH_LONG).show();
+                    //Toast.makeText(Members.this,(String)dataSnapshot.getValue(),Toast.LENGTH_LONG).show();
                     db.updateValues(teamtask,currenttask);
                     users=db.getAllValues();
                     if(!teamtask.isEmpty())
