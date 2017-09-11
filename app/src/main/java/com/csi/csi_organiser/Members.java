@@ -44,6 +44,7 @@ public class Members extends AppCompatActivity {
     String currenttask="",teamtask="";
     HashMap<String ,String> users;
     ChildEventListener ce;
+    ValueEventListener ve;
     DatabaseReference monitor,firetask, notificationdata;
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -167,6 +168,7 @@ public class Members extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(Members.this,GSignin.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        monitor.removeEventListener(ce);
         intent.putExtra("EXIT", true);
         startActivity(intent);
     }
@@ -183,10 +185,12 @@ public class Members extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.logout:
                 db.deleteUsers();
+                monitor.removeEventListener(ce);
                 finish();
                 return true;
             case R.id.editprofile:
                 Intent intenteditprofile= new Intent(Members.this,EditProfile.class);
+                monitor.removeEventListener(ce);
                 startActivity(intenteditprofile);
                 finish();
                 return true;
@@ -199,28 +203,31 @@ public class Members extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         taskVerify();
-        monitor.addChildEventListener(new ChildEventListener() {
+        ce= monitor.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if( dataSnapshot.getKey().matches("currenttask")){
-                    currenttask=dataSnapshot.getValue().toString();
+                if(dataSnapshot.getKey().matches("currenttask"))
+                {
+                    currenttask=(String) dataSnapshot.getValue();
                 }
-                else if(dataSnapshot.getKey().matches("teamtask")) {
-                    teamtask = dataSnapshot.getValue().toString();
+                else if(dataSnapshot.getKey().matches("teamtask"))
+                {
+                    teamtask=(String) dataSnapshot.getValue();
+                    Toast.makeText(Members.this,(String)dataSnapshot.getValue(),Toast.LENGTH_LONG).show();
                     db.updateValues(teamtask,currenttask);
                     users=db.getAllValues();
-                    if(!teamtask.isEmpty() )
+                    if(!teamtask.isEmpty())
                     {
-                        firetask= FirebaseDatabase.getInstance().getReference(teamtask);
-                        notificationList.setVisibility(View.VISIBLE);
-                        mNoBtn.setVisibility(View.VISIBLE);
-                        //  Toast.makeText(Members.this, arrayAdapter.getItem(1),Toast.LENGTH_SHORT).show();
-                        addChildlistenerofNotifications(firetask);
-                        addtaskListener(firetask,currenttask);
+                        firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask"));
+                        //////////////
+                        setPageDetails();
+                        //////////////
+                        addTaskListener();
                     }
                     else
                     {
@@ -234,13 +241,9 @@ public class Members extends AppCompatActivity {
                         mSubmitBtn.setVisibility(View.GONE);
                         cancel.setVisibility(View.GONE);
                         arrayAdapter.clear();
-
                     }
-
                 }
-
             }
-
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -257,12 +260,108 @@ public class Members extends AppCompatActivity {
 
             }
         });
-
     }
 
-    public void addtaskListener(final DatabaseReference firetask, final String k)
+    public void taskVerify()
     {
-        firetask.child(k).addListenerForSingleValueEvent(new ValueEventListener() {
+        monitor.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String s=(String) dataSnapshot.child("teamtask").getValue();
+                if(!s.isEmpty())
+                {
+                    db.updateValues((String)dataSnapshot.child("teamtask").getValue(),(String) dataSnapshot.child("currenttask").getValue());
+                    users=db.getAllValues();
+                    firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask"));
+                    //////////////
+                    setPageDetails();
+                    //////////////
+                    addTaskListener();
+                }
+                else
+                {
+                    getSupportActionBar().setTitle("TASK MANAGER");
+                    mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
+                    mNoBtn.setVisibility(View.INVISIBLE);
+                    db.updateValues("","null");
+                    users=db.getAllValues();
+                    notificationList.setVisibility(View.INVISIBLE);
+                    mReasonBox.setVisibility(View.GONE);
+                    mSubmitBtn.setVisibility(View.GONE);
+                    cancel.setVisibility(View.GONE);
+                    arrayAdapter.clear();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void addTaskListener()
+    {
+        updateNotification();
+        firetask.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().matches("Notification"))
+                {
+                    updateNotification();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().matches("Notification"))
+                {
+                    updateNotification();
+                }
+                else if (dataSnapshot.getKey().matches("tasktitle") || dataSnapshot.getKey().matches("tasksubtitle") || dataSnapshot.getKey().matches("taskdetails"))
+                {
+                    //////////////
+                    setPageDetails();
+                    //////////////
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void updateNotification()
+    {
+        firetask.child("Notification").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayAdapter.clear();
+                for(DataSnapshot fire: dataSnapshot.getChildren())
+                {
+                    arrayAdapter.add((String) fire.child("Message").getValue());
+                }
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void setPageDetails()
+    {
+        firetask.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String senderdetails = (String) dataSnapshot.child("jcrollno").getValue();
@@ -280,70 +379,6 @@ public class Members extends AppCompatActivity {
         });
     }
 
-    public void taskVerify()
-    {
-        monitor.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                db.updateValues((String) dataSnapshot.child("teamtask").getValue(),(String) dataSnapshot.child("currenttask").getValue());
-                users=db.getAllValues();
-                String s=(String) dataSnapshot.child("teamtask").getValue();
-                if(!s.isEmpty())
-                {
-                    addChildlistenerofNotifications(firetask);
-                }
-                else
-                {
-                    mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
-                    mNoBtn.setVisibility(View.INVISIBLE);
-                    notificationList.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void addChildlistenerofNotifications(DatabaseReference firetask)
-    {
-        firetask=FirebaseDatabase.getInstance().getReference(users.get("taskteam"));
-        addtaskListener(firetask,users.get("currentTask"));
-        notificationdata=FirebaseDatabase.getInstance().getReference(users.get("taskteam")).child(users.get("currentTask")).child("Notification");
-        if(ce != null){
-            notificationdata.removeEventListener(ce);
-        }
-        ce= notificationdata.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                arrayAdapter.add(dataSnapshot.child("Message").getValue().toString());
-                arrayAdapter.notifyDataSetChanged();
-                //////////Notiffication required hreeee!!!!!.///////////////////////////
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 }
 /*
  */

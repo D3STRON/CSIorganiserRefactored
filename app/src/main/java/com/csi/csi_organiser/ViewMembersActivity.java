@@ -112,20 +112,20 @@ public class ViewMembersActivity extends ListActivity{
            @Override
            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-               final DatabaseReference temp= FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id).child("Members").child(idstring.get(position)).child("Attended");
-               temp.addListenerForSingleValueEvent(new ValueEventListener() {
+               final DatabaseReference temp= FirebaseDatabase.getInstance().getReference(getIntent().getStringExtra("currentteam")).child(taskmodel.Id);
+               temp.child("Members").child(idstring.get(position)).child("Attended").addListenerForSingleValueEvent(new ValueEventListener() {
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {
                       String attend=(String) dataSnapshot.getValue();
                        if(attend.isEmpty())
                        {
-                           temp.setValue("yes");
+                           temp.child("Members").child(idstring.get(position)).child("Attended").setValue("yes");
                        }
                        else
                        {
-                           temp.setValue("");
+                           temp.child("Members").child(idstring.get(position)).child("Attended").setValue("");
                        }
-                   }
+                                          }
 
                    @Override
                    public void onCancelled(DatabaseError databaseError) {
@@ -166,10 +166,13 @@ public class ViewMembersActivity extends ListActivity{
 
                            String reason = (String) fire.child("Backout Request").getValue();
                           String attended = (String) fire.child("Attended").getValue();
-                         if(fire.child("Backout Request").getValue()==null || fire.child("Attended").getValue()==null)
+                         if(fire.child("Backout Request").getValue()==null && fire.child("Attended").getValue()==null)
                          {
                              arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nIs ready for the task.");
                              attendencelist.add(false);
+                         }else if(fire.child("Backout Request").getValue()==null)
+                         {
+                             firemembers.child(fire.getKey()).removeValue();
                          }
                            else if (reason.matches("") && attended.matches("")) {
                               arrayAdapter.add("Name: " + fire.child("Name").getValue() + "\nIs ready for the task.");
