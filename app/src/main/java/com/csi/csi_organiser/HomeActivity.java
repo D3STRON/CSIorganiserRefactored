@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,9 +29,13 @@ import java.util.HashMap;
 
 
 public class HomeActivity extends AppCompatActivity {
-    EditText firstname, lastname,email, number,rollno, neareststation;
-    Spinner team1, team2, team3;
-    String preference1, preference2, preference3;
+    EditText firstname, lastname,email, number,rollno, neareststation,division;
+    Spinner team1, team2, team3,year;
+    String preference1;
+    String preference2;
+    String preference3;
+    String Year;
+    Editable Division;
     Button submit;
     SQLiteHelper db;
     static ValueEventListener ve;
@@ -63,10 +68,15 @@ public class HomeActivity extends AppCompatActivity {
         firebase=FirebaseDatabase.getInstance().getReference("CSI Members");
         firebaserole= FirebaseDatabase.getInstance().getReference("Roles");
         neareststation=(EditText)findViewById(R.id.neareststation);
+        division = (EditText) findViewById(R.id.division);
+        year = (Spinner) findViewById(R.id.year);
         team1=(Spinner)findViewById(R.id.team1);
         team2=(Spinner)findViewById(R.id.team2);
         team3=(Spinner)findViewById(R.id.team3);
         submit=(Button)findViewById(R.id.submit);
+        ArrayAdapter<String> years=new ArrayAdapter<String>(HomeActivity.this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.year));
+        years.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        year.setAdapter(years);
         ArrayAdapter<String> teams=new ArrayAdapter<String>(HomeActivity.this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.teams));
         teams.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         team1.setAdapter(teams);
@@ -77,6 +87,18 @@ public class HomeActivity extends AppCompatActivity {
         team1.setSelection(1);
         team2.setSelection(2);
         team3.setSelection(3);
+        Division = division.getText();
+        year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Year = year.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+
+        });
         team1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -118,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int length=email.getText().toString().length();
 
-               if(firstname.getText().toString().isEmpty() || lastname.getText().toString().isEmpty() || email.getText().toString().isEmpty() || number.getText().toString().isEmpty() || neareststation.getText().toString().isEmpty() || rollno.getText().toString().isEmpty())
+                if(firstname.getText().toString().isEmpty() || lastname.getText().toString().isEmpty() || email.getText().toString().isEmpty() || number.getText().toString().isEmpty() || neareststation.getText().toString().isEmpty() || rollno.getText().toString().isEmpty())
                 {
                     Toast.makeText(HomeActivity.this,"Could not submit:\nOne or multiple empty fields.",Toast.LENGTH_LONG).show();
                 }
@@ -129,6 +151,12 @@ public class HomeActivity extends AppCompatActivity {
                 else if(number.getText().toString().length()!=10)
                 {
                     Toast.makeText(HomeActivity.this,"Invalid Number:",Toast.LENGTH_LONG).show();
+                }
+                else if(division.getText().toString()==""){
+                    Toast.makeText(HomeActivity.this,"Enter Division",Toast.LENGTH_LONG).show();
+                }
+                else if(Year == ""){
+                    Toast.makeText(HomeActivity.this,"Select Year",Toast.LENGTH_LONG).show();
                 }
                 else if(rollno.getText().toString().length()!=8)
                 {
@@ -173,7 +201,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 Model model=new Model();
                 model.setValue(firstname.getText().toString().replaceAll(" ","").toLowerCase()+" "+lastname.getText().toString().replaceAll(" ","").toLowerCase(),
-                        email.getText().toString(),number.getText().toString(),neareststation.getText().toString(),
+                        email.getText().toString(),number.getText().toString()+Year+" "+division.getText().toString().replaceAll(" ",""),neareststation.getText().toString(),
                         rollno.getText().toString().toUpperCase(),preference1,preference2,preference3);
 
                 boolean result=isConnected(HomeActivity.this);
@@ -203,7 +231,7 @@ public class HomeActivity extends AppCompatActivity {
                     for(int i=0;i<rolelist.size();i++) {
                         if (model.getRollno().matches(rolelist.get(i).getRollno())) {
                             model.setPriority(rolelist.get(i).getPriority());
-                           ///////////
+                            ///////////
                             switch(Integer.parseInt(model.getPriority())){
                                 case(2):
                                     model.setPreference1(team1.getItemAtPosition(1).toString());
@@ -254,7 +282,7 @@ public class HomeActivity extends AppCompatActivity {
 
     protected void onStart() {
         super.onStart();
-         ve=firebase.addValueEventListener(new ValueEventListener() {
+        ve=firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 rollnolist.clear();

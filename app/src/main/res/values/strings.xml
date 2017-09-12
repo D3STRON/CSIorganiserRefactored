@@ -1,12 +1,41 @@
+<?xml version="1.0"?>
+
 <resources>
+
     <string name="app_name">CSI-Organiser</string>
-    <string-array name="teams">
-        <item></item>
-        <item>Technical</item>
-        <item>Creative</item>
-        <item>General Organizing Team</item>
-        <item>Publicity</item>
+
+
+    <string-array name="year">
+
+        <item/>
+
+        <item>F.E</item>
+
+        <item>S.E</item>
+
+        <item>T.E</item>
+
+        <item>B.E</item>
+
     </string-array>
+
+
+    <string-array name="teams">
+
+        <item/>
+
+        <item>Technical</item>
+
+        <item>Creative</item>
+
+        <item>General Organizing Team</item>
+
+        <item>Publicity</item>
+
+    </string-array>
+
     <string name="title_activity_main">MainActivity</string>
+
     <string name="title_activity_view_members">ViewMembersActivity</string>
+
 </resources>

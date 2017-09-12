@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,9 +23,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class EditProfile extends AppCompatActivity {
-    EditText firstname, lastname, email, number, rollno, neareststation;
-    Spinner team1, team2, team3;
-    String preference1, preference2, preference3;
+    EditText firstname, lastname, email, number, rollno, neareststation,division;
+    Spinner team1, team2, team3,year;
+    String preference1;
+    String preference2;
+    String preference3;
+    String Year;
+    Editable Division;
     Button update, delete;
     SQLiteHelper db;
     DatabaseReference firebase;
@@ -43,6 +48,8 @@ public class EditProfile extends AppCompatActivity {
         rollno.setEnabled(false);
         number = (EditText) findViewById(R.id.number);
         neareststation = (EditText) findViewById(R.id.neareststation);
+        division = (EditText) findViewById(R.id.division);
+        year = (Spinner) findViewById(R.id.year);
         db = new SQLiteHelper(this);
         users = db.getAllValues();
         team1 = (Spinner) findViewById(R.id.team1);
@@ -50,6 +57,9 @@ public class EditProfile extends AppCompatActivity {
         team3 = (Spinner) findViewById(R.id.team3);
         update = (Button) findViewById(R.id.update);
         delete = (Button) findViewById(R.id.deleteaccount);
+        ArrayAdapter<String> years=new ArrayAdapter<String>(EditProfile.this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.year));
+        years.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        year.setAdapter(years);
         ArrayAdapter<String> teams = new ArrayAdapter<>(EditProfile.this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.teams));
         teams.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         team1.setAdapter(teams);
@@ -60,9 +70,20 @@ public class EditProfile extends AppCompatActivity {
         lastname.setText(users.get("name").substring(a + 1));
         email.setText(users.get("email"));
         rollno.setText(users.get("rollno"));
-        number.setText(users.get("phone"));
+        number.setText(users.get("phone").toString().substring(0,10));
         neareststation.setText(users.get("station"));
+        division.setText(users.get("phone").toString().substring(13));
+        year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Year = year.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+
+        });
         team1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -110,7 +131,14 @@ public class EditProfile extends AppCompatActivity {
                     Toast.makeText(EditProfile.this, "Could not submit:\nOne or multiple empty fields.", Toast.LENGTH_LONG).show();
                 } else if (number.getText().toString().length() != 10) {
                     Toast.makeText(EditProfile.this, "Invalid Number:", Toast.LENGTH_LONG).show();
-                } else if (preference1.matches(preference2) || preference2.matches(preference3) || preference3.matches(preference1)) {
+                }
+                else if(division.getText().toString()==""){
+                    Toast.makeText(EditProfile.this,"Enter Division",Toast.LENGTH_LONG).show();
+                }
+                else if(Year == ""){
+                    Toast.makeText(EditProfile.this,"Enter Year",Toast.LENGTH_LONG).show();
+                }
+                else if (preference1.matches(preference2) || preference2.matches(preference3) || preference3.matches(preference1)) {
                     Toast.makeText(EditProfile.this, "Two Similar Preferences!", Toast.LENGTH_LONG).show();
                 } else {
                     showConformationDialouge();
@@ -199,7 +227,7 @@ public class EditProfile extends AppCompatActivity {
 
                 Model model = new Model();
                 model.setValue(firstname.getText().toString().replaceAll(" ", "").toLowerCase() + " " + lastname.getText().toString().replaceAll(" ", "").toLowerCase(),
-                        email.getText().toString(), number.getText().toString(), neareststation.getText().toString(),
+                        email.getText().toString(), number.getText().toString()+Year+" "+division.getText().toString().replaceAll(" ",""), neareststation.getText().toString(),
                         rollno.getText().toString().toUpperCase(), preference1, preference2, preference3 ,db.getAllValues().get("priority"),db.getAllValues().get("currentTask"),db.getAllValues().get("taskteam"));
 
                 boolean result = isConnected(EditProfile.this);
@@ -210,7 +238,7 @@ public class EditProfile extends AppCompatActivity {
                 }
                 else if (result) {
                     String Id = users.get("UUID");
-                   /////////////////
+                    /////////////////
                     switch(Integer.parseInt(users.get("priority"))){
                         case (0):
                             break;
@@ -229,9 +257,9 @@ public class EditProfile extends AppCompatActivity {
                     }
                     ////////////////
                     firebase.child(Id).setValue(model);
-                   db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
+                    db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
                     alertDialog.dismiss();
-                   goBack();
+                    goBack();
                 }
             }
         });
@@ -240,7 +268,7 @@ public class EditProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-       goBack();
+        goBack();
     }
     public void goBack()
     {

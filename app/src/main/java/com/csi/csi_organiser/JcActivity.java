@@ -114,6 +114,14 @@ public class JcActivity extends AppCompatActivity {
                     firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Publicity");
                     currentteam = "Tasks-Publicity";
                     break;
+                case (6):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Sponsorship");
+                    currentteam = "Tasks-Sponsorship";
+                    break;
+                case (7):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Decrypt");
+                    currentteam = "Tasks-Decrypt";
+                    break;
             }
             firebasemembers = FirebaseDatabase.getInstance().getReference("CSI Members");
             temp = FirebaseDatabase.getInstance().getReference("CSI Members").child(users.get("UUID"));
@@ -200,7 +208,7 @@ public class JcActivity extends AppCompatActivity {
                     DateFormat date = new SimpleDateFormat("HH:mm");
                     date.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
                     String localTime = date.format(currentLocalTime);
-                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(), users.get("rollno") + " " + users.get("name"), users.get("phone"), Id);
+                    taskModel.setValues(tasktitle.getText().toString(), tasksubtitle.getText().toString(), taskdetails.getText().toString(), users.get("rollno") + " " + users.get("name"), users.get("phone").substring(0,10), Id);
                     taskModel.setTime(localTime + ".." + datestring);
                     firebasetask.child(Id).setValue(taskModel);
 
@@ -255,8 +263,8 @@ public class JcActivity extends AppCompatActivity {
                 if (searchedmember.matches("")) {
                     AddId = currentmemlist.get(position).getId();
                     AddName = currentmemlist.get(position).getName();
-                    AddRollNo = currentmemlist.get(position).getRollno();
-                    dataMap.put("Name", AddName + " " + AddRollNo);
+                    AddRollNo = currentmemlist.get(position).getRollno()+" "+currentmemlist.get(position).getNumber().substring(10);
+                    dataMap.put("Name", AddName + "\n" + AddRollNo);
                     dataMap.put("Backout Request", "");
                     dataMap.put("Attended","");
                     firebasetask = FirebaseDatabase.getInstance().getReference(currentteam);
@@ -414,19 +422,19 @@ public class JcActivity extends AppCompatActivity {
 
                     if (!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null") && model.getPriority().matches("0")) {
                         if (model.getPreference1().matches(users.get("pref1"))) {
-                            arrayAdaptermemberspref1.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
+                            arrayAdaptermemberspref1.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() +"\nFrom: " + model.getNumber().substring(10) + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
                             model.setId(fire.getKey());
                             mempref1.add(model);
                         } else if (model.getPreference2().matches(users.get("pref1"))) {
-                            arrayAdaptermemberspref2.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference2: " + model.getPreference2());
+                            arrayAdaptermemberspref2.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() +"\nFrom: " + model.getNumber().substring(10) + "\nNearest Station: " + model.getNeareststation() + "\nPreference2: " + model.getPreference2());
                             model.setId(fire.getKey());
                             mempref2.add(model);
                         } else if (model.getPreference3().matches(users.get("pref1"))) {
-                            arrayAdaptermemberspref3.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation() + "\nPreference3: " + model.getPreference3());
+                            arrayAdaptermemberspref3.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() +"\nFrom: " + model.getNumber().substring(10) + "\nNearest Station: " + model.getNeareststation() + "\nPreference3: " + model.getPreference3());
                             model.setId(fire.getKey());
                             mempref3.add(model);
                         } else {
-                            arrayAdaptermembersmore.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() + "\nNearest Station: " + model.getNeareststation());
+                            arrayAdaptermembersmore.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() +"\nFrom: " + model.getNumber().substring(10) +"\nNearest Station: " + model.getNeareststation());
                             model.setId(fire.getKey());
                             memmore.add(model);
                         }
