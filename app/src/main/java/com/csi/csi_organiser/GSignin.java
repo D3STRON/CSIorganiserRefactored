@@ -125,7 +125,9 @@ public class GSignin extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount acct = result.getSignInAccount();
-            personEmail = acct.getEmail();
+            if(acct.getEmail()!=null) {
+                personEmail = acct.getEmail();
+            }
             personEmail2 = personEmail;
 ///////////////////////////
 
