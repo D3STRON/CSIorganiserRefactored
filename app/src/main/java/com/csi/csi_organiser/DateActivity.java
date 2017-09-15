@@ -216,7 +216,17 @@ public class DateActivity extends AppCompatActivity {
             TextView listItemText = (TextView)view.findViewById(R.id.nameView);
             listItemText.setText(list.get(position));
             TextView nooftask=(TextView)view.findViewById(R.id.noofmembers);
-            final Button viewtasks = (Button)view.findViewById(R.id.removemember);
+            final Button viewtasks = (Button)view.findViewById(R.id.move);
+           final Button removemembers=(Button) view.findViewById(R.id.removemember);
+            viewtasks.setVisibility(View.VISIBLE);
+            viewtasks.setText("REMOVE");
+           removemembers.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dates.child(d).child(idstring.get(position)).removeValue();
+                    fetchmembers(d);
+                }
+            });
             viewtasks.setText("VIEW TASKS");
             nooftask.setText("");
             //Handle buttons and add onClickListeners

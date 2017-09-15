@@ -364,12 +364,26 @@ public class Members extends AppCompatActivity {
         firetask.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("jcnumber").getValue()!=null){
                 String senderdetails = (String) dataSnapshot.child("jcrollno").getValue();
                 senderdetails=senderdetails.substring(8)+"("+users.get("taskteam").substring(6)+")";
                 mTaskDesc.setText("TASK DETAILS: " + (String) dataSnapshot.child("taskdetails").getValue() + "\n-" + senderdetails);
                 getSupportActionBar().setTitle((String) dataSnapshot.child("tasktitle").getValue());
                 mNoBtn.setVisibility(View.VISIBLE);
-                notificationList.setVisibility(View.VISIBLE);
+                notificationList.setVisibility(View.VISIBLE);}
+                else
+                {
+                    getSupportActionBar().setTitle("TASK MANAGER");
+                    mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
+                    mNoBtn.setVisibility(View.INVISIBLE);
+                    db.updateValues("","null");
+                    users=db.getAllValues();
+                    notificationList.setVisibility(View.INVISIBLE);
+                    mReasonBox.setVisibility(View.GONE);
+                    mSubmitBtn.setVisibility(View.GONE);
+                    cancel.setVisibility(View.GONE);
+                    arrayAdapter.clear();
+                }
             }
 
             @Override

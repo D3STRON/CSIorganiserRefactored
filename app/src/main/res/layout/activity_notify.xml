@@ -12,37 +12,39 @@
         layout="@layout/actionbar"/>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:weightSum="1">
+
         <ListView
             android:id="@+id/notifications"
             android:layout_width="match_parent"
-            android:stackFromBottom="true"
-            android:transcriptMode="normal"
             android:layout_height="443dp"
-            android:layout_weight="1.30" />
-     <LinearLayout
-         android:layout_width="match_parent"
-         android:orientation="horizontal"
-         android:layout_height="48dp"
-         android:layout_below="@+id/notifications">
-         <EditText
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_weight="0.75"
-             android:scrollbarAlwaysDrawVerticalTrack="true"
-             android:id="@+id/message"
-             android:background="@drawable/myedittextstyle2"
-             android:hint="Enter new Notification!"
-             />
-         <Button
-             android:layout_width="wrap_content"
-             android:layout_height="match_parent"
-             android:text="NOTIFY"
-             android:id="@+id/notify"
-             />
-     </LinearLayout>
+            android:layout_weight="1.30"
+            android:stackFromBottom="true"
+            android:transcriptMode="normal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/notifications"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:background="@drawable/myedittextstyle2"
+                android:hint="Enter new Notification!"
+                android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+            <Button
+                android:id="@+id/notify"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="NOTIFY" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

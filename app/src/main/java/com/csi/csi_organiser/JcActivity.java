@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,13 +57,13 @@ public class JcActivity extends AppCompatActivity {
     CustomAdapter taskAdapter;
     ProgressBar progressbar4;
     Long timerforprogressbar;
-    String taskid, searchedmember = "", AddId, AddName, AddRollNo, tasktitle, currentteam, searchedname, searchedrollno;
+    String taskid="", searchedmember = "", AddId, AddName, AddRollNo, tasktitle, currentteam, searchedname, searchedrollno,latestmember;
     ArrayAdapter<String> arrayAdapter, arrayAdaptermemberspref1, arrayAdaptermemberspref2, arrayAdaptermemberspref3, arrayAdaptermembersmore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        timerforprogressbar = (long) 3000;
+        timerforprogressbar = (long) 4000;
         new MyProgressBar().execute((Void) null);
         setContentView(R.layout.activity_jc);
         tasks = new ArrayList<>();
@@ -224,6 +225,9 @@ public class JcActivity extends AppCompatActivity {
 
     /////////////////
     public void showEditTaskDialog(final String taskid) {
+        /////////////////////////////////
+        latestmember="";
+        ///////////////////////////////////////
         final AlertDialog.Builder dialogbuilder2 = new AlertDialog.Builder(this);
         LayoutInflater layoutInflater = getLayoutInflater();
         final View createtaskview2 = layoutInflater.inflate(R.layout.task_editor, null);
@@ -365,6 +369,7 @@ public class JcActivity extends AppCompatActivity {
             }
         });
 
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -387,12 +392,17 @@ public class JcActivity extends AppCompatActivity {
                 tasks.clear();
                 for (DataSnapshot fire : dataSnapshot.getChildren()) {
                     if(!fire.getKey().matches("Days")) {
-
+                        if(fire.child("jcnumber").getValue()!=null &&fire.child("tasktitle").getValue()!=null){
                         TaskModel taskModel = fire.getValue(TaskModel.class);
                         taskAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
                         taskModel.setMembercount((int) fire.child("Members").getChildrenCount());
-                        tasks.add(taskModel);
+                        tasks.add(taskModel);}
+                        else{
+                            firebasetask.child(fire.getKey()).removeValue();
+                        }
+
                     }
+
                 }
                 taskAdapter.setTaskModel(tasks);
                 taskAdapter.notifyDataSetChanged();
@@ -418,8 +428,7 @@ public class JcActivity extends AppCompatActivity {
                 memmore.clear();
                 allmembers.clear();
                 for (DataSnapshot fire : dataSnapshot.getChildren()) {
-                    Model model = fire.getValue(Model.class);
-
+                    final Model model = fire.getValue(Model.class);
                     if (!model.getRollno().equals(users.get("rollno")) && model.getCurrenttask().equals("null") && model.getPriority().matches("0")) {
                         if (model.getPreference1().matches(users.get("pref1"))) {
                             arrayAdaptermemberspref1.add("\nRoll No: " + model.getRollno() + "\nName: " + model.getName() +"\nFrom: " + model.getNumber().substring(10) + "\nNearest Station: " + model.getNeareststation() + "\nPreference1: " + model.getPreference1());
@@ -439,6 +448,7 @@ public class JcActivity extends AppCompatActivity {
                             memmore.add(model);
                         }
                     }
+
                 }
                 allmembers.addAll(mempref1);
                 allmembers.addAll(mempref2);
@@ -457,7 +467,38 @@ public class JcActivity extends AppCompatActivity {
         });
 
         ///////////////////////////
+        final DatabaseReference Verifier2=FirebaseDatabase.getInstance().getReference(currentteam);
+        ChildEventListener cevl=Verifier2.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+               if(taskid.matches(dataSnapshot.getKey()) && !latestmember.matches("") )
+               { //Toast.makeText(JcActivity.this, "Here", Toast.LENGTH_SHORT).show();
+                   firebasemembers.child(latestmember).child("currenttask").setValue("null");
+                  firebasemembers.child(latestmember).child("teamtask").setValue("");
+                   taskid="";
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -551,6 +592,9 @@ public class JcActivity extends AppCompatActivity {
                     firebasemembers.child(memid).child("currenttask").setValue(taskid);
                     firebasemembers.child(memid).child("teamtask").setValue(currentteam);
                     Toast.makeText(JcActivity.this,name+" is added to this task!", Toast.LENGTH_SHORT).show();
+                 /////////////////////////////////
+                    latestmember=memid;
+                ///////////////////////////////////////
                 }
 
             }
@@ -560,7 +604,9 @@ public class JcActivity extends AppCompatActivity {
 
             }
         });
+
     }
+
 
 
     public class CustomAdapter extends BaseAdapter implements ListAdapter {

@@ -210,7 +210,7 @@ public class ViewMembersActivity extends ListActivity{
                     if(attendence && attendencelist.get(i))
                     {
                         date.child(idstring.get(i)).child("Details").setValue(arrayAdapter.getItem(i));
-                        date.child(idstring.get(i)).child("Tasks Performed").child(taskmodel.Id).child("task details").setValue(taskmodel.getTasktitle()+" "+taskmodel.getTaskdetails());
+                        date.child(idstring.get(i)).child("Tasks Performed").child(taskmodel.Id).child("task details").setValue("Task title: "+taskmodel.getTasktitle()+"\nTask Details: "+taskmodel.getTaskdetails());
                     }
                     //  Toast.makeText(ViewMembersActivity.this,"",Toast.LENGTH_SHORT).show();
                    FirebaseDatabase.getInstance().getReference("CSI Members").child(idstring.get(i)).child("currenttask").setValue("null");
