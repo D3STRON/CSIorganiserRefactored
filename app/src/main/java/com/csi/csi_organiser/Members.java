@@ -43,8 +43,7 @@ public class Members extends AppCompatActivity {
     SQLiteHelper db;
     String currenttask="",teamtask="";
     HashMap<String ,String> users;
-    ChildEventListener ce;
-    ValueEventListener ve;
+    ChildEventListener ce,tasklistener;
     DatabaseReference monitor,firetask, notificationdata;
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -189,8 +188,8 @@ public class Members extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.editprofile:
-                Intent intenteditprofile= new Intent(Members.this,EditProfile.class);
                 monitor.removeEventListener(ce);
+                Intent intenteditprofile= new Intent(Members.this,EditProfile.class);
                 startActivity(intenteditprofile);
                 finish();
                 return true;
@@ -302,7 +301,12 @@ public class Members extends AppCompatActivity {
     public void addTaskListener()
     {
         updateNotification();
-        firetask.addChildEventListener(new ChildEventListener() {
+        if(tasklistener!=null)
+        {
+           // Toast.makeText(Members.this,"Here!",Toast.LENGTH_SHORT).show();
+            firetask.removeEventListener(tasklistener);
+        }
+        tasklistener=firetask.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(dataSnapshot.getKey().matches("Notification"))
@@ -373,6 +377,8 @@ public class Members extends AppCompatActivity {
                 notificationList.setVisibility(View.VISIBLE);}
                 else
                 {
+                    monitor.child("currenttask").setValue("null");
+                    monitor.child("teamtask").setValue("");
                     getSupportActionBar().setTitle("TASK MANAGER");
                     mTaskDesc.setText("THERE IS NO CURRENT TASK REQUEST...");
                     mNoBtn.setVisibility(View.INVISIBLE);

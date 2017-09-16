@@ -59,7 +59,7 @@ public class JcActivity extends AppCompatActivity {
     Long timerforprogressbar;
     String taskid="", searchedmember = "", AddId, AddName, AddRollNo, tasktitle, currentteam, searchedname, searchedrollno,latestmember;
     ArrayAdapter<String> arrayAdapter, arrayAdaptermemberspref1, arrayAdaptermemberspref2, arrayAdaptermemberspref3, arrayAdaptermembersmore;
-
+    ChildEventListener cevl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,12 +165,12 @@ public class JcActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(JcActivity.this, GSignin.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    firebasetask.removeEventListener(cevl);
                     intent.putExtra("EXIT", true);
                     startActivity(intent);
                 }
             });
         }
-        //new LongOperation().execute("");
     }
 
     public void showCreateTaskDialog() {
@@ -467,8 +467,7 @@ public class JcActivity extends AppCompatActivity {
         });
 
         ///////////////////////////
-        final DatabaseReference Verifier2=FirebaseDatabase.getInstance().getReference(currentteam);
-        ChildEventListener cevl=Verifier2.addChildEventListener(new ChildEventListener() {
+        cevl=firebasetask.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -476,7 +475,6 @@ public class JcActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
@@ -517,10 +515,12 @@ public class JcActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.logout:
                 db.deleteUsers();
+                firebasetask.removeEventListener(cevl);
                 finish();
                 return true;
             case R.id.editprofile:
                 Model model = new Model();
+                firebasetask.removeEventListener(cevl);
                 Intent intenteditprofile = new Intent(JcActivity.this, EditProfile.class);
                 startActivity(intenteditprofile);
                 finish();

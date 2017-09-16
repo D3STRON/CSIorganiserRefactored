@@ -378,26 +378,6 @@ Intent intent = new Intent(Intent.ACTION_SEND);
 
  //////////////////////////////////////
 
-  else if(!users.isEmpty())
-        {
-            Toast.makeText(HomeActivity.this,"There is a current User!",Toast.LENGTH_LONG).show();
-            if(users.get("priority").matches("1"))
-            {
-                //Intent intent= new Intent(HomeActivity.this,CoreActivity.class);
-                //startActivity(intent);
 
-            }
-            else if(users.get("priority").matches("2"))
-            {
-                Intent intent= new Intent(HomeActivity.this,JcActivity.class);
-                startActivity(intent);
-            }
-            else
-            {
-
-                Intent intent =new Intent(HomeActivity.this,Members.class);
-                startActivity(intent);
-            }
-        }
 
 */

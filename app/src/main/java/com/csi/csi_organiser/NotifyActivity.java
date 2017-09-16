@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -118,12 +119,18 @@ public class NotifyActivity extends AppCompatActivity {
         temp.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                   if(dataSnapshot.getKey().matches("Notification"))
+                   {
+                       notificationlistener();
+                   }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                if(dataSnapshot.getKey().matches("Notification"))
+                {
+                    notificationlistener();
+                }
             }
 
             @Override
@@ -137,6 +144,7 @@ public class NotifyActivity extends AppCompatActivity {
                     toolbar.setClickable(false);
                    temp.removeValue();
                 }
+
             }
 
             @Override

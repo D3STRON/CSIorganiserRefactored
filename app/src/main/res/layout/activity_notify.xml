@@ -21,7 +21,7 @@
             android:id="@+id/notifications"
             android:layout_width="match_parent"
             android:layout_height="443dp"
-            android:layout_weight="1.30"
+            android:layout_weight="1.15"
             android:stackFromBottom="true"
             android:transcriptMode="normal" />
 
