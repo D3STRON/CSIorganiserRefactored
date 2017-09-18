@@ -70,34 +70,39 @@
         android:orientation="horizontal"
         android:padding="5dp"
         >
-        <Button
+        <Button android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/preference1"
-            android:text="PREF1"
             android:layout_weight="0.5"
-            />
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:background="#ffffff"
+            android:text="PREF1"/>
+
         <Button
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:id="@+id/preference2"
-            android:text="PREF2"
             android:layout_weight="0.5"
-            />
+            android:background="#ffffff"
+            android:text="PREF2"/>
+
         <Button
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:id="@+id/preference3"
-            android:text="PREF3"
             android:layout_weight="0.5"
-            />
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:background="#ffffff"
+            android:text="PREF3"/>
+
         <Button
-            android:layout_weight="0.5"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MORE"
+            android:layout_width="match_parent"
             android:id="@+id/more"
-            />
+            android:layout_weight="0.5"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:background="#ffffff"
+            android:text="MORE"/>
     </LinearLayout>
 
     </LinearLayout>

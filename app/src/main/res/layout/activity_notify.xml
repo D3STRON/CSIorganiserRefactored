@@ -40,11 +40,11 @@
                 android:hint="Enter new Notification!"
                 android:scrollbarAlwaysDrawVerticalTrack="true" />
 
-            <Button
-                android:id="@+id/notify"
+            <Button android:layout_height="match_parent"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="NOTIFY" />
+                android:id="@+id/notify"
+               android:textColor="#0288d1"
+                android:text="NOTIFY"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

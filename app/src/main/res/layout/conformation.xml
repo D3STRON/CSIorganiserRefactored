@@ -19,10 +19,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
-
+        <LinearLayout
+            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="6dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
         <Button
             android:layout_width="match_parent"
-            android:layout_weight="0.5"
+
             android:layout_height="match_parent"
             android:id="@+id/yes"
             android:background="@color/colorPrimary"
@@ -30,13 +36,14 @@
             android:text="YES"
 
             />
-
+         </LinearLayout>
         <Button
             android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/no"
             android:text="No"
+            android:textColor="@color/colorPrimary"
             />
     </LinearLayout>
 </LinearLayout>

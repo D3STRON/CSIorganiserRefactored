@@ -46,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/createtask"
+                android:textColor="#6288d1"
                 android:text="CREATE TASK"
                 android:layout_weight="0.5"
                 />

@@ -1,62 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="TASK TITLE"
-            android:id="@+id/tasktitle"
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="TASK SUBTITLE"
-            android:id="@+id/tasksubtitle"
-            />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="20dp"/>
+<?xml version="1.0" encoding="UTF-8"?>
 
-        <EditText
-            android:id="@+id/taskdetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/myedittextstyle2"
-            android:hint="TASK DETAILES"
-            android:textAlignment="center"
-            />
-    </LinearLayout>
+    <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="CREATE"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="#fff"
-            android:id="@+id/create"
-            />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="CANCEL"
-            android:id="@+id/cancel"
-            />
-    </LinearLayout>
+    -<LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="vertical" android:padding="16dp">
+
+    <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tasktitle" android:hint="TASK TITLE"/>
+
+    <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tasksubtitle" android:hint="TASK SUBTITLE"/>
+
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
+
+    <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/taskdetails" android:hint="TASK DETAILES" android:textAlignment="center" android:background="@drawable/myedittextstyle2"/>
+
+</LinearLayout>
+
+    <View android:layout_height="10dp" android:layout_width="match_parent"/>
+
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="horizontal">
+
+    <Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/create"
+        android:textSize="16sp"
+        android:textColor="#0288d1"
+        android:text="CREATE"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:layout_weight="0.5"/>
+    />
+    <Button
+        android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/cancel" android:background="#ffffff" android:textSize="16sp" android:textColor="#0288d1" android:text="CANCEL" android:foreground="?attr/selectableItemBackgroundBorderless" android:layout_weight="0.5"/>
+
+</LinearLayout>
+
 </LinearLayout>

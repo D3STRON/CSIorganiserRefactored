@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<LinearLayout tools:context="com.csi.csi_organiser.HomeActivity" android:background="@drawable/colorshade" android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout tools:context="com.csi.csi_organiser.HomeActivity" android:background="#01789c" android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <ScrollView android:layout_height="wrap_content" android:layout_width="match_parent">
 
 
-        -<LinearLayout android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" android:weightSum="1" android:padding="16dp">
+    <LinearLayout android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" android:weightSum="1" android:padding="16dp">
 
-        <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="FIRST NAME" android:id="@+id/firstname"/>
+    <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="FIRST NAME" android:id="@+id/firstname"/>
 
-        <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
 
-        <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="LAST NAME" android:id="@+id/lastname"/>
+    <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="LAST NAME" android:id="@+id/lastname"/>
 
-        <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
 
-        <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="GOOGLE EMAIL" android:id="@+id/email"/>
+    <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="GOOGLE EMAIL" android:id="@+id/email"/>
 
-        <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
 
-        <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="NUMBER" android:id="@+id/number" android:inputType="number"/>
+    <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="NUMBER" android:id="@+id/number" android:inputType="number"/>
 
-        <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
 
-        <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="NEAREST STATION" android:id="@+id/neareststation"/>
+    <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="NEAREST STATION" android:id="@+id/neareststation"/>
 
-        <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
 
-        <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="ROLL NUMBER:15CE701" android:id="@+id/rollno"/>
+    <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="ROLL NUMBER:15CE701" android:id="@+id/rollno"/>
 
-        <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
 
-        <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="DIVISION" android:id="@+id/division"/>
+    <EditText android:background="@drawable/myedittextstyle" android:layout_height="wrap_content" android:layout_width="match_parent" android:textAlignment="center" android:hint="DIVISION" android:id="@+id/division"/>
 
-        <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View android:layout_height="20dp" android:layout_width="match_parent"/>
 
-        <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="YEAR"/>
+    <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="YEAR"/>
 
-        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/year" android:textColor="#fff"/>
+    <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/year" android:textColor="#fff"/>
 
-        <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="SELECT TEAM-PREFERENCE 1:"/>
+    <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="SELECT TEAM-PREFERENCE 1:"/>
 
-        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/team1" android:textColor="#fff"/>
+    <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/team1" android:textColor="#fff"/>
 
-        <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="SELECT TEAM-PREFERENCE 2:"/>
+    <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="SELECT TEAM-PREFERENCE 2:"/>
 
-        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/team2" android:textColor="#fff"/>
+    <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/team2" android:textColor="#fff"/>
 
-        <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="SELECT TEAM-PREFERENCE 3:"/>
+    <TextView android:layout_height="25dp" android:layout_width="match_parent" android:textAlignment="center" android:textStyle="bold" android:textSize="15dp" android:textColor="#fff" android:text="SELECT TEAM-PREFERENCE 3:"/>
 
-        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/team3"/>
+    <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/team3"/>
 
 
-        <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="match_parent">
+    <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="match_parent">
 
-            <Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/update" android:text="UPDATE" android:layout_weight="0.5"/>
+    <Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/update" android:textColor="#0288d1" android:text="UPDATE" android:foreground="?attr/selectableItemBackgroundBorderless" android:layout_marginRight="10dp" android:layout_weight="0.5"/>
 
-            <Button android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/deleteaccount" android:text="DELETE ACCOUNT" android:layout_weight="0.5"/>
+    <Button  android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/deleteaccount" android:textColor="#0288d1" android:text="DELETE ACCOUNT" android:foreground="?attr/selectableItemBackgroundBorderless" android:layout_weight="0.5" android:layout_marginLeft="10dp"/>
 
-        </LinearLayout>
+</LinearLayout>
 
-    </LinearLayout>
+</LinearLayout>
 
-    </ScrollView>
+</ScrollView>
 
 </LinearLayout>

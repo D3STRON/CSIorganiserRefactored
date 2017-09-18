@@ -161,7 +161,6 @@ public class ViewMembersActivity extends ListActivity{
                   arrayAdapter.clear();
                   idstring.clear();
                   attendencelist.clear();
-                 int a;
                        for (DataSnapshot fire : dataSnapshot.getChildren()) {
 
                            String reason = (String) fire.child("Backout Request").getValue();
@@ -251,8 +250,12 @@ public class ViewMembersActivity extends ListActivity{
               {
                   toolbar.setTitle("Task "+taskmodel.getTasktitle()+" is Inactive");
                   toolbar.setTitleTextColor(0xFFFFFFFF);
+                  arrayAdapter.clear();
+                  idstring.clear();
+                  attendencelist.clear();
                   dtwithnoattendence.setVisibility(View.GONE);
                   dtwithattendence.setVisibility(View.GONE);
+
                   flag=true;
               }
 
