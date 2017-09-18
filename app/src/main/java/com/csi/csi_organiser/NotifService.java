@@ -55,7 +55,7 @@ public class NotifService extends Service {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot fire: dataSnapshot.getChildren())
-                            if(fire.getKey().matches(users.get("currentTask"))){
+                            if(fire.getKey().matches(users.get("currentTask")) ){
                         Log.e("SERVICE","Notified about new task!");
                         notifyThem("New Task",(String) dataSnapshot.child(users.get("currentTask")).child("tasktitle").getValue());
                          break;
