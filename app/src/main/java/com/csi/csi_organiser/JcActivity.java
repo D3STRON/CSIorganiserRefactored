@@ -392,7 +392,7 @@ public class JcActivity extends AppCompatActivity {
                 tasks.clear();
                 for (DataSnapshot fire : dataSnapshot.getChildren()) {
                     if(!fire.getKey().matches("Days")) {
-                        if(fire.child("jcnumber").getValue()!=null &&fire.child("tasktitle").getValue()!=null){
+                        if(fire.child("jcnumber").getValue()!=null &&fire.child("jcrollno").getValue()!=null){
                         TaskModel taskModel = fire.getValue(TaskModel.class);
                         taskAdapter.add("\nTask title: " + taskModel.tasktitle + "\nTask description: " + taskModel.taskdetails + "\nAt: " + taskModel.getTime());
                         taskModel.setMembercount((int) fire.child("Members").getChildrenCount());
