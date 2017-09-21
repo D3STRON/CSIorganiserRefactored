@@ -48,6 +48,11 @@ public class CoreActivity extends AppCompatActivity {
             teamlist.add("Creative");
             teamlist.add("GOT");
             teamlist.add("Publicity");
+            teamlist.add("Sponsorship");
+            teamlist.add("Editorial");
+            teamlist.add("Designing");
+            teamlist.add("MemberShip");
+            teamlist.add("Research-Wing");
             teams = (ListView) findViewById(R.id.teams);
             teamAdapter = new CustomAdapter(teamlist, this);
             teams.setAdapter(teamAdapter);

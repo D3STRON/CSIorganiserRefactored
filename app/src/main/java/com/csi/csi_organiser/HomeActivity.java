@@ -152,8 +152,8 @@ public class HomeActivity extends AppCompatActivity {
                 {
                     Toast.makeText(HomeActivity.this,"Invalid Number:",Toast.LENGTH_LONG).show();
                 }
-                else if(division.getText().toString()==""){
-                    Toast.makeText(HomeActivity.this,"Enter Division",Toast.LENGTH_LONG).show();
+                else if(division.getText().toString()=="" || division.getText().toString().length()!=1){
+                    Toast.makeText(HomeActivity.this,"Invalid Division",Toast.LENGTH_LONG).show();
                 }
                 else if(Year == ""){
                     Toast.makeText(HomeActivity.this,"Select Year",Toast.LENGTH_LONG).show();
@@ -232,20 +232,7 @@ public class HomeActivity extends AppCompatActivity {
                         if (model.getRollno().matches(rolelist.get(i).getRollno())) {
                             model.setPriority(rolelist.get(i).getPriority());
                             ///////////
-                            switch(Integer.parseInt(model.getPriority())){
-                                case(2):
-                                    model.setPreference1(team1.getItemAtPosition(1).toString());
-                                    break;
-                                case(3):
-                                    model.setPreference1(team1.getItemAtPosition(2).toString());
-                                    break;
-                                case(4):
-                                    model.setPreference1(team1.getItemAtPosition(3).toString());
-                                    break;
-                                case(5):
-                                    model.setPreference1(team1.getItemAtPosition(4).toString());
-                                    break;
-                            }
+                                    model.setPreference1(team1.getItemAtPosition(Integer.parseInt(model.getPriority())-1).toString());
                             ////////////////
                             Toast.makeText(HomeActivity.this, "You are a committee member.", Toast.LENGTH_SHORT).show();
                         }

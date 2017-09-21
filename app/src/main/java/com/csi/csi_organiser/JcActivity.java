@@ -120,8 +120,20 @@ public class JcActivity extends AppCompatActivity {
                     currentteam = "Tasks-Sponsorship";
                     break;
                 case (7):
-                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Decrypt");
-                    currentteam = "Tasks-Decrypt";
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Editorial");
+                    currentteam = "Tasks-Editorial";
+                    break;
+                case (8):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Designing");
+                    currentteam = "Tasks-Designing";
+                    break;
+                case (9):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-MemberShip");
+                    currentteam = "Tasks-MemberShip";
+                    break;
+                case (10):
+                    firebasetask = FirebaseDatabase.getInstance().getReference("Tasks-Research-Wing");
+                    currentteam = "Tasks-Research-Wing";
                     break;
             }
             firebasemembers = FirebaseDatabase.getInstance().getReference("CSI Members");

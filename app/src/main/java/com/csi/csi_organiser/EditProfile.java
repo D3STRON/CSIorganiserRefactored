@@ -132,7 +132,7 @@ public class EditProfile extends AppCompatActivity {
                 } else if (number.getText().toString().length() != 10) {
                     Toast.makeText(EditProfile.this, "Invalid Number:", Toast.LENGTH_LONG).show();
                 }
-                else if(division.getText().toString()==""){
+                else if(division.getText().toString()=="" || division.getText().toString().length()!=1){
                     Toast.makeText(EditProfile.this,"Enter Division",Toast.LENGTH_LONG).show();
                 }
                 else if(Year == ""){
@@ -239,22 +239,7 @@ public class EditProfile extends AppCompatActivity {
                 else if (result) {
                     String Id = users.get("UUID");
                     /////////////////
-                    switch(Integer.parseInt(users.get("priority"))){
-                        case (0):
-                            break;
-                        case(2):
-                            model.setPreference1(team1.getItemAtPosition(1).toString());
-                            break;
-                        case(3):
-                            model.setPreference1(team1.getItemAtPosition(2).toString());
-                            break;
-                        case(4):
-                            model.setPreference1(team1.getItemAtPosition(3).toString());
-                            break;
-                        case(5):
-                            model.setPreference1(team1.getItemAtPosition(4).toString());
-                            break;
-                    }
+                    model.setPreference1(team1.getItemAtPosition(Integer.parseInt(users.get("priority"))-1).toString());
                     ////////////////
                     firebase.child(Id).setValue(model);
                     db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());

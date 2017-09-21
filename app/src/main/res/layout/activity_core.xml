@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/colorshade"
+    android:background="#005f7f"
     tools:context="com.csi.csi_organiser.CoreActivity">
     <include
         android:id="@+id/toolbar"
