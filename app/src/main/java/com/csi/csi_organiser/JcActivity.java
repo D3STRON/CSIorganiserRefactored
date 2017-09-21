@@ -50,7 +50,7 @@ public class JcActivity extends AppCompatActivity {
     ArrayList<Model> mempref1, mempref2, mempref3, memmore, currentmemlist, allmembers;
     TextView welcome;
     Toolbar toolbar;
-    ArrayList<String> tasksstring, memberstringpref1, memberstringpref2, memberstringpref3, memberstringmore;
+    ArrayList<String> tasksstring, memberstringpref1, memberstringpref2, memberstringpref3, memberstringmore,currentmemberstring;
     HashMap<String, String> users;
     DatabaseReference firebasetask, firebasemembers, temp;
     SQLiteHelper db;
@@ -58,7 +58,7 @@ public class JcActivity extends AppCompatActivity {
     ProgressBar progressbar4;
     Long timerforprogressbar;
     String taskid="", searchedmember = "", AddId, AddName, AddRollNo, tasktitle, currentteam, searchedname, searchedrollno,latestmember;
-    ArrayAdapter<String> arrayAdapter, arrayAdaptermemberspref1, arrayAdaptermemberspref2, arrayAdaptermemberspref3, arrayAdaptermembersmore;
+    ArrayAdapter<String> memberAdapter, arrayAdaptermemberspref1, arrayAdaptermemberspref2, arrayAdaptermemberspref3, arrayAdaptermembersmore;
     ChildEventListener cevl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +72,14 @@ public class JcActivity extends AppCompatActivity {
         mempref2 = new ArrayList<>();
         mempref3 = new ArrayList<>();
         memmore = new ArrayList<>();
+        currentmemberstring= new ArrayList<>();
         allmembers = new ArrayList<>();
         memberstringpref1 = new ArrayList<>();
         memberstringpref2 = new ArrayList<>();
         memberstringpref3 = new ArrayList<>();
         memberstringmore = new ArrayList<>();
 
+        memberAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, currentmemberstring );
         arrayAdaptermemberspref1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref1);
         arrayAdaptermemberspref2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref2);
         arrayAdaptermemberspref3 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, memberstringpref3);
@@ -655,14 +657,25 @@ public class JcActivity extends AppCompatActivity {
             //Handle TextView and display string from your list
             TextView listItemText = (TextView)view.findViewById(R.id.nameView);
             listItemText.setText(list.get(position));
-            TextView noofmembers=(TextView)view.findViewById(R.id.noofmembers);
-            noofmembers.setText(taskModels.get(position).getMembercount()+" Mem");
+
+            // TextView noofmembers=(TextView)view.findViewById(R.id.noofmembers);
+           // noofmembers.setText(taskModels.get(position).getMembercount()+" Mem");
             //Handle buttons and add onClickListeners
             final Button removemember = (Button)view.findViewById(R.id.removemember);
             final Button edittask = (Button)view.findViewById(R.id.move);
+            final Button quickview = (Button)view.findViewById(R.id.quickview);
+            quickview.setText(taskModels.get(position).getMembercount()+" Mem");
+            quickview.setVisibility(View.VISIBLE);
             edittask.setVisibility(View.VISIBLE);
             edittask.setText("EDIT TASK");
             removemember.setText("Add Members");
+            quickview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fetchMembers(taskModels.get(position).Id);
+                    showMemberDialog(taskModels.get(position).getTasktitle());
+                }
+            });
             removemember.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -743,6 +756,61 @@ public class JcActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+    public void showMemberDialog(String tasktitle)
+    {
+        final AlertDialog.Builder dialogbuilder2 = new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater = getLayoutInflater();
+        final View createtaskview2 = layoutInflater.inflate(R.layout.core_member_view, null);
+        dialogbuilder2.setView(createtaskview2);
+        dialogbuilder2.setTitle("MEMBERS OF TASK: "+tasktitle);
+        final AlertDialog createtaskdialog2 = dialogbuilder2.create();
+        final ListView memlist;
+        memlist = (ListView) createtaskview2.findViewById(R.id.memlist);
+        final Button cancel=(Button)createtaskview2.findViewById(R.id.cancel);
+        memlist.setAdapter(memberAdapter);
+        createtaskdialog2.show();
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createtaskdialog2.dismiss();
+            }
+        });
+    }
+    public void fetchMembers(String taskId){
+        FirebaseDatabase.getInstance().getReference(currentteam).child(taskId).child("Members").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                memberAdapter.clear();
+                for (DataSnapshot fire : dataSnapshot.getChildren()) {
+
+                    String reason = (String) fire.child("Backout Request").getValue();
+                    String attended = (String) fire.child("Attended").getValue();
+                    if(fire.child("Backout Request").getValue()==null || fire.child("Attended").getValue()==null)
+                    {
+                        memberAdapter.add("\nName: " + fire.child("Name").getValue() + "\nIs ready for the task.");
+                    }
+                    else if (reason.matches("") && attended.matches("")) {
+                        memberAdapter.add("\nName: " + fire.child("Name").getValue() + "\nIs ready for the task.");
+
+                    } else if (attended.matches("") && !reason.isEmpty()) {
+                        memberAdapter.add("\nName: " + fire.child("Name").getValue() + "\nBack out request: " + fire.child("Backout Request").getValue());
+                    } else if (attended.matches("yes")) {
+                        memberAdapter.add("\nName: " + fire.child("Name").getValue() + "\nAttended the task");
+                    }
+                }
+
+                memberAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }
 
 

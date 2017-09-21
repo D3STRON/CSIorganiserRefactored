@@ -28,7 +28,9 @@
 
     <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:textSize="13dp" android:text="MOVE TO OTHER TASK" android:id="@+id/move" android:foreground="?attr/selectableItemBackgroundBorderless" android:textColor="#fff" android:elevation="2dp" android:background="@drawable/myedittextstyle4" android:layout_marginLeft="5dp" android:visibility="gone"/>
 
-    <TextView android:layout_height="match_parent" android:layout_width="match_parent" android:textSize="17dp" android:padding="10dp" android:id="@+id/noofmembers"/>
+        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:textSize="13dp" android:text="MOVE TO OTHER TASK" android:id="@+id/quickview" android:foreground="?attr/selectableItemBackgroundBorderless" android:textColor="#fff" android:elevation="2dp" android:background="@drawable/myedittextstyle4" android:layout_marginLeft="5dp" android:visibility="gone"/>
+
+        <TextView android:layout_height="match_parent" android:layout_width="match_parent" android:textSize="17dp" android:padding="10dp" android:id="@+id/noofmembers"/>
 
 </LinearLayout>
 
