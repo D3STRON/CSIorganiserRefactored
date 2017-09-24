@@ -72,7 +72,7 @@ public class EditProfile extends AppCompatActivity {
         rollno.setText(users.get("rollno"));
         number.setText(users.get("phone").toString().substring(0,10));
         neareststation.setText(users.get("station"));
-        division.setText(users.get("phone").toString().substring(13));
+        division.setText(users.get("phone").toString().substring(14));
         year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -239,8 +239,9 @@ public class EditProfile extends AppCompatActivity {
                 else if (result) {
                     String Id = users.get("UUID");
                     /////////////////
-                    model.setPreference1(team1.getItemAtPosition(Integer.parseInt(users.get("priority"))-1).toString());
-                    ////////////////
+                    if(!users.get("priority").matches("0")) {
+                        model.setPreference1(team1.getItemAtPosition(Integer.parseInt(users.get("priority")) - 1).toString());
+                    }////////////////
                     firebase.child(Id).setValue(model);
                     db.updateValues(model.getName(),model.getNeareststation(),model.getPreference1(), model.getPreference2(), model.getPreference3(), model.getNumber());
                     alertDialog.dismiss();
